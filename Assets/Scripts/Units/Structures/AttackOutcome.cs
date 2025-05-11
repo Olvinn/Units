@@ -5,5 +5,6 @@ namespace Units.Structures
     public struct AttackOutcome
     {
         public AttackResult Result;
+        public float HpChange;
     }
 }

@@ -1,13 +1,14 @@
 using UnityEngine;
 using TMPro;
 using Units.Interfaces;
-using Units.Structures;
+using UnityEngine.UI;
 
 namespace Demos.FreeSpace.Scripts
 {
     public class UnitViewPanel : MonoBehaviour, IUnitUIView
     {
         [SerializeField] private TextMeshProUGUI _name, _stats;
+        [SerializeField] private Image _hpBar;
 
         public void UpdateView(string name, string stats)
         {
@@ -20,14 +21,9 @@ namespace Demos.FreeSpace.Scripts
             _stats.text = stats;
         }
 
-        public void PlayAttack()
+        public void PlayTakeDamage(float damage, float currentHPPercent)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void PlayTakeDamage(Attack damage, AttackOutcome outcome)
-        {
-            throw new System.NotImplementedException();
+            _hpBar.fillAmount = currentHPPercent;
         }
     }
 }

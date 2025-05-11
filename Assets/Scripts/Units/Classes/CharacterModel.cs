@@ -29,6 +29,17 @@ namespace Units.Classes
             _knownEnemies = new();
         }
 
+        public float GetFullHPPercent()
+        {
+            float full = 0, current = 0;
+            foreach (var limb in _limbs.Values)
+            {
+                full += limb.health.GetMaxHP();
+                current += limb.health.GetHP();
+            }
+            return current / full;
+        }
+
         public UnitStats GetStats() => _stats;
 
         public bool CanAttack()
@@ -38,19 +49,13 @@ namespace Units.Classes
 
         public Attack GetAttack()
         {
-            return new Attack(this, 1, new[] { new Damage() { Amount = 10, Type = DamageType.Blunt } },
+            return new Attack(this, 1, new[] { new Damage() { Amount = 50, Type = DamageType.Blunt } },
                 AttackType.Melee, false, null);
         }
 
         public float GetSwingTime()
         {
-            return 2;
-        }
-
-        public void NotifySwing(Attack attack)
-        {
-            if (attack.Source != null)
-                _knownEnemies.Add(attack.Source);
+            return 1;
         }
 
         public AttackOutcome TakeDamage(Attack attack)
@@ -59,7 +64,8 @@ namespace Units.Classes
 
             AttackOutcome outcome = new AttackOutcome()
             {
-                Result = AttackResult.Full
+                Result = AttackResult.Full,
+                HpChange = 0
             };
 
             if (IsBlocked(attack, Random.value, isSneakAttack))
@@ -77,11 +83,15 @@ namespace Units.Classes
             foreach (var damage in attack.Damage)
             {
                 if (_limbs.ContainsKey(targetLimb))
+                {
                     _limbs[targetLimb].health.TakeDamage(damage.Amount);
+                    outcome.HpChange -= damage.Amount;
+                }
                 else
                 {
                     int limbInd = Random.Range(0, _limbs.Count);
                     _limbs.Values.ToArray()[limbInd].health.TakeDamage(damage.Amount);
+                    outcome.HpChange -= damage.Amount;
                 }
             }
 
@@ -104,26 +114,6 @@ namespace Units.Classes
             if (attack.IsCritical)
                 return attack.AttackMod <= random * _stats.MeleeEvade * .5f;
             return attack.AttackMod <= random * _stats.MeleeEvade;
-        }
-
-        private void ApplyDamage(Damage damage, AttackOutcome outcome)
-        {
-
-        }
-
-        public float GetHealth()
-        {
-            float res = 0;
-            float min = 1;
-            foreach (var limbKey in _limbs.Keys)
-            {
-                var p = _limbs[limbKey].health.GetPercentage();
-                res += p;
-                min = Mathf.Min(_limbs[limbKey].isVitallyNecessary ? p : 1, min);
-            }
-
-            res /= _limbs.Count;
-            return Mathf.Min(res, min);
         }
 
         public override string ToString()

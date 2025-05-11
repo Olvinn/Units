@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Units.Interfaces
 {
     public interface IUnitUIView : IUnitView

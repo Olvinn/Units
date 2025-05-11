@@ -92,7 +92,9 @@ namespace Units.Classes
         {
             Debug.Log($"{_model.name} got damage from {attack.Source?.name}");
             var result = _model.TakeDamage(attack);
-            _worldView.PlayTakeDamage(attack, result);
+            _worldView.PlayTakeDamage(result.HpChange, _model.GetFullHPPercent());
+            foreach (var uiView in _uiViews)
+                uiView.PlayTakeDamage(result.HpChange, _model.GetFullHPPercent());
             return result;
         }
 

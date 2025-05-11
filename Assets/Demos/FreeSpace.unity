@@ -288,6 +288,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Blue Unit View Panel
       objectReference: {fileID: 0}
+    - target: {fileID: 5369409186467522459, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369409186467522459, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369409186467522459, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369409186467522459, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369409186467522459, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369409186467522459, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6304324055847850370, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -549,6 +573,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f461a93075d28d4e986299b2b01f243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _renderer: {fileID: 1412143460}
 --- !u!1 &1660733003
 GameObject:
   m_ObjectHideFlags: 0
@@ -1029,6 +1054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f461a93075d28d4e986299b2b01f243, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _renderer: {fileID: 2038935673}
 --- !u!1001 &1499123734330118358
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1040,6 +1066,30 @@ PrefabInstance:
     - target: {fileID: 4490332353582634436, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
       propertyPath: m_Name
       value: Red Unit View Panel
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369409186467522459, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369409186467522459, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369409186467522459, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369409186467522459, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369409186467522459, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5369409186467522459, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6304324055847850370, guid: 29f2f4626ef7b2345ad41296544ad3b2, type: 3}
       propertyPath: m_AnchorMax.y

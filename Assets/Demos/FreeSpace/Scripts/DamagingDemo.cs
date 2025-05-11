@@ -1,4 +1,3 @@
-using System;
 using Demos.FreeSpace.Scripts;
 using Units.Classes;
 using Units.Interfaces;
@@ -22,8 +21,8 @@ namespace Demos
             _redModel = UnitFactory.CreateRandomUnit(10, "Red");
             _blueModel = UnitFactory.CreateRandomUnit(10, "Blue");
 
-            _red = new PassiveUnitController(_redModel, null, null, redWorldView, new []{ _redView }); 
-            _blue = new PassiveUnitController(_blueModel, null, null, blueWorldView, new []{ _blueView }); 
+            _red = new PassiveUnitController(_redModel, null, null, redWorldView, new []{ _redView as IUnitUIView }); 
+            _blue = new PassiveUnitController(_blueModel, null, null, blueWorldView, new []{ _blueView as IUnitUIView }); 
             
             _red.Attack(_blue);
         }
