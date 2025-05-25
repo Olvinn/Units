@@ -60,7 +60,7 @@ namespace Units.Classes
 
         public float GetSwingTime()
         {
-            return 1;
+            return _stats.SwingTime;
         }
 
         public AttackOutcome TakeDamage(Attack attack)

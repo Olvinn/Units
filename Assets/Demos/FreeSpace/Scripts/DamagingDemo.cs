@@ -28,6 +28,7 @@ namespace Demos
         private void Update()
         {
             _red.Attack(_blue);
+            _blue.Attack(_red);
             
             _red.Update(Time.deltaTime);
             _blue.Update(Time.deltaTime);

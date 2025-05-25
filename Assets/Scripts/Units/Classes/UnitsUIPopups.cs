@@ -17,7 +17,7 @@ namespace Units.Classes
             _inUseList = new List<UIPopup>();
         }
 
-        public void ShowPopup(Transform worldTransform, string message)
+        public void ShowPopup(Transform worldTransform, string message, float duration = 1)
         {
             UIPopup popup;
             if (_pool.Count > 0)
@@ -25,11 +25,11 @@ namespace Units.Classes
             else
                 popup = CreatePopup();
             popup.gameObject.SetActive(true);
-            popup.Show(worldTransform, message, 1);
+            popup.Show(worldTransform, message, duration);
             _inUseList.Add(popup);
         }
 
-        public void ShowPopup(Vector3 worldPosition, string message)
+        public void ShowPopup(Vector3 worldPosition, string message, float duration = 1)
         {
             UIPopup popup;
             if (_pool.Count > 0)
@@ -37,7 +37,7 @@ namespace Units.Classes
             else
                 popup = CreatePopup();
             popup.gameObject.SetActive(true);
-            popup.Show(worldPosition, message, 1);
+            popup.Show(worldPosition, message, duration);
         }
 
         private UIPopup CreatePopup()

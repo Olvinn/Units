@@ -72,7 +72,7 @@ namespace Units.Classes
 
             _swingTimer = _model.GetSwingTime();
             _status = UnitStatus.Attacking;
-            _worldView.PlayAttackPrep();
+            _worldView.PlayAttackPrep(1 / _model.GetSwingTime());
 
             foreach (var t in _targets)
                 t.NotifyOfIncomingAttack(_attack);
@@ -94,6 +94,7 @@ namespace Units.Classes
                 uiView.PlayTakeDamage(result.HpChange, _model.GetFullHPPercent());
                 uiView.ShowNotification($"{result.Result} : {result.HpChange:F1}", _worldView.GetPosition() + Vector3.up * 2.5f);
             }
+            _status = UnitStatus.Idle;
             return result;
         }
 

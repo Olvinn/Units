@@ -9,13 +9,15 @@ namespace Units.Classes
         public float MeleeAttack;
         public float MeleeDefence;
         public float MeleeEvade;
+        public float SwingTime;
 
         public UnitStats(UnitAttributes attributes)
         {
             MeleeDmgMod = (10 + attributes.Strength * 2 + attributes.Toughness) * .2f;
-            MeleeAttack = Mathf.Sqrt(attributes.Agility + attributes.Perception + attributes.Strength * 2);
-            MeleeDefence = Mathf.Sqrt(attributes.Agility * 2 + attributes.Perception + attributes.Strength);
-            MeleeEvade = Mathf.Sqrt(attributes.Perception + attributes.Wisdom + attributes.Agility * 2);
+            MeleeAttack = attributes.Agility + attributes.Perception + attributes.Strength * 2;
+            MeleeDefence = attributes.Agility * 2 + attributes.Perception + attributes.Strength;
+            MeleeEvade = attributes.Perception + attributes.Wisdom + attributes.Agility * 2;
+            SwingTime = (float)10 / attributes.Agility;
         }
 
         public override string ToString()

@@ -17,8 +17,9 @@ namespace Units.Classes
             _unitColor = _renderer.material.color;
         }
 
-        public void PlayAttackPrep()
+        public void PlayAttackPrep(float speed)
         {
+            _animator.SetFloat(AnimatorNames.Speed, speed);
             _animator.SetTrigger(AnimatorNames.AttackPreparation);
         }
         
