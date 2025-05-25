@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using Units.Classes;
 using Units.Interfaces;
 using UnityEngine.UI;
 
@@ -9,6 +10,18 @@ namespace Demos.FreeSpace.Scripts
     {
         [SerializeField] private TextMeshProUGUI _name, _stats;
         [SerializeField] private Image _hpBar;
+
+        private Camera _camera;
+
+        private void Start()
+        {
+            _camera = Camera.main;
+        }
+
+        public void ShowNotification(string message, Vector3 unitWorldPos)
+        {
+            UnitsUIPopups.Instance.ShowPopup(unitWorldPos, message);
+        }
 
         public void UpdateView(string name, string stats)
         {

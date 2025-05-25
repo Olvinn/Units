@@ -1,10 +1,8 @@
 {
-    "name": "Demos",
+    "name": "Base",
     "rootNamespace": "",
     "references": [
-        "GUID:29bfe20580d4b304d9bbe35b7567bad9",
-        "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:66c10dcfdf6739f449cf3879dd5244b8"
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

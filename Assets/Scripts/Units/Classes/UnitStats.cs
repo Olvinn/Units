@@ -12,7 +12,7 @@ namespace Units.Classes
 
         public UnitStats(UnitAttributes attributes)
         {
-            MeleeDmgMod = (10 + attributes.Strength * 2 + attributes.Toughness) * .02f;
+            MeleeDmgMod = (10 + attributes.Strength * 2 + attributes.Toughness) * .2f;
             MeleeAttack = Mathf.Sqrt(attributes.Agility + attributes.Perception + attributes.Strength * 2);
             MeleeDefence = Mathf.Sqrt(attributes.Agility * 2 + attributes.Perception + attributes.Strength);
             MeleeEvade = Mathf.Sqrt(attributes.Perception + attributes.Wisdom + attributes.Agility * 2);

@@ -11,12 +11,12 @@ namespace Units.Structures
         public float AttackMod;
         public Damage[] Damage;
         public AttackType Type;
-        public bool IsCritical;
+        public bool IsCritical, IsSneak;
 
         public LimbType? LimbTarget;
         
 #nullable enable
-        public Attack(IUnitModel? attacker, float attackMod, Damage[] damage, AttackType type, bool critical,
+        public Attack(IUnitModel? attacker, float attackMod, Damage[] damage, AttackType type, bool critical, bool isSneak,
             LimbType? limbTarget)
         {
             Source = attacker;
@@ -24,6 +24,7 @@ namespace Units.Structures
             Damage = damage;
             Type = type;
             IsCritical = critical;
+            IsSneak = isSneak;
             LimbTarget = limbTarget;
         }
     }

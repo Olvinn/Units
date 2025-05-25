@@ -39,12 +39,12 @@ namespace Units.Classes
                 _swingTimer -= dt;
                 if (_swingTimer <= 0)
                 {
-                    if (_targets == null) return;
-                    foreach (var target in _targets)
-                    {
-                        Debug.Log($"{_model.name} is dealing damage to {target.GetModel().name}");
-                        var outcome = target.TakeDamage(_attack);
-                    }
+                    _worldView.PlayAttack();
+                    if (_targets != null)
+                        foreach (var target in _targets)
+                        {
+                            var outcome = target.TakeDamage(_attack);
+                        }
 
                     _status = UnitStatus.Idle;
                 }
@@ -65,7 +65,6 @@ namespace Units.Classes
 
         public void Attack(IUnitController target)
         {
-            Debug.Log($"{_model.name} is willing to attack {target.GetModel().name}");
             if (!CanAttack()) return;
             
             _attack = _model.GetAttack();
@@ -73,28 +72,28 @@ namespace Units.Classes
 
             _swingTimer = _model.GetSwingTime();
             _status = UnitStatus.Attacking;
-            _worldView.PlayAttack();
+            _worldView.PlayAttackPrep();
 
             foreach (var t in _targets)
                 t.NotifyOfIncomingAttack(_attack);
 
             _status = UnitStatus.Attacking;
-            Debug.Log($"{_model.name} attacking {target.GetModel().name}");
         }
 
         public void NotifyOfIncomingAttack(Attack attack)
         {
-            Debug.Log($"{_model.name} preparing to get attack by {attack.Source?.name}");
             _status = UnitStatus.Defending;
         }
 
         public virtual AttackOutcome TakeDamage(Attack attack)
         {
-            Debug.Log($"{_model.name} got damage from {attack.Source?.name}");
             var result = _model.TakeDamage(attack);
             _worldView.PlayTakeDamage(result.HpChange, _model.GetFullHPPercent());
             foreach (var uiView in _uiViews)
+            {
                 uiView.PlayTakeDamage(result.HpChange, _model.GetFullHPPercent());
+                uiView.ShowNotification($"{result.Result} : {result.HpChange:F1}", _worldView.GetPosition() + Vector3.up * 2.5f);
+            }
             return result;
         }
 

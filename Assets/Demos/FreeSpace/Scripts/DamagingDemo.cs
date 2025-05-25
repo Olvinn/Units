@@ -23,12 +23,12 @@ namespace Demos
 
             _red = new PassiveUnitController(_redModel, null, null, redWorldView, new []{ _redView as IUnitUIView }); 
             _blue = new PassiveUnitController(_blueModel, null, null, blueWorldView, new []{ _blueView as IUnitUIView }); 
-            
-            _red.Attack(_blue);
         }
 
         private void Update()
         {
+            _red.Attack(_blue);
+            
             _red.Update(Time.deltaTime);
             _blue.Update(Time.deltaTime);
         }

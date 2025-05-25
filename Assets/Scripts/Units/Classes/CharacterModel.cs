@@ -15,7 +15,6 @@ namespace Units.Classes
         private Dictionary<LimbType, Limb> _limbs;
         private UnitAttributes _attributes;
         private UnitStats _stats;
-        private HashSet<IUnitModel> _knownEnemies;
         private bool _isDead = false, _isUnconscious = false;
 
         public CharacterModel(string name, UnitAttributes attributes, IEnumerable<Limb> limbs)
@@ -26,7 +25,6 @@ namespace Units.Classes
             _limbs = new();
             foreach (var limb in limbs)
                 _limbs.Add(limb.type, limb);
-            _knownEnemies = new();
         }
 
         public float GetFullHPPercent()
@@ -49,8 +47,15 @@ namespace Units.Classes
 
         public Attack GetAttack()
         {
-            return new Attack(this, 1, new[] { new Damage() { Amount = 50, Type = DamageType.Blunt } },
-                AttackType.Melee, false, null);
+            return new Attack(this, Random.value * _stats.MeleeAttack, new[] 
+                { 
+                    new Damage() 
+                    { 
+                        Amount = Random.Range(_stats.MeleeDmgMod * .5f, _stats.MeleeDmgMod * 1.1f),
+                        Type = DamageType.Blunt 
+                    } 
+                },
+                AttackType.Melee, Random.Range(0, _stats.MeleeAttack) >= _stats.MeleeAttack * .85f, false, null);
         }
 
         public float GetSwingTime()
@@ -60,19 +65,23 @@ namespace Units.Classes
 
         public AttackOutcome TakeDamage(Attack attack)
         {
-            bool isSneakAttack = !_knownEnemies.Contains(attack.Source);
-
             AttackOutcome outcome = new AttackOutcome()
             {
                 Result = AttackResult.Full,
                 HpChange = 0
             };
 
-            if (IsBlocked(attack, Random.value, isSneakAttack))
+            if (CanBlockAttack(attack))
+            {
                 outcome.Result = AttackResult.Blocked;
+                return outcome;
+            }
 
-            if (IsEvaded(attack, Random.value, isSneakAttack))
+            if (CanEvadeAttack(attack))
+            {
                 outcome.Result = AttackResult.Evaded;
+                return outcome;
+            }
 
             LimbType targetLimb;
             if (attack.LimbTarget.HasValue)
@@ -98,22 +107,22 @@ namespace Units.Classes
             return outcome;
         }
 
-        private bool IsBlocked(Attack attack, float random, bool isSneak)
+        public bool CanBlockAttack(Attack attack)
         {
-            if (isSneak)
+            if (attack.IsSneak)
                 return false;
             if (attack.IsCritical)
-                return attack.AttackMod <= random * _stats.MeleeDefence * .5f;
-            return attack.AttackMod <= random * _stats.MeleeDefence;
+                return attack.AttackMod <= Random.value * _stats.MeleeDefence * .5f;
+            return attack.AttackMod <= Random.value * _stats.MeleeDefence;
         }
 
-        private bool IsEvaded(Attack attack, float random, bool isSneak)
+        public bool CanEvadeAttack(Attack attack)
         {
-            if (isSneak)
+            if (attack.IsSneak)
                 return false;
             if (attack.IsCritical)
-                return attack.AttackMod <= random * _stats.MeleeEvade * .5f;
-            return attack.AttackMod <= random * _stats.MeleeEvade;
+                return attack.AttackMod <= Random.value * _stats.MeleeEvade * .5f;
+            return attack.AttackMod <= Random.value * _stats.MeleeEvade;
         }
 
         public override string ToString()

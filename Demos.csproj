@@ -732,6 +732,10 @@
       <Project>{0d1f6189-87c4-3e05-7334-1afaba4171f5}</Project>
       <Name>Units</Name>
     </ProjectReference>
+    <ProjectReference Include="Base.csproj">
+      <Project>{f1003058-2fec-dd5e-bf5c-92a55a35451d}</Project>
+      <Name>Base</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

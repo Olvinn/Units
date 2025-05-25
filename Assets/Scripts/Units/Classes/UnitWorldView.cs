@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using Units.Interfaces;
 using UnityEngine;
@@ -8,6 +7,8 @@ namespace Units.Classes
     public class UnitWorldView : MonoBehaviour, IUnitWorldView
     {
         [SerializeField] private Renderer _renderer;
+        [SerializeField] private Animator _animator;
+        
         private Coroutine _takingDamageCoroutine;
         private Color _unitColor;
 
@@ -16,9 +17,14 @@ namespace Units.Classes
             _unitColor = _renderer.material.color;
         }
 
+        public void PlayAttackPrep()
+        {
+            _animator.SetTrigger(AnimatorNames.AttackPreparation);
+        }
+        
         public void PlayAttack()
         {
-            
+            _animator.SetTrigger(AnimatorNames.Attack);
         }
 
         public Vector3 GetPosition()
@@ -28,6 +34,7 @@ namespace Units.Classes
 
         public void PlayTakeDamage(float damage, float currentHPPercent)
         {
+            if (damage == 0) return;
             if (_takingDamageCoroutine != null)
                 StopCoroutine(_takingDamageCoroutine);
             StartCoroutine(TakingDamageCoroutine(1));
