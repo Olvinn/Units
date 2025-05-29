@@ -1,4 +1,5 @@
 using System;
+using Units.Classes.StateMachine;
 using Units.Enums;
 using Units.Interfaces;
 using Units.Structures;
@@ -11,17 +12,15 @@ namespace Units.Classes
         public event Action<Attack> onGetAttacked;
         public event Action<AttackOutcome> onTakeDamage;
 
-        public UnitState state { get; private set; }
+        public UnitState state => _currentJob.state;
         
         private IUnitModel _model;
         private IUnitMovement _movement;
         private IUnitSense _sense;
         private IUnitWorldView _worldView;
         private IUnitUIView[] _uiViews;
-        
-        private float _swingTimer;
-        private Attack _attack;
-        private IUnitController _target;
+
+        private UnitControllerState _currentJob;
     
         public UnitController(IUnitModel model, IUnitMovement movement, IUnitSense sense, IUnitWorldView worldView, IUnitUIView[] uiViews)
         {
@@ -30,83 +29,50 @@ namespace Units.Classes
             _sense = sense;
             _worldView = worldView;
             _uiViews = uiViews;
+            _currentJob = new IdleState();
+            _currentJob.Do();
         }
 
         public virtual void Update(float dt)
         {
             _movement?.Update(dt);
             _sense?.Update(dt);
-
-            AttackUpdate(dt);
+            _currentJob?.Update(dt);
 
             foreach (var uiView in _uiViews)
                 uiView.UpdateView(_model.name, _model.ToString());
         }
-
-        private void AttackUpdate(float dt)
-        {
-            if (state != UnitState.Attacking)
-            {
-                _swingTimer = -1;
-                return;
-            }
-            
-            if (_swingTimer > 0)
-            {
-                _swingTimer -= dt;
-                if (_swingTimer <= 0)
-                {
-                    _worldView.PlayAttack();
-                    if (_target != null)
-                    {
-                        var outcome = _target.GetDamage(_attack);
-                    }
-
-                    state = UnitState.Idle;
-                }
-            }
-        }
+        
         public IUnitModel GetModel() => _model;
         
+        public IUnitWorldView GetWorldView() => _worldView;
+
         public Vector3 GetPosition() => _worldView.GetPosition();
         
         public bool CanAttack()
         {
-            return (state == UnitState.Idle || state == UnitState.Evading || state == UnitState.Blocking) && _model.CanAttack();
+            return (state == UnitState.Idle || state == UnitState.Evading || state == UnitState.BlockPrep) && _model.CanAttack();
         }
 
         public void Attack(IUnitController target)
         {
             if (!CanAttack()) return;
-            
-            _attack = _model.GetAttack();
-            _attack.Source = this;
-            _target = target;
 
-            _swingTimer = _attack.ApproxHitTime - Time.time;
-            _worldView.PlayAttackPrep(1 / _model.GetSwingTime());
-
-            _target.NotifyOfIncomingAttack(_attack);
-
-            state = UnitState.Attacking;
+            ChangeState(new AttackState(this, target));
         }
 
         public void Block(Attack attack)
         {
             if (state != UnitState.Idle) return;
             
-            _worldView.PlayBlockPrep(1 / _model.GetTimeToBlock());
-            
-            state = UnitState.Blocking;
+            ChangeState(new BlockState(this, attack));
         }
 
         public void Evade(Attack attack)
         {
             if (state != UnitState.Idle) return;
             
-            _worldView.PlayEvasion();
-
-            state = UnitState.Evading;
+            ChangeState(new EvadeState(this, attack));
         }
 
         public void NotifyOfIncomingAttack(Attack attack) => onGetAttacked?.Invoke(attack);
@@ -116,7 +82,7 @@ namespace Units.Classes
             AttackOutcome result;
             switch (state)
             {
-                case UnitState.Blocking:
+                case UnitState.BlockPrep:
                     result = _model.TryBlockDamage(attack);
                     if (result.Result == AttackResult.Blocked)
                         _worldView.PlayBlocked();
@@ -135,9 +101,6 @@ namespace Units.Classes
                 uiView.PlayTakeDamage(result.HpChange, _model.GetFullHPPercent());
                 uiView.ShowNotification($"{result.Result} : {result.HpChange:F1}", _worldView.GetPosition() + Vector3.up * 2.5f);
             }
-            if (result.Result == AttackResult.Full)
-                _swingTimer = -1;
-            state = UnitState.Idle;
             
             onTakeDamage?.Invoke(result);
             
@@ -172,6 +135,14 @@ namespace Units.Classes
         public void Protect(Vector3 position, float radius)
         {
             throw new System.NotImplementedException();
+        }
+
+        private void ChangeState(UnitControllerState newState)
+        {
+            _currentJob.Finish();
+            _currentJob = newState;
+            _currentJob.onDone += () => _currentJob = new IdleState();
+            _currentJob.Do();
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Units.Interfaces
         event Action<AttackOutcome> onTakeDamage;
         UnitState state { get; }
         IUnitModel GetModel();
+        IUnitWorldView GetWorldView();
         Vector3 GetPosition();
         bool CanAttack();
         void Attack(IUnitController target);

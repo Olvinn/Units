@@ -67,7 +67,10 @@ namespace Demos.FreeSpace.Scripts
         {
             if (_incomingAttacks.Count == 0) return;
             if (_incomingAttacks.First.Value.ApproxHitTime < Time.time)
+            {
                 _incomingAttacks.RemoveFirst();
+                if (_incomingAttacks.Count == 0) return;
+            }
 
             var attack = _incomingAttacks.First.Value;
             var timeBeforeAttack = _incomingAttacks.First.Value.ApproxHitTime - Time.time;

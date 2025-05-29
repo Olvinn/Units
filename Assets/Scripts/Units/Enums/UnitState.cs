@@ -3,8 +3,9 @@ namespace Units.Enums
     public enum UnitState
     {
         Idle,
-        Attacking,
-        Blocking,
+        Attack,
+        BlockPrep,
+        Block,
         Evading
     }
 }
