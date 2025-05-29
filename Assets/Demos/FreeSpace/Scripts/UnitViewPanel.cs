@@ -1,3 +1,4 @@
+using Base;
 using UnityEngine;
 using TMPro;
 using Units.Classes;
@@ -20,7 +21,7 @@ namespace Demos.FreeSpace.Scripts
 
         public void ShowNotification(string message, Vector3 unitWorldPos)
         {
-            UnitsUIPopups.Instance.ShowPopup(unitWorldPos, message, .85f);
+            UIPopups.Instance.ShowPopup(unitWorldPos, message, .85f);
         }
 
         public void UpdateView(string name, string stats)

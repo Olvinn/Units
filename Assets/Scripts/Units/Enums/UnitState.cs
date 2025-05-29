@@ -1,9 +1,10 @@
 namespace Units.Enums
 {
-    public enum UnitStatus
+    public enum UnitState
     {
         Idle,
         Attacking,
-        Defending
+        Blocking,
+        Evading
     }
 }

@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Base\ISingleton.cs" />
+    <Compile Include="Assets\Scripts\Base\UIPopups.cs" />
     <Compile Include="Assets\Scripts\Base\Widget.cs" />
     <Compile Include="Assets\Scripts\Base\Singleton.cs" />
     <Compile Include="Assets\Scripts\Base\IPoolable.cs" />

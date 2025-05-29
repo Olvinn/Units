@@ -9,7 +9,8 @@ namespace Units.Classes
         public float MeleeAttack;
         public float MeleeDefence;
         public float MeleeEvade;
-        public float SwingTime;
+        public float SwingTime; //Time before swing actually do damage
+        public float BlockTime; //Time before actually block damage
 
         public UnitStats(UnitAttributes attributes)
         {
@@ -17,7 +18,8 @@ namespace Units.Classes
             MeleeAttack = attributes.Agility + attributes.Perception + attributes.Strength * 2;
             MeleeDefence = attributes.Agility * 2 + attributes.Perception + attributes.Strength;
             MeleeEvade = attributes.Perception + attributes.Wisdom + attributes.Agility * 2;
-            SwingTime = (float)10 / attributes.Agility;
+            SwingTime = (float)5 / attributes.Agility;
+            BlockTime = (float)10 / attributes.Agility;
         }
 
         public override string ToString()

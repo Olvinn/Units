@@ -6,18 +6,19 @@ namespace Units.Structures
     public struct Attack
     {
 #nullable enable
-        public IUnitModel? Source;
+        public IUnitController? Source;
 #nullable disable
         public float AttackMod;
         public Damage[] Damage;
         public AttackType Type;
         public bool IsCritical, IsSneak;
+        public float ApproxHitTime;
 
         public LimbType? LimbTarget;
         
 #nullable enable
-        public Attack(IUnitModel? attacker, float attackMod, Damage[] damage, AttackType type, bool critical, bool isSneak,
-            LimbType? limbTarget)
+        public Attack(IUnitController? attacker, float attackMod, Damage[] damage, AttackType type, bool critical, bool isSneak,
+            LimbType? limbTarget, float approxHitTime)
         {
             Source = attacker;
             AttackMod = attackMod;
@@ -26,6 +27,7 @@ namespace Units.Structures
             IsCritical = critical;
             IsSneak = isSneak;
             LimbTarget = limbTarget;
+            ApproxHitTime = approxHitTime;
         }
     }
 #nullable disable

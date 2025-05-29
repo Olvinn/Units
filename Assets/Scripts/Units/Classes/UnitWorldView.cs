@@ -22,7 +22,23 @@ namespace Units.Classes
             _animator.SetFloat(AnimatorNames.Speed, speed);
             _animator.SetTrigger(AnimatorNames.AttackPreparation);
         }
-        
+
+        public void PlayBlockPrep(float speed)
+        {
+            _animator.SetFloat(AnimatorNames.Speed, speed);
+            _animator.SetTrigger(AnimatorNames.BlockPreparation);
+        }
+
+        public void PlayBlocked()
+        {
+            _animator.SetTrigger(AnimatorNames.Block);
+        }
+
+        public void PlayEvasion()
+        {
+            _animator.SetTrigger(AnimatorNames.Evade);
+        }
+
         public void PlayAttack()
         {
             _animator.SetTrigger(AnimatorNames.Attack);
@@ -36,6 +52,7 @@ namespace Units.Classes
         public void PlayTakeDamage(float damage, float currentHPPercent)
         {
             if (damage == 0) return;
+            _animator.SetTrigger(AnimatorNames.Stop);
             if (_takingDamageCoroutine != null)
                 StopCoroutine(_takingDamageCoroutine);
             StartCoroutine(TakingDamageCoroutine(1));

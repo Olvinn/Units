@@ -1,9 +1,8 @@
-using Demos.FreeSpace.Scripts;
 using Units.Classes;
 using Units.Interfaces;
 using UnityEngine;
 
-namespace Demos
+namespace Demos.FreeSpace.Scripts
 {
     public class DamagingDemo : MonoBehaviour
     {
@@ -14,24 +13,28 @@ namespace Demos
         [SerializeField] private UnitWorldView blueWorldView;
 
         private IUnitModel _redModel, _blueModel;
-        private IUnitController _red, _blue;
+        private IUnitController _redController, _blueController;
+        private BotBehaviour _redBot, _blueBot;
         
         void Start()
         {
             _redModel = UnitFactory.CreateRandomUnit(10, "Red");
             _blueModel = UnitFactory.CreateRandomUnit(10, "Blue");
 
-            _red = new PassiveUnitController(_redModel, null, null, redWorldView, new []{ _redView as IUnitUIView }); 
-            _blue = new PassiveUnitController(_blueModel, null, null, blueWorldView, new []{ _blueView as IUnitUIView }); 
+            _redController = new UnitController(_redModel, null, null, redWorldView, new []{ _redView as IUnitUIView }); 
+            _blueController = new UnitController(_blueModel, null, null, blueWorldView, new []{ _blueView as IUnitUIView });
+
+            _redBot = new BotBehaviour();
+            _redBot.Initialize(_redController);
+
+            _blueBot = new BotBehaviour();
+            _blueBot.Initialize(_blueController);
         }
 
         private void Update()
         {
-            _red.Attack(_blue);
-            _blue.Attack(_red);
-            
-            _red.Update(Time.deltaTime);
-            _blue.Update(Time.deltaTime);
+            _redBot.Update(Time.deltaTime);
+            _blueBot.Update(Time.deltaTime);
         }
     }
 }

@@ -11,5 +11,6 @@ namespace Units.Interfaces
         bool CanAttack();
         Attack GetAttack();
         float GetSwingTime();
+        float GetTimeToBlock();
     }
 }

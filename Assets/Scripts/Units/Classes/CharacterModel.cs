@@ -47,7 +47,9 @@ namespace Units.Classes
 
         public Attack GetAttack()
         {
-            return new Attack(this, Random.value * _stats.MeleeAttack, new[] 
+            return new Attack(null, 
+                Random.value * _stats.MeleeAttack, 
+                new[] 
                 { 
                     new Damage() 
                     { 
@@ -55,7 +57,12 @@ namespace Units.Classes
                         Type = DamageType.Blunt 
                     } 
                 },
-                AttackType.Melee, Random.Range(0, _stats.MeleeAttack) >= _stats.MeleeAttack * .85f, false, null);
+                AttackType.Melee, 
+                Random.Range(0, _stats.MeleeAttack) >= _stats.MeleeAttack * .85f,
+                false, 
+                null, 
+                Time.time + GetSwingTime()
+                );
         }
 
         public float GetSwingTime()
@@ -63,25 +70,50 @@ namespace Units.Classes
             return _stats.SwingTime;
         }
 
-        public AttackOutcome TakeDamage(Attack attack)
+        public float GetTimeToBlock()
+        {
+            return _stats.BlockTime;
+        }
+
+        public AttackOutcome TryBlockDamage(Attack attack)
+        {
+            if (CanBlockAttack(attack))
+            {
+                AttackOutcome outcome = new AttackOutcome()
+                {
+                    Result = AttackResult.Full,
+                    HpChange = 0
+                };
+                outcome.Result = AttackResult.Blocked;
+                return outcome;
+            }
+            
+            return GetDamage(attack);
+        }
+
+        public AttackOutcome TryEvadeDamage(Attack attack)
+        {
+            if (CanEvadeAttack(attack))
+            {
+                AttackOutcome outcome = new AttackOutcome()
+                {
+                    Result = AttackResult.Full,
+                    HpChange = 0
+                };
+                outcome.Result = AttackResult.Evaded;
+                return outcome;
+            }
+
+            return GetDamage(attack);
+        }
+
+        public AttackOutcome GetDamage(Attack attack)
         {
             AttackOutcome outcome = new AttackOutcome()
             {
                 Result = AttackResult.Full,
                 HpChange = 0
             };
-
-            if (CanBlockAttack(attack))
-            {
-                outcome.Result = AttackResult.Blocked;
-                return outcome;
-            }
-
-            if (CanEvadeAttack(attack))
-            {
-                outcome.Result = AttackResult.Evaded;
-                return outcome;
-            }
 
             LimbType targetLimb;
             if (attack.LimbTarget.HasValue)

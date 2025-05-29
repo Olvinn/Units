@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using Base;
 using UnityEngine;
 
-namespace Units.Classes
+namespace Base
 {
-    public class UnitsUIPopups : Singleton<UnitsUIPopups>
+    public class UIPopups : Singleton<UIPopups>
     {
         [SerializeField] private UIPopup _popupPrefab;
 

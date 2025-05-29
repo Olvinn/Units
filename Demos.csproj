@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Assets\Demos\FreeSpace\Scripts\UnitViewPanel.cs" />
     <Compile Include="Assets\Demos\FreeSpace\Scripts\DamagingDemo.cs" />
+    <Compile Include="Assets\Demos\FreeSpace\Scripts\BotBehaviour.cs" />
     <None Include="Assets\Demos\Demos.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.49f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
