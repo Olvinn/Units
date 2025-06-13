@@ -31,10 +31,18 @@ namespace Demos.FreeSpace.Scripts
             _blueBot.Initialize(_blueController);
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-            _redBot.Update(Time.deltaTime);
-            _blueBot.Update(Time.deltaTime);
+            if (Random.value > .5f)
+            {
+                _redBot.Update(Time.fixedDeltaTime);
+                _blueBot.Update(Time.fixedDeltaTime); 
+            }
+            else
+            {
+                _blueBot.Update(Time.fixedDeltaTime);
+                _redBot.Update(Time.fixedDeltaTime);
+            }
         }
     }
 }

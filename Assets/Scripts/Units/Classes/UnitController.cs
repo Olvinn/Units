@@ -51,7 +51,7 @@ namespace Units.Classes
         
         public bool CanAttack()
         {
-            return (state == UnitState.Idle || state == UnitState.Evading || state == UnitState.BlockPrep) && _model.CanAttack();
+            return (state is UnitState.Idle or UnitState.Evading or UnitState.BlockPrep) && _model.CanAttack();
         }
 
         public void Attack(IUnitController target)
@@ -141,7 +141,10 @@ namespace Units.Classes
         {
             _currentJob.Finish();
             _currentJob = newState;
-            _currentJob.onDone += () => _currentJob = new IdleState();
+            _currentJob.onDone += () =>
+            {
+                _currentJob = new IdleState();
+            };
             _currentJob.Do();
         }
     }

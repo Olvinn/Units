@@ -61,6 +61,8 @@ namespace Demos.FreeSpace.Scripts
             }
             var node = GetIncomingAttackNodeRightBefore(attack);
             _incomingAttacks.AddAfter(node, attack);
+
+            ReactOnAttackUpdate();
         }
 
         private void ReactOnAttackUpdate()

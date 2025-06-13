@@ -7,14 +7,16 @@ namespace Units.Classes.StateMachine
     public class AttackState : UnitControllerState
     {
         private IUnitController _target;
-        private float _swingTimer;
+        private float _swingTimer, _finishTimer;
         private Attack _attack;
+        private bool _attacked;
         
         public AttackState(IUnitController attacker, IUnitController target)
         {
             executor = attacker;
             _target = target;
             state = UnitState.Attack;
+            _attacked = false;
         }
 
         public override void Do()
@@ -26,6 +28,7 @@ namespace Units.Classes.StateMachine
                 return;
             }
             _swingTimer = executor.GetModel().GetSwingTime();
+            _finishTimer = _swingTimer * 2;
             executor.GetWorldView().PlayAttackPrep(1 / _swingTimer);
             _attack = executor.GetModel().GetAttack();
             _target.NotifyOfIncomingAttack(_attack);
@@ -35,10 +38,16 @@ namespace Units.Classes.StateMachine
         {
             if (!isActive) return;
             _swingTimer -= dt;
+            _finishTimer -= dt;
             if (_swingTimer > 0) return;
-            _target.GetDamage(_attack);
-            executor.GetWorldView().PlayAttack();
-            Finish();
+            if (!_attacked)
+            {
+                _target.GetDamage(_attack);
+                executor.GetWorldView().PlayAttack();
+                _attacked = true;
+            }
+            if (_finishTimer > 0) return;
+            Finish(); 
         }
     }
 }
