@@ -20,28 +20,28 @@ namespace Units.Classes
         public void PlayAttackPrep(float speed)
         {
             _animator.SetFloat(AnimatorNames.Speed, speed);
-            _animator.SetTrigger(AnimatorNames.AttackPreparation);
+            _animator.Play(AnimatorNames.AttackPreparation);
         }
 
         public void PlayBlockPrep(float speed)
         {
             _animator.SetFloat(AnimatorNames.Speed, speed);
-            _animator.SetTrigger(AnimatorNames.BlockPreparation);
+            _animator.Play(AnimatorNames.BlockPreparation);
         }
 
         public void PlayBlocked()
         {
-            _animator.SetTrigger(AnimatorNames.Block);
+            _animator.Play(AnimatorNames.Block);
         }
 
         public void PlayEvasion()
         {
-            _animator.SetTrigger(AnimatorNames.Evade);
+            _animator.Play(AnimatorNames.Evade);
         }
 
         public void PlayAttack()
         {
-            _animator.SetTrigger(AnimatorNames.Attack);
+            _animator.Play(AnimatorNames.Attack);
         }
 
         public Vector3 GetPosition()
