@@ -15,7 +15,7 @@ namespace Units.Classes.StateMachine
         {
             executor = attacker;
             _target = target;
-            state = UnitState.Attack;
+            stateEnum = UnitStateEnum.Attack;
             _attacked = false;
         }
 

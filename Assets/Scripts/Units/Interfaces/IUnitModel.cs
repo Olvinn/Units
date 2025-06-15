@@ -12,5 +12,6 @@ namespace Units.Interfaces
         Attack GetAttack();
         float GetSwingTime();
         float GetTimeToBlock();
+        UnitStateContainer GetStateContainer();
     }
 }

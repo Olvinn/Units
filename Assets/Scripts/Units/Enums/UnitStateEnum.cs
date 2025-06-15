@@ -1,6 +1,6 @@
 namespace Units.Enums
 {
-    public enum UnitState
+    public enum UnitStateEnum
     {
         Idle,
         Attack,

@@ -6,5 +6,6 @@ namespace Units.Structures
     {
         public AttackResult Result;
         public float HpChange;
+        public LimbType? TargetLimb;
     }
 }

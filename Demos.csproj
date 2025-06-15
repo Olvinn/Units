@@ -45,10 +45,12 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\2022.3.49f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Demos\FreeSpace\Scripts\UnitViewPanel.cs" />
-    <Compile Include="Assets\Demos\FreeSpace\Scripts\DamagingDemo.cs" />
-    <Compile Include="Assets\Demos\FreeSpace\Scripts\BotBehaviour.cs" />
-    <None Include="Assets\Demos\Demos.asmdef" />
+    <Compile Include="Assets\FreeSpace\Scripts\LimbsUIRepresentation.cs" />
+    <Compile Include="Assets\FreeSpace\Scripts\BotBehaviour.cs" />
+    <Compile Include="Assets\FreeSpace\Scripts\DamagingDemo.cs" />
+    <Compile Include="Assets\FreeSpace\Scripts\Localization.cs" />
+    <Compile Include="Assets\FreeSpace\Scripts\UnitViewPanel.cs" />
+    <None Include="Assets\FreeSpace\FreeSpace.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2022.3.49f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>
@@ -720,6 +722,12 @@
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>C:\Users\Admin\Desktop\Workspace\UnitBase\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Addressables">
+      <HintPath>C:\Users\Admin\Desktop\Workspace\UnitBase\Library\ScriptAssemblies\Unity.Addressables.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ResourceManager">
+      <HintPath>C:\Users\Admin\Desktop\Workspace\UnitBase\Library\ScriptAssemblies\Unity.ResourceManager.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>C:\Users\Admin\Desktop\Workspace\UnitBase\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>

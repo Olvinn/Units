@@ -75,6 +75,22 @@ namespace Units.Classes
             return _stats.BlockTime;
         }
 
+        public UnitStateContainer GetStateContainer()
+        {
+            Dictionary<LimbType, float> limbState = new Dictionary<LimbType, float>();
+            foreach (var limbType in _limbs.Keys)
+            {
+                limbState.Add(limbType, _limbs[limbType].health.GetPercentage());
+            }
+            return new UnitStateContainer()
+            {
+                LimbState = limbState,
+                UnitName = name,
+                Attributes = _attributes.ToString(),
+                Stats = _stats.ToString()
+            };
+        }
+
         public AttackOutcome TryBlockDamage(Attack attack)
         {
             if (CanBlockAttack(attack))
@@ -82,7 +98,8 @@ namespace Units.Classes
                 AttackOutcome outcome = new AttackOutcome()
                 {
                     Result = AttackResult.Full,
-                    HpChange = 0
+                    HpChange = 0,
+                    TargetLimb = attack.TargetLimb
                 };
                 outcome.Result = AttackResult.Blocked;
                 return outcome;
@@ -98,7 +115,8 @@ namespace Units.Classes
                 AttackOutcome outcome = new AttackOutcome()
                 {
                     Result = AttackResult.Full,
-                    HpChange = 0
+                    HpChange = 0,
+                    TargetLimb = attack.TargetLimb
                 };
                 outcome.Result = AttackResult.Evaded;
                 return outcome;
@@ -112,12 +130,13 @@ namespace Units.Classes
             AttackOutcome outcome = new AttackOutcome()
             {
                 Result = AttackResult.Full,
-                HpChange = 0
+                HpChange = 0,
+                TargetLimb = attack.TargetLimb
             };
 
             LimbType targetLimb;
-            if (attack.LimbTarget.HasValue)
-                targetLimb = attack.LimbTarget.Value;
+            if (attack.TargetLimb.HasValue)
+                targetLimb = attack.TargetLimb.Value;
             else
                 targetLimb = (LimbType)Random.Range(0, 9);
 

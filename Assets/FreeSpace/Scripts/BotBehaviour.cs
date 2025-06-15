@@ -31,7 +31,7 @@ namespace Demos.FreeSpace.Scripts
         {
             _controller.Update(dt);
             
-            if (_controller.state != UnitState.Idle)
+            if (_controller.state != UnitStateEnum.Idle)
                 return;
             
             ReactOnAttackUpdate();

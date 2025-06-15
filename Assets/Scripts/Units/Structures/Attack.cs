@@ -14,11 +14,11 @@ namespace Units.Structures
         public bool IsCritical, IsSneak;
         public float ApproxHitTime;
 
-        public LimbType? LimbTarget;
+        public LimbType? TargetLimb;
         
 #nullable enable
         public Attack(IUnitController? attacker, float attackMod, Damage[] damage, AttackType type, bool critical, bool isSneak,
-            LimbType? limbTarget, float approxHitTime)
+            LimbType? targetLimb, float approxHitTime)
         {
             Source = attacker;
             AttackMod = attackMod;
@@ -26,7 +26,7 @@ namespace Units.Structures
             Type = type;
             IsCritical = critical;
             IsSneak = isSneak;
-            LimbTarget = limbTarget;
+            TargetLimb = targetLimb;
             ApproxHitTime = approxHitTime;
         }
     }

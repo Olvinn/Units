@@ -12,7 +12,7 @@ namespace Units.Classes
         public event Action<Attack> onGetAttacked;
         public event Action<AttackOutcome> onTakeDamage;
 
-        public UnitState state => _currentJob.state;
+        public UnitStateEnum state => _currentJob.stateEnum;
         
         private IUnitModel _model;
         private IUnitMovement _movement;
@@ -40,7 +40,7 @@ namespace Units.Classes
             _currentJob?.Update(dt);
 
             foreach (var uiView in _uiViews)
-                uiView.UpdateView(_model.name, _model.ToString());
+                uiView.UpdateView(_model.GetStateContainer());
         }
         
         public IUnitModel GetModel() => _model;
@@ -51,7 +51,7 @@ namespace Units.Classes
         
         public bool CanAttack()
         {
-            return (state is UnitState.Idle or UnitState.Evading or UnitState.BlockPrep) && _model.CanAttack();
+            return (state is UnitStateEnum.Idle or UnitStateEnum.Evading or UnitStateEnum.BlockPrep) && _model.CanAttack();
         }
 
         public void Attack(IUnitController target)
@@ -63,14 +63,14 @@ namespace Units.Classes
 
         public void Block(Attack attack)
         {
-            if (state != UnitState.Idle) return;
+            if (state != UnitStateEnum.Idle) return;
             
             ChangeState(new BlockState(this, attack));
         }
 
         public void Evade(Attack attack)
         {
-            if (state != UnitState.Idle) return;
+            if (state != UnitStateEnum.Idle) return;
             
             ChangeState(new EvadeState(this, attack));
         }
@@ -82,23 +82,23 @@ namespace Units.Classes
             AttackOutcome result;
             switch (state)
             {
-                case UnitState.BlockPrep:
+                case UnitStateEnum.BlockPrep:
                     result = _model.TryBlockDamage(attack);
                     if (result.Result == AttackResult.Blocked)
                         _worldView.PlayBlocked();
                     break;
-                case UnitState.Evading:
+                case UnitStateEnum.Evading:
                     result = _model.TryEvadeDamage(attack);
-                    _worldView.PlayTakeDamage(result.HpChange, _model.GetFullHPPercent());
+                    _worldView.PlayTakeDamage(result);
                     break;
                 default:
                     result = _model.GetDamage(attack);
-                    _worldView.PlayTakeDamage(result.HpChange, _model.GetFullHPPercent());
+                    _worldView.PlayTakeDamage(result);
                     break;
             }
             foreach (var uiView in _uiViews)
             {
-                uiView.PlayTakeDamage(result.HpChange, _model.GetFullHPPercent());
+                uiView.PlayTakeDamage(result);
                 uiView.ShowNotification($"{result.Result} : {result.HpChange:F1}", _worldView.GetPosition() + Vector3.up * 2.5f);
             }
             

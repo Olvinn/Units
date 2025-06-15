@@ -46,8 +46,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Base\ISingleton.cs" />
+    <Compile Include="Assets\Scripts\Base\AnimatorNames.cs" />
+    <Compile Include="Assets\Scripts\Base\ImageBar.cs" />
     <Compile Include="Assets\Scripts\Base\UIPopups.cs" />
     <Compile Include="Assets\Scripts\Base\Widget.cs" />
+    <Compile Include="Assets\Scripts\Base\AddressablesNames.cs" />
     <Compile Include="Assets\Scripts\Base\Singleton.cs" />
     <Compile Include="Assets\Scripts\Base\IPoolable.cs" />
     <Compile Include="Assets\Scripts\Base\UIPopup.cs" />
@@ -723,6 +726,9 @@
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>C:\Users\Admin\Desktop\Workspace\UnitBase\Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Addressables">
+      <HintPath>C:\Users\Admin\Desktop\Workspace\UnitBase\Library\ScriptAssemblies\Unity.Addressables.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>C:\Users\Admin\Desktop\Workspace\UnitBase\Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>

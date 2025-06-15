@@ -9,7 +9,7 @@ namespace Units.Interfaces
     {
         event Action<Attack> onGetAttacked;
         event Action<AttackOutcome> onTakeDamage;
-        UnitState state { get; }
+        UnitStateEnum state { get; }
         IUnitModel GetModel();
         IUnitWorldView GetWorldView();
         Vector3 GetPosition();

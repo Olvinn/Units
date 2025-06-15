@@ -6,7 +6,7 @@ namespace Units.Classes.StateMachine
     {
         public IdleState()
         {
-            state = UnitState.Idle;
+            stateEnum = UnitStateEnum.Idle;
         }
     }
 }

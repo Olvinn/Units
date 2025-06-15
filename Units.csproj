@@ -49,10 +49,10 @@
     <Compile Include="Assets\Scripts\Units\Enums\AttackType.cs" />
     <Compile Include="Assets\Scripts\Units\Classes\UnitFactory.cs" />
     <Compile Include="Assets\Scripts\Units\Structures\Attack.cs" />
+    <Compile Include="Assets\Scripts\Units\Structures\UnitStateContainer.cs" />
     <Compile Include="Assets\Scripts\Units\Interfaces\IUnitModel.cs" />
     <Compile Include="Assets\Scripts\Units\Interfaces\IUnitBehaciour.cs" />
     <Compile Include="Assets\Scripts\Units\Classes\WorldUnits.cs" />
-    <Compile Include="Assets\Scripts\Units\Classes\AnimatorNames.cs" />
     <Compile Include="Assets\Scripts\Units\Interfaces\ILimb.cs" />
     <Compile Include="Assets\Scripts\Units\Classes\StateMachine\UnitControllerState.cs" />
     <Compile Include="Assets\Scripts\Units\Classes\UnitController.cs" />
@@ -67,8 +67,8 @@
     <Compile Include="Assets\Scripts\Units\Enums\DamageType.cs" />
     <Compile Include="Assets\Scripts\Units\Interfaces\IUnitSense.cs" />
     <Compile Include="Assets\Scripts\Units\Classes\Health.cs" />
+    <Compile Include="Assets\Scripts\Units\Enums\UnitStateEnum.cs" />
     <Compile Include="Assets\Scripts\Units\Classes\StateMachine\EvadeState.cs" />
-    <Compile Include="Assets\Scripts\Units\Enums\UnitState.cs" />
     <Compile Include="Assets\Scripts\Units\Classes\StateMachine\AttackState.cs" />
     <Compile Include="Assets\Scripts\Units\Classes\UnitWorldView.cs" />
     <Compile Include="Assets\Scripts\Units\Classes\UnitAttributes.cs" />

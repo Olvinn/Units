@@ -6,7 +6,7 @@ namespace Units.Classes.StateMachine
 {
     public abstract class UnitControllerState
     {
-        public UnitState state { get; protected set; }
+        public UnitStateEnum stateEnum { get; protected set; }
         
         public event Action onDone;
         

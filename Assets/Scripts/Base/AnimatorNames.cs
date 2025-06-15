@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Units.Classes
+namespace Base
 {
     public static class AnimatorNames 
     {

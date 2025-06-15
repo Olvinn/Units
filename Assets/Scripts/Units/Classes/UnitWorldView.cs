@@ -1,5 +1,7 @@
 using System.Collections;
+using Base;
 using Units.Interfaces;
+using Units.Structures;
 using UnityEngine;
 
 namespace Units.Classes
@@ -49,9 +51,9 @@ namespace Units.Classes
             return transform.position;
         }
 
-        public void PlayTakeDamage(float damage, float currentHPPercent)
+        public void PlayTakeDamage(AttackOutcome outcome)
         {
-            if (damage == 0) return;
+            if (outcome.HpChange == 0) return;
             _animator.SetTrigger(AnimatorNames.Stop);
             if (_takingDamageCoroutine != null)
                 StopCoroutine(_takingDamageCoroutine);
