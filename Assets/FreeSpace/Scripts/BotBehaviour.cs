@@ -5,6 +5,7 @@ using Units.Enums;
 using Units.Interfaces;
 using Units.Structures;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Demos.FreeSpace.Scripts
 {
@@ -82,7 +83,7 @@ namespace Demos.FreeSpace.Scripts
             {
                 _controller.Attack(attack.Source);
             }
-            else if (timeBeforeAttack > _controller.GetModel().GetTimeToBlock())
+            else if (timeBeforeAttack > _controller.GetModel().GetTimeToBlock() && Random.value > .5f)
             {
                 _controller.Block(attack);
             }

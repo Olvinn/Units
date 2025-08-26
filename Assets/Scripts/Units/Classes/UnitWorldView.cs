@@ -54,7 +54,7 @@ namespace Units.Classes
         public void PlayTakeDamage(AttackOutcome outcome)
         {
             if (outcome.HpChange == 0) return;
-            _animator.SetTrigger(AnimatorNames.Stop);
+            //_animator.SetTrigger(AnimatorNames.Stop);
             if (_takingDamageCoroutine != null)
                 StopCoroutine(_takingDamageCoroutine);
             StartCoroutine(TakingDamageCoroutine(1));
