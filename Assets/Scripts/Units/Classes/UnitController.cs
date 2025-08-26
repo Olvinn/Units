@@ -33,7 +33,7 @@ namespace Units.Classes
             _currentJob.Do();
         }
 
-        public virtual void Update(float dt)
+        public void Update(float dt)
         {
             _movement?.Update(dt);
             _sense?.Update(dt);
