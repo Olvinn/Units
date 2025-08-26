@@ -13,17 +13,12 @@ namespace Units.Interfaces
         IUnitModel GetModel();
         IUnitWorldView GetWorldView();
         Vector3 GetPosition();
-        bool CanAttack();
         void Attack(IUnitController target);
         void Block(Attack attack);
         void Evade(Attack attack);
         void NotifyOfIncomingAttack(Attack attack);
-        AttackOutcome GetDamage(Attack attack);
+        AttackOutcome TakeDamage(Attack attack);
         void Move(IUnitController destination);
         void Move(Vector3 destination);
-        void Follow(IUnitController target);
-        void Patrol(Vector3 position);
-        void Protect(IUnitController target);
-        void Protect(Vector3 position, float radius);
     }
 }

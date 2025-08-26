@@ -11,6 +11,6 @@ namespace Units.Structures
         public string UnitName;
         public string Attributes, Stats;
         public Dictionary<LimbType, float> LimbState;
-        
+        public string Status;
     }
 }

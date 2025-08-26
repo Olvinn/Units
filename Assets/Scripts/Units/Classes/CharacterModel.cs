@@ -158,7 +158,7 @@ namespace Units.Classes
             return outcome;
         }
 
-        public bool CanBlockAttack(Attack attack)
+        private bool CanBlockAttack(Attack attack)
         {
             if (attack.IsSneak)
                 return false;
@@ -167,7 +167,7 @@ namespace Units.Classes
             return attack.AttackMod <= Random.value * _stats.MeleeDefence;
         }
 
-        public bool CanEvadeAttack(Attack attack)
+        private bool CanEvadeAttack(Attack attack)
         {
             if (attack.IsSneak)
                 return false;

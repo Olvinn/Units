@@ -39,8 +39,11 @@ namespace Units.Classes
             _sense?.Update(dt);
             _currentJob?.Update(dt);
 
+            var data = _model.GetStateContainer();
+            data.Status = state.ToString();
+
             foreach (var uiView in _uiViews)
-                uiView.UpdateView(_model.GetStateContainer());
+                uiView.UpdateView(data);
         }
         
         public IUnitModel GetModel() => _model;
@@ -49,9 +52,18 @@ namespace Units.Classes
 
         public Vector3 GetPosition() => _worldView.GetPosition();
         
-        public bool CanAttack()
+        private bool CanAttack()
         {
-            return (state is UnitStateEnum.Idle or UnitStateEnum.Evading or UnitStateEnum.BlockPrep) && _model.CanAttack();
+            return (state == UnitStateEnum.Idle || state == UnitStateEnum.BlockPrep) 
+                   && _model.CanAttack();
+        }
+        private bool CanBlock()
+        {
+            return (state == UnitStateEnum.Idle);
+        }
+        private bool CanEvade()
+        {
+            return (state == UnitStateEnum.Idle || state == UnitStateEnum.BlockPrep);
         }
 
         public void Attack(IUnitController target)
@@ -63,46 +75,48 @@ namespace Units.Classes
 
         public void Block(Attack attack)
         {
-            if (state != UnitStateEnum.Idle) return;
+            if (!CanBlock()) return;
             
             ChangeState(new BlockState(this, attack));
         }
 
         public void Evade(Attack attack)
         {
-            if (state != UnitStateEnum.Idle) return;
+            if (!CanEvade()) return;
             
             ChangeState(new EvadeState(this, attack));
         }
 
         public void NotifyOfIncomingAttack(Attack attack) => onGetAttacked?.Invoke(attack);
 
-        public virtual AttackOutcome GetDamage(Attack attack)
+        public virtual AttackOutcome TakeDamage(Attack attack)
         {
             AttackOutcome result;
             switch (state)
             {
                 case UnitStateEnum.BlockPrep:
                     result = _model.TryBlockDamage(attack);
-                    if (result.Result == AttackResult.Blocked)
-                        _worldView.PlayBlocked();
                     break;
                 case UnitStateEnum.Evading:
                     result = _model.TryEvadeDamage(attack);
-                    _worldView.PlayTakeDamage(result);
                     break;
                 default:
                     result = _model.GetDamage(attack);
-                    _worldView.PlayTakeDamage(result);
                     break;
             }
+            
+            onTakeDamage?.Invoke(result);
+            
+            if (result.Result == AttackResult.Full)
+                ChangeState(new StaggeringState(this, result));
+            else if (result.Result == AttackResult.Partial)
+                _worldView.PlayTakeDamage(result);
+            
             foreach (var uiView in _uiViews)
             {
                 uiView.PlayTakeDamage(result);
                 uiView.ShowNotification($"{result.Result} : {result.HpChange:F1}", _worldView.GetPosition() + Vector3.up * 2.5f);
             }
-            
-            onTakeDamage?.Invoke(result);
             
             return result;
         }
@@ -115,26 +129,6 @@ namespace Units.Classes
         public void Move(Vector3 destination)
         {
             _movement.Move(destination);
-        }
-
-        public void Follow(IUnitController target)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Patrol(Vector3 position)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Protect(IUnitController target)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Protect(Vector3 position, float radius)
-        {
-            throw new System.NotImplementedException();
         }
 
         private void ChangeState(UnitControllerState newState)

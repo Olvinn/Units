@@ -20,6 +20,10 @@ namespace Units.Classes.StateMachine
 
         private void OnTakeDamage(AttackOutcome result)
         {
+            if (result.Result != AttackResult.Blocked)
+                executor.GetWorldView().PlayTakeDamage(result);
+            else
+                executor.GetWorldView().PlayBlocked();
             Finish();
         }
 

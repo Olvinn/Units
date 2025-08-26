@@ -6,6 +6,7 @@ namespace Units.Enums
         Attack,
         BlockPrep,
         Block,
-        Evading
+        Evading,
+        Staggering
     }
 }

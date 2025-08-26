@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\Units\Classes\UnitFactory.cs" />
     <Compile Include="Assets\Scripts\Units\Interfaces\IUnitModel.cs" />
     <Compile Include="Assets\Scripts\Units\Interfaces\IUnitBehaciour.cs" />
+    <Compile Include="Assets\Scripts\Units\Classes\StateMachine\StaggeringState.cs" />
     <Compile Include="Assets\Scripts\Units\Enums\AttackResult.cs" />
     <Compile Include="Assets\Scripts\Units\Structures\Damage.cs" />
     <Compile Include="Assets\Scripts\Units\Enums\LimbType.cs" />

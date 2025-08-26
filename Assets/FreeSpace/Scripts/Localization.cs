@@ -7,6 +7,7 @@ namespace FreeSpace.Scripts
     {
         public const string UILimbsPanelName = "Body State";
         public const string UIAttributesPanelName = "Attributes";
+        public const string UIStatusPanelName = "Status";
         public const string UIStatsPanelName = "Stats";
 
         public static readonly Dictionary<LimbType, string> LimbsNames = new ()

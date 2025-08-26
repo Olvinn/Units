@@ -20,6 +20,8 @@ namespace Units.Classes.StateMachine
 
         private void OnTakeDamage(AttackOutcome result)
         {
+            if (result.Result != AttackResult.Evaded)
+                executor.GetWorldView().PlayTakeDamage(result);
             Finish();
         }
 
@@ -40,6 +42,7 @@ namespace Units.Classes.StateMachine
             if (!isActive) return;
             _swingTimer -= dt;
             if (_swingTimer > 0) return;
+            executor.GetWorldView().PlayEvasion();
             Finish();
         }
     }

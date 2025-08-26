@@ -44,7 +44,8 @@ namespace Demos.FreeSpace.Scripts
         private void CheckSurroundings()
         {
             _target = WorldUnits.GetPotentialTarget(this);
-            _controller.Attack(_target.GetController());
+            if (_controller.state == UnitStateEnum.Idle)
+                _controller.Attack(_target.GetController());
         }
 
         private void ReactOnTakeDamage(AttackOutcome attack)

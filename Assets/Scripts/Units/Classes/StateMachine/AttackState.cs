@@ -42,7 +42,7 @@ namespace Units.Classes.StateMachine
             if (_swingTimer > 0) return;
             if (!_attacked)
             {
-                _target.GetDamage(_attack);
+                _target.TakeDamage(_attack);
                 executor.GetWorldView().PlayAttack();
                 _attacked = true;
             }
