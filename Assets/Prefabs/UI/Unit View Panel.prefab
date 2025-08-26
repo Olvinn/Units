@@ -1425,6 +1425,14 @@ PrefabInstance:
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
       objectReference: {fileID: 0}
+    - target: {fileID: 581054864564230521, guid: 5fb313b60c113e941b843f09d2337ce1, type: 3}
+      propertyPath: m_ChildControlWidth
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 581054864564230521, guid: 5fb313b60c113e941b843f09d2337ce1, type: 3}
+      propertyPath: m_ChildControlHeight
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4527459989802803138, guid: 5fb313b60c113e941b843f09d2337ce1, type: 3}
       propertyPath: m_Name
       value: LimbsUI

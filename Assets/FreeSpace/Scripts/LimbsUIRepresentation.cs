@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Base;
-using Demos.FreeSpace.Scripts;
 using TMPro;
 using Units.Enums;
 using UnityEngine;
@@ -16,7 +14,7 @@ namespace FreeSpace.Scripts
         
         private Dictionary<LimbType, ImageBar> _limbs = new ();
 
-        private List<LimbType> _lodingLimbs = new ();
+        private List<LimbType> _loadingLimbs = new ();
 
         private void Start()
         {
@@ -36,10 +34,10 @@ namespace FreeSpace.Scripts
 
         private IEnumerator CreateImageBarFor(LimbType limbType, float limb, float timeOut = 30)
         {
-            if (_lodingLimbs.Contains(limbType))
+            if (_loadingLimbs.Contains(limbType))
                 yield break;
             
-            _lodingLimbs.Add(limbType);
+            _loadingLimbs.Add(limbType);
             var ap = Addressables.InstantiateAsync(AddressablesNames.UIImageBar);
             while (!ap.IsDone && timeOut > 0)
             {
@@ -51,11 +49,12 @@ namespace FreeSpace.Scripts
             {
                 var res = ap.Result.GetComponent<ImageBar>();
                 res.transform.SetParent(transform);
+                res.transform.localScale = Vector3.one;
                 res.UpdateUI(Localization.LimbsNames[limbType], limb);
                 _limbs.TryAdd(limbType, res);
             }
             
-            _lodingLimbs.Remove(limbType);
+            _loadingLimbs.Remove(limbType);
         }
     }
 }
