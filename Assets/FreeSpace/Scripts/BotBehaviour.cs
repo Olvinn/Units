@@ -83,7 +83,7 @@ namespace Demos.FreeSpace.Scripts
             {
                 _controller.Attack(attack.Source);
             }
-            else if (timeBeforeAttack > _controller.GetModel().GetTimeToBlock() && Random.value > .5f)
+            else if (timeBeforeAttack > _controller.GetModel().GetTimeToBlock())
             {
                 _controller.Block(attack);
             }

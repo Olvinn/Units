@@ -15,7 +15,7 @@ namespace Units.Classes.StateMachine
             base.executor = executor;
             base.executor.onTakeDamage += OnTakeDamage; 
             _attack = attack;
-            stateEnum = UnitStateEnum.BlockPrep;
+            stateEnum = UnitStateEnum.Evading;
         }
 
         private void OnTakeDamage(AttackOutcome result)
