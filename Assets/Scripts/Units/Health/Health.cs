@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace Units.Classes
+namespace Units.Health
 {
     public class Health
     {

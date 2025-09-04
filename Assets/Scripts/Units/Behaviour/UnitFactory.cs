@@ -1,7 +1,8 @@
-using Units.Enums;
+using Units.Health;
+using Units.Stats;
 using UnityEngine;
 
-namespace Units.Classes
+namespace Units.Behaviour
 {
     public static class UnitFactory
     {

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Units.Enums;
+using Units.Health;
 
 namespace FreeSpace.Scripts
 {

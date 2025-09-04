@@ -1,15 +1,14 @@
 using System;
-using Units.Classes.StateMachine;
-using Units.Enums;
+using Units.Behaviour.StateMachine;
+using Units.Health;
 using Units.Interfaces;
-using Units.Structures;
 using UnityEngine;
 
-namespace Units.Classes
+namespace Units.Behaviour
 {
     public class UnitController : IUnitController
     {
-        public event Action<Attack> onGetAttacked;
+        public event Action<AttackData> onGetAttacked;
         public event Action<AttackOutcome> onTakeDamage;
 
         public UnitStateEnum state => _currentJob.stateEnum;
@@ -73,49 +72,49 @@ namespace Units.Classes
             ChangeState(new AttackState(this, target));
         }
 
-        public void Block(Attack attack)
+        public void Block(AttackData attackData)
         {
             if (!CanBlock()) return;
             
-            ChangeState(new BlockState(this, attack));
+            ChangeState(new BlockState(this, attackData));
         }
 
-        public void Evade(Attack attack)
+        public void Evade(AttackData attackData)
         {
             if (!CanEvade()) return;
             
-            ChangeState(new EvadeState(this, attack));
+            ChangeState(new EvadeState(this, attackData));
         }
 
-        public void NotifyOfIncomingAttack(Attack attack) => onGetAttacked?.Invoke(attack);
+        public void NotifyOfIncomingAttack(AttackData attackData) => onGetAttacked?.Invoke(attackData);
 
-        public virtual AttackOutcome TakeDamage(Attack attack)
+        public virtual AttackOutcome TakeDamage(AttackData attackData)
         {
             AttackOutcome result;
             switch (state)
             {
                 case UnitStateEnum.BlockPrep:
-                    result = _model.TryBlockDamage(attack);
+                    result = _model.TryBlockDamage(attackData);
                     break;
                 case UnitStateEnum.Evading:
-                    result = _model.TryEvadeDamage(attack);
+                    result = _model.TryEvadeDamage(attackData);
                     break;
                 default:
-                    result = _model.GetDamage(attack);
+                    result = _model.GetDamage(attackData);
                     break;
             }
             
             onTakeDamage?.Invoke(result);
             
-            if (result.Result == AttackResult.Full)
+            if (result.ResultType == AttackResultType.Full)
                 ChangeState(new StaggeringState(this, result));
-            else if (result.Result == AttackResult.Partial)
+            else if (result.ResultType == AttackResultType.Partial)
                 _worldView.PlayTakeDamage(result);
             
             foreach (var uiView in _uiViews)
             {
                 uiView.PlayTakeDamage(result);
-                uiView.ShowNotification($"{result.Result} : {result.HpChange:F1}", _worldView.GetPosition() + Vector3.up * 2.5f);
+                uiView.ShowNotification($"{result.ResultType} : {result.HpChange:F1}", _worldView.GetPosition() + Vector3.up * 2.5f);
             }
             
             return result;

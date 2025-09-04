@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Units.Enums;
+using Units.Health;
 using Units.Interfaces;
-using Units.Structures;
+using Units.Stats;
 using UnityEngine;
 
-namespace Units.Classes
+namespace Units.Behaviour
 {
     public class CharacterModel : IUnitModel
     {
@@ -45,13 +45,13 @@ namespace Units.Classes
             return _limbs[LimbType.RightArm].health.GetHP() > 0 && !_isDead && !_isUnconscious;
         }
 
-        public Attack GetAttack()
+        public AttackData GetAttack()
         {
-            return new Attack(null, 
+            return new AttackData(null, 
                 Random.value * _stats.MeleeAttack, 
                 new[] 
                 { 
-                    new Damage() 
+                    new DamageData() 
                     { 
                         Amount = Random.Range(_stats.MeleeDmgMod * .5f, _stats.MeleeDmgMod * 1.1f),
                         Type = DamageType.Blunt 
@@ -75,6 +75,22 @@ namespace Units.Classes
             return _stats.BlockTime;
         }
 
+        public float GetStaggerTime(AttackOutcome attack)
+        {
+            switch (attack.TargetLimb)
+            {
+                case LimbType.Head:
+                    return -attack.HpChange / _stats.StaggerDefence * 2;
+                case LimbType.LeftArm:
+                case LimbType.RightArm:
+                case LimbType.LeftLeg:
+                case LimbType.RightLeg:
+                    return -attack.HpChange / _stats.StaggerDefence * .5f;
+                default:
+                    return -attack.HpChange / _stats.StaggerDefence;
+            }
+        }
+
         public UnitStateContainer GetStateContainer()
         {
             Dictionary<LimbType, float> limbState = new Dictionary<LimbType, float>();
@@ -91,56 +107,56 @@ namespace Units.Classes
             };
         }
 
-        public AttackOutcome TryBlockDamage(Attack attack)
+        public AttackOutcome TryBlockDamage(AttackData attackData)
         {
-            if (CanBlockAttack(attack))
+            if (CanBlockAttack(attackData))
             {
                 AttackOutcome outcome = new AttackOutcome()
                 {
-                    Result = AttackResult.Full,
+                    ResultType = AttackResultType.Full,
                     HpChange = 0,
-                    TargetLimb = attack.TargetLimb
+                    TargetLimb = attackData.TargetLimb
                 };
-                outcome.Result = AttackResult.Blocked;
+                outcome.ResultType = AttackResultType.Blocked;
                 return outcome;
             }
             
-            return GetDamage(attack);
+            return GetDamage(attackData);
         }
 
-        public AttackOutcome TryEvadeDamage(Attack attack)
+        public AttackOutcome TryEvadeDamage(AttackData attackData)
         {
-            if (CanEvadeAttack(attack))
+            if (CanEvadeAttack(attackData))
             {
                 AttackOutcome outcome = new AttackOutcome()
                 {
-                    Result = AttackResult.Full,
+                    ResultType = AttackResultType.Full,
                     HpChange = 0,
-                    TargetLimb = attack.TargetLimb
+                    TargetLimb = attackData.TargetLimb
                 };
-                outcome.Result = AttackResult.Evaded;
+                outcome.ResultType = AttackResultType.Evaded;
                 return outcome;
             }
 
-            return GetDamage(attack);
+            return GetDamage(attackData);
         }
 
-        public AttackOutcome GetDamage(Attack attack)
+        public AttackOutcome GetDamage(AttackData attackData)
         {
             AttackOutcome outcome = new AttackOutcome()
             {
-                Result = AttackResult.Full,
+                ResultType = AttackResultType.Full,
                 HpChange = 0,
-                TargetLimb = attack.TargetLimb
+                TargetLimb = attackData.TargetLimb
             };
 
             LimbType targetLimb;
-            if (attack.TargetLimb.HasValue)
-                targetLimb = attack.TargetLimb.Value;
+            if (attackData.TargetLimb.HasValue)
+                targetLimb = attackData.TargetLimb.Value;
             else
                 targetLimb = (LimbType)Random.Range(0, 9);
 
-            foreach (var damage in attack.Damage)
+            foreach (var damage in attackData.Damage)
             {
                 if (_limbs.ContainsKey(targetLimb))
                 {
@@ -158,22 +174,22 @@ namespace Units.Classes
             return outcome;
         }
 
-        private bool CanBlockAttack(Attack attack)
+        private bool CanBlockAttack(AttackData attackData)
         {
-            if (attack.IsSneak)
+            if (attackData.IsSneak)
                 return false;
-            if (attack.IsCritical)
-                return attack.AttackMod <= Random.value * _stats.MeleeDefence * .5f;
-            return attack.AttackMod <= Random.value * _stats.MeleeDefence;
+            if (attackData.IsCritical)
+                return attackData.AttackMod <= Random.value * _stats.MeleeDefence * .5f;
+            return attackData.AttackMod <= Random.value * _stats.MeleeDefence;
         }
 
-        private bool CanEvadeAttack(Attack attack)
+        private bool CanEvadeAttack(AttackData attackData)
         {
-            if (attack.IsSneak)
+            if (attackData.IsSneak)
                 return false;
-            if (attack.IsCritical)
-                return attack.AttackMod <= Random.value * _stats.MeleeEvade * .5f;
-            return attack.AttackMod <= Random.value * _stats.MeleeEvade;
+            if (attackData.IsCritical)
+                return attackData.AttackMod <= Random.value * _stats.MeleeEvade * .5f;
+            return attackData.AttackMod <= Random.value * _stats.MeleeEvade;
         }
 
         public override string ToString()

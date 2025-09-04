@@ -1,5 +1,6 @@
-using Units.Classes;
-using Units.Structures;
+using Units.Behaviour;
+using Units.Health;
+using Units.Stats;
 
 namespace Units.Interfaces
 {
@@ -9,9 +10,10 @@ namespace Units.Interfaces
         float GetFullHPPercent();
         UnitStats GetStats();
         bool CanAttack();
-        Attack GetAttack();
+        AttackData GetAttack();
         float GetSwingTime();
         float GetTimeToBlock();
+        float GetStaggerTime(AttackOutcome attack);
         UnitStateContainer GetStateContainer();
     }
 }

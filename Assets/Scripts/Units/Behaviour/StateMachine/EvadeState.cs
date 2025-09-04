@@ -1,26 +1,25 @@
-using Units.Enums;
+using Units.Health;
 using Units.Interfaces;
-using Units.Structures;
 using UnityEngine;
 
-namespace Units.Classes.StateMachine
+namespace Units.Behaviour.StateMachine
 {
     public class EvadeState : UnitControllerState
     {
         private float _swingTimer;
-        private Attack _attack;
+        private AttackData _attackData;
         
-        public EvadeState(IUnitController executor, Attack attack)
+        public EvadeState(IUnitController executor, AttackData attackData)
         {
             base.executor = executor;
             base.executor.onTakeDamage += OnTakeDamage; 
-            _attack = attack;
+            _attackData = attackData;
             stateEnum = UnitStateEnum.Evading;
         }
 
         private void OnTakeDamage(AttackOutcome result)
         {
-            if (result.Result != AttackResult.Evaded)
+            if (result.ResultType != AttackResultType.Evaded)
                 executor.GetWorldView().PlayTakeDamage(result);
             Finish();
         }
@@ -33,7 +32,7 @@ namespace Units.Classes.StateMachine
                 Finish();
                 return;
             }
-            _swingTimer = _attack.ApproxHitTime - Time.time;
+            _swingTimer = _attackData.ApproxHitTime - Time.time;
             _swingTimer *= 2;
         }
 

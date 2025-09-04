@@ -1,26 +1,25 @@
-using Units.Enums;
+using Units.Health;
 using Units.Interfaces;
-using Units.Structures;
 using UnityEngine;
 
-namespace Units.Classes.StateMachine
+namespace Units.Behaviour.StateMachine
 {
     public class BlockState : UnitControllerState
     {
         private float _swingTimer, _endTimer;
-        private Attack _attack;
+        private AttackData _attackData;
         
-        public BlockState(IUnitController executor, Attack attack)
+        public BlockState(IUnitController executor, AttackData attackData)
         {
             base.executor = executor;
             base.executor.onTakeDamage += OnTakeDamage; 
-            _attack = attack;
+            _attackData = attackData;
             stateEnum = UnitStateEnum.BlockPrep;
         }
 
         private void OnTakeDamage(AttackOutcome result)
         {
-            if (result.Result != AttackResult.Blocked)
+            if (result.ResultType != AttackResultType.Blocked)
                 executor.GetWorldView().PlayTakeDamage(result);
             else
                 executor.GetWorldView().PlayBlocked();
@@ -35,7 +34,7 @@ namespace Units.Classes.StateMachine
                 Finish();
                 return;
             }
-            _swingTimer = _attack.ApproxHitTime - Time.time;
+            _swingTimer = _attackData.ApproxHitTime - Time.time;
             _endTimer = _swingTimer * 2;
             executor.GetWorldView().PlayBlockPrep(1 / _swingTimer);
         }

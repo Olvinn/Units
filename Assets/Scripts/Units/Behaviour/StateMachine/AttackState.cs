@@ -1,14 +1,13 @@
-using Units.Enums;
+using Units.Health;
 using Units.Interfaces;
-using Units.Structures;
 
-namespace Units.Classes.StateMachine
+namespace Units.Behaviour.StateMachine
 {
     public class AttackState : UnitControllerState
     {
         private IUnitController _target;
         private float _swingTimer, _finishTimer;
-        private Attack _attack;
+        private AttackData _attackData;
         private bool _attacked;
         
         public AttackState(IUnitController attacker, IUnitController target)
@@ -30,8 +29,8 @@ namespace Units.Classes.StateMachine
             _swingTimer = executor.GetModel().GetSwingTime();
             _finishTimer = _swingTimer * 2;
             executor.GetWorldView().PlayAttackPrep(1 / _swingTimer);
-            _attack = executor.GetModel().GetAttack();
-            _target.NotifyOfIncomingAttack(_attack);
+            _attackData = executor.GetModel().GetAttack();
+            _target.NotifyOfIncomingAttack(_attackData);
         }
 
         public override void Update(float dt)
@@ -42,7 +41,7 @@ namespace Units.Classes.StateMachine
             if (_swingTimer > 0) return;
             if (!_attacked)
             {
-                _target.TakeDamage(_attack);
+                _target.TakeDamage(_attackData);
                 executor.GetWorldView().PlayAttack();
                 _attacked = true;
             }

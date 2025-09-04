@@ -1,8 +1,6 @@
-using Units.Enums;
-using Units.Interfaces;
 using UnityEngine;
 
-namespace Units.Classes
+namespace Units.Health
 {
 
     public class Limb : ILimb
@@ -13,11 +11,11 @@ namespace Units.Classes
 
         public LimbType type { get; }
 
-        public Health health { get; }
+        public Units.Health.Health health { get; }
 
         public Limb(float hp, bool isDismemberable, bool isVitallyNecessary, LimbType type)
         {
-            health = new Health(hp);
+            health = new Units.Health.Health(hp);
             this.isDismemberable = isDismemberable;
             this.isVitallyNecessary = isVitallyNecessary;
             this.type = type;
@@ -25,7 +23,7 @@ namespace Units.Classes
 
         public Limb(float hp, float maxHp, bool isDismemberable, bool isVitallyNecessary, LimbType type)
         {
-            health = new Health(maxHp, hp);
+            health = new Units.Health.Health(maxHp, hp);
             this.isDismemberable = isDismemberable;
             this.isVitallyNecessary = isVitallyNecessary;
             this.type = type;

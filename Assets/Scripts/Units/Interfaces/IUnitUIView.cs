@@ -1,4 +1,4 @@
-using Units.Structures;
+using Units.Behaviour;
 using UnityEngine;
 
 namespace Units.Interfaces

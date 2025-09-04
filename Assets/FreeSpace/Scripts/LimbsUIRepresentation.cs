@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Base;
 using TMPro;
-using Units.Enums;
+using Units.Health;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 

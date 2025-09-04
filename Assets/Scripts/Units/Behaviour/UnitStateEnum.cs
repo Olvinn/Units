@@ -1,4 +1,4 @@
-namespace Units.Enums
+namespace Units.Behaviour
 {
     public enum UnitStateEnum
     {

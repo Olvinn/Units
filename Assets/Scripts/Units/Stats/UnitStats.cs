@@ -1,6 +1,7 @@
 using System.Text;
+using UnityEngine;
 
-namespace Units.Classes
+namespace Units.Stats
 {
     public class UnitStats
     {
@@ -10,15 +11,17 @@ namespace Units.Classes
         public float MeleeEvade;
         public float SwingTime; //Time before swing actually do damage
         public float BlockTime; //Time before actually block damage
+        public float StaggerDefence;
 
         public UnitStats(UnitAttributes attributes)
         {
-            MeleeDmgMod = (10 + attributes.Strength * 2 + attributes.Toughness) * .2f;
+            MeleeDmgMod = attributes.Strength * 2 + attributes.Toughness;
             MeleeAttack = attributes.Agility + attributes.Perception + attributes.Strength * 2;
-            MeleeDefence = attributes.Agility * 2 + attributes.Perception + attributes.Strength;
-            MeleeEvade = attributes.Perception + attributes.Wisdom + attributes.Agility * 2;
-            SwingTime = (float)5 / attributes.Agility;
-            BlockTime = (float)10 / attributes.Agility;
+            MeleeDefence = attributes.Agility * 2 + attributes.Perception + attributes.Toughness;
+            MeleeEvade = attributes.Perception + attributes.Agility * 2;
+            SwingTime = Mathf.Log(attributes.Agility);
+            BlockTime = Mathf.Log(attributes.Perception + attributes.Agility);
+            StaggerDefence = attributes.Toughness + attributes.Will;
         }
 
         public override string ToString()

@@ -1,5 +1,5 @@
 using FreeSpace.Scripts;
-using Units.Classes;
+using Units.Behaviour;
 using Units.Interfaces;
 using UnityEngine;
 

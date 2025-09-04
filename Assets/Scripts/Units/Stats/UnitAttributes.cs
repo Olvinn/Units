@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Units.Classes
+namespace Units.Stats
 {
     public class UnitAttributes
     {

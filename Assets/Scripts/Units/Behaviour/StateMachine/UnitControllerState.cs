@@ -1,8 +1,7 @@
 using System;
-using Units.Enums;
 using Units.Interfaces;
 
-namespace Units.Classes.StateMachine
+namespace Units.Behaviour.StateMachine
 {
     public abstract class UnitControllerState
     {

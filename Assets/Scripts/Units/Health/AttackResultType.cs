@@ -1,6 +1,6 @@
-namespace Units.Enums
+namespace Units.Health
 {
-    public enum AttackResult
+    public enum AttackResultType
     {
         Blocked,
         Evaded,

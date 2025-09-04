@@ -1,6 +1,4 @@
-using Units.Enums;
-
-namespace Units.Classes.StateMachine
+namespace Units.Behaviour.StateMachine
 {
     public class IdleState : UnitControllerState
     {

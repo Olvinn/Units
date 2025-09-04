@@ -1,8 +1,7 @@
-using Units.Enums;
+using Units.Health;
 using Units.Interfaces;
-using Units.Structures;
 
-namespace Units.Classes.StateMachine
+namespace Units.Behaviour.StateMachine
 {
     public class StaggeringState : UnitControllerState
     {
@@ -24,7 +23,7 @@ namespace Units.Classes.StateMachine
                 Finish();
                 return;
             }
-            _staggeringTimer = -_attackResult.HpChange * .5f;
+            _staggeringTimer = executor.GetModel().GetStaggerTime(_attackResult);
             executor.GetWorldView().PlayTakeDamage(_attackResult);
         }
 

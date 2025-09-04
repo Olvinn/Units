@@ -1,10 +1,8 @@
-using Units.Enums;
-
-namespace Units.Structures
+namespace Units.Health
 {
     public struct AttackOutcome
     {
-        public AttackResult Result;
+        public AttackResultType ResultType;
         public float HpChange;
         public LimbType? TargetLimb;
     }

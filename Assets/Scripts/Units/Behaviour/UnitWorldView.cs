@@ -1,10 +1,10 @@
 using System.Collections;
 using Base;
+using Units.Health;
 using Units.Interfaces;
-using Units.Structures;
 using UnityEngine;
 
-namespace Units.Classes
+namespace Units.Behaviour
 {
     public class UnitWorldView : MonoBehaviour, IUnitWorldView
     {
@@ -33,12 +33,12 @@ namespace Units.Classes
 
         public void PlayBlocked()
         {
-            _animator.Play(AnimatorNames.Block);
+            _animator.Play(AnimatorNames.Block, 0, .01f);
         }
 
         public void PlayEvasion()
         {
-            _animator.Play(AnimatorNames.Evade);
+            _animator.Play(AnimatorNames.Evade, 0, .01f);
         }
 
         public void PlayAttack()
@@ -54,7 +54,7 @@ namespace Units.Classes
         public void PlayTakeDamage(AttackOutcome outcome)
         {
             if (outcome.HpChange == 0) return;
-            //_animator.SetTrigger(AnimatorNames.Stop);
+            _animator.Play(AnimatorNames.Idle);
             if (_takingDamageCoroutine != null)
                 StopCoroutine(_takingDamageCoroutine);
             StartCoroutine(TakingDamageCoroutine(1));

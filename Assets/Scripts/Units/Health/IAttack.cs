@@ -1,12 +1,9 @@
-using Units.Enums;
-using Units.Structures;
-
-namespace Units.Interfaces
+namespace Units.Health
 {
     public interface IAttack
     {
         public float attackMod { get; }
-        public Damage damage { get; }
+        public DamageData damageData { get; }
         public AttackType type { get; }
     }
 }

@@ -1,7 +1,8 @@
 using Base;
 using TMPro;
+using Units.Behaviour;
+using Units.Health;
 using Units.Interfaces;
-using Units.Structures;
 using UnityEngine;
 
 namespace FreeSpace.Scripts

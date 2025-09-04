@@ -1,14 +1,14 @@
 using System.Collections.Generic;
+using Units.Health;
 using Units.Interfaces;
-using Units.Structures;
 
-namespace Units.Classes
+namespace Units.Behaviour
 {
     public static class WorldUnits
     {
         private static HashSet<IUnitBehaviour> _registeredUnits = new HashSet<IUnitBehaviour>();
         
-        public static IEnumerable<IUnitController> GetTargetsAffectedByAttack(IUnitController source, IUnitController target, Attack attack)
+        public static IEnumerable<IUnitController> GetTargetsAffectedByAttack(IUnitController source, IUnitController target, AttackData attackData)
         {
             return new [] { target };
         }

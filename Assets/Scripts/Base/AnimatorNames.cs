@@ -11,5 +11,6 @@ namespace Base
         public static readonly int Attack = Animator.StringToHash("Attack");
         public static readonly int Speed = Animator.StringToHash("Speed");
         public static readonly int Stop = Animator.StringToHash("Stop");
+        public static readonly int Idle = Animator.StringToHash("Idle");
     }
 }

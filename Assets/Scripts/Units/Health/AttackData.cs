@@ -1,15 +1,14 @@
-using Units.Enums;
 using Units.Interfaces;
 
-namespace Units.Structures
+namespace Units.Health
 {
-    public struct Attack
+    public struct AttackData
     {
 #nullable enable
         public IUnitController? Source;
 #nullable disable
         public float AttackMod;
-        public Damage[] Damage;
+        public DamageData[] Damage;
         public AttackType Type;
         public bool IsCritical, IsSneak;
         public float ApproxHitTime;
@@ -17,7 +16,7 @@ namespace Units.Structures
         public LimbType? TargetLimb;
         
 #nullable enable
-        public Attack(IUnitController? attacker, float attackMod, Damage[] damage, AttackType type, bool critical, bool isSneak,
+        public AttackData(IUnitController? attacker, float attackMod, DamageData[] damage, AttackType type, bool critical, bool isSneak,
             LimbType? targetLimb, float approxHitTime)
         {
             Source = attacker;

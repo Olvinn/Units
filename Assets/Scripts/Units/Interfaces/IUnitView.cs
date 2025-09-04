@@ -1,4 +1,4 @@
-using Units.Structures;
+using Units.Health;
 
 namespace Units.Interfaces
 {

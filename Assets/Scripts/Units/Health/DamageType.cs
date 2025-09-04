@@ -1,4 +1,4 @@
-namespace Units.Enums
+namespace Units.Health
 {
     public enum DamageType
     {

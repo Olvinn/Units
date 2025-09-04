@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using Units.Classes;
-using Units.Enums;
+using Units.Behaviour;
+using Units.Health;
 using Units.Interfaces;
-using Units.Structures;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -13,14 +12,14 @@ namespace Demos.FreeSpace.Scripts
     {
         private IUnitController _controller;
         
-        private LinkedList<Attack> _incomingAttacks;
+        private LinkedList<AttackData> _incomingAttacks;
         private IEnumerable<IUnitController> _attackers;
         private IUnitBehaviour _target;
         
         public void Initialize(IUnitController controller)
         {
             _controller = controller;
-            _incomingAttacks = new LinkedList<Attack>();
+            _incomingAttacks = new LinkedList<AttackData>();
 
             _controller.onTakeDamage += ReactOnTakeDamage;
             _controller.onGetAttacked += ReactOnGetAttacked;
@@ -54,15 +53,15 @@ namespace Demos.FreeSpace.Scripts
             //Panic();
         }
 
-        private void ReactOnGetAttacked(Attack attack)
+        private void ReactOnGetAttacked(AttackData attackData)
         {
             if (_incomingAttacks.Count == 0)
             {
-                _incomingAttacks.AddLast(attack);
+                _incomingAttacks.AddLast(attackData);
                 return;
             }
-            var node = GetIncomingAttackNodeRightBefore(attack);
-            _incomingAttacks.AddAfter(node, attack);
+            var node = GetIncomingAttackNodeRightBefore(attackData);
+            _incomingAttacks.AddAfter(node, attackData);
 
             ReactOnAttackUpdate();
         }
@@ -93,10 +92,10 @@ namespace Demos.FreeSpace.Scripts
             }
         }
 
-        private LinkedListNode<Attack> GetIncomingAttackNodeRightBefore(Attack attack)
+        private LinkedListNode<AttackData> GetIncomingAttackNodeRightBefore(AttackData attackData)
         {
-            LinkedListNode<Attack> node = _incomingAttacks.First;
-            while (node.Value.ApproxHitTime < attack.ApproxHitTime && node != _incomingAttacks.Last)
+            LinkedListNode<AttackData> node = _incomingAttacks.First;
+            while (node.Value.ApproxHitTime < attackData.ApproxHitTime && node != _incomingAttacks.Last)
             {
                 node = node.Next ?? _incomingAttacks.Last;
             }

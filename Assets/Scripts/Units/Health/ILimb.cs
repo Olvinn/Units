@@ -1,7 +1,4 @@
-using Units.Classes;
-using Units.Enums;
-
-namespace Units.Interfaces
+namespace Units.Health
 {
     public interface ILimb
     {

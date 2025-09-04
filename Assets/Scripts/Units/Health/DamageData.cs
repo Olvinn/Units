@@ -1,8 +1,6 @@
-using Units.Enums;
-
-namespace Units.Structures
+namespace Units.Health
 {
-    public struct Damage
+    public struct DamageData
     {
         public DamageType Type;
         public float Amount;
