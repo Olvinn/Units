@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Units.Interfaces
+namespace Units.Views
 {
     public interface IUnitWorldView : IUnitView
     {

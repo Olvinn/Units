@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Units.Controllers;
 using Units.Health;
-using Units.Interfaces;
 using UnityEngine;
 
-namespace Units.Behaviour
+namespace Units.Behaviours
 {
     public class UnitBehaviour : IDisposable, IUnitBehaviour
     {

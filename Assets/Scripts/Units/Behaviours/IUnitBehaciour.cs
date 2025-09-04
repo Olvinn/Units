@@ -1,4 +1,6 @@
-namespace Units.Interfaces
+using Units.Controllers;
+
+namespace Units.Behaviours
 {
     public interface IUnitBehaviour
     {

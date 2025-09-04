@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Units.Health;
 
-namespace Units.Behaviour
+namespace Units.Controllers
 {
     /// <summary>
     /// This is unit's state container commonly used for communicate with UIs

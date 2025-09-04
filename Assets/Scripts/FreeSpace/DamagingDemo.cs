@@ -1,5 +1,7 @@
-using Units.Behaviour;
-using Units.Interfaces;
+using Units.Behaviours;
+using Units.Controllers;
+using Units.Models;
+using Units.Views;
 using UnityEngine;
 
 namespace FreeSpace

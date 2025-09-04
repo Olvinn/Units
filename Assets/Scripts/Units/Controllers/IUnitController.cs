@@ -1,9 +1,10 @@
 using System;
-using Units.Behaviour;
 using Units.Health;
+using Units.Models;
+using Units.Views;
 using UnityEngine;
 
-namespace Units.Interfaces
+namespace Units.Controllers
 {
     public interface IUnitController : IUpdatable
     {

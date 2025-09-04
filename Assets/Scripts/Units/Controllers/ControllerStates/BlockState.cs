@@ -1,26 +1,27 @@
 using Units.Health;
-using Units.Interfaces;
 using UnityEngine;
 
-namespace Units.Behaviour.StateMachine
+namespace Units.Controllers.ControllerStates
 {
-    public class EvadeState : UnitControllerState
+    public class BlockState : UnitControllerState
     {
-        private float _swingTimer;
+        private float _swingTimer, _endTimer;
         private AttackData _attackData;
         
-        public EvadeState(IUnitController executor, AttackData attackData)
+        public BlockState(IUnitController executor, AttackData attackData)
         {
             base.executor = executor;
             base.executor.onTakeDamage += OnTakeDamage; 
             _attackData = attackData;
-            stateEnum = UnitStateEnum.Evading;
+            stateEnum = UnitStateEnum.BlockPrep;
         }
 
         private void OnTakeDamage(AttackOutcome result)
         {
-            if (result.ResultType != AttackResultType.Evaded)
+            if (result.ResultType != AttackResultType.Blocked)
                 executor.GetWorldView().PlayTakeDamage(result);
+            else
+                executor.GetWorldView().PlayBlocked();
             Finish();
         }
 
@@ -33,15 +34,18 @@ namespace Units.Behaviour.StateMachine
                 return;
             }
             _swingTimer = _attackData.ApproxHitTime - Time.time;
-            _swingTimer *= 2;
+            _endTimer = _swingTimer * 2;
+            executor.GetWorldView().PlayBlockPrep(1 / _swingTimer);
         }
 
         public override void Update(float dt)
         {
             if (!isActive) return;
             _swingTimer -= dt;
+            _endTimer -= dt;
             if (_swingTimer > 0) return;
-            executor.GetWorldView().PlayEvasion();
+            stateEnum = UnitStateEnum.Block;
+            if (_endTimer > 0) return;
             Finish();
         }
     }

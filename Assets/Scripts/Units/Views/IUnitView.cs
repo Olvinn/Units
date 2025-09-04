@@ -1,6 +1,6 @@
 using Units.Health;
 
-namespace Units.Interfaces
+namespace Units.Views
 {
     public interface IUnitView
     {

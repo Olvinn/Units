@@ -1,8 +1,8 @@
-using Units.Behaviour;
+using Units.Controllers;
 using Units.Health;
 using Units.Stats;
 
-namespace Units.Interfaces
+namespace Units.Models
 {
     public interface IUnitModel : IDamageable
     {

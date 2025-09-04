@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Units.Controllers;
 using Units.Health;
-using Units.Interfaces;
 using Units.Stats;
 using UnityEngine;
 
-namespace Units.Behaviour
+namespace Units.Models
 {
-    public class CharacterModel : IUnitModel
+    public class UnitModel : IUnitModel
     {
         public string name { get; private set; }
 
@@ -17,7 +17,7 @@ namespace Units.Behaviour
         private UnitStats _stats;
         private bool _isDead = false, _isUnconscious = false;
 
-        public CharacterModel(string name, UnitAttributes attributes, IEnumerable<Limb> limbs)
+        public UnitModel(string name, UnitAttributes attributes, IEnumerable<Limb> limbs)
         {
             this.name = name;
             _attributes = attributes;

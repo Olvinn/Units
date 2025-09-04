@@ -1,4 +1,4 @@
-namespace Units.Behaviour.StateMachine
+namespace Units.Controllers.ControllerStates
 {
     public class IdleState : UnitControllerState
     {

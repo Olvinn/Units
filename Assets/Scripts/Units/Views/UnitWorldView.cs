@@ -1,10 +1,9 @@
 using System.Collections;
 using Base;
 using Units.Health;
-using Units.Interfaces;
 using UnityEngine;
 
-namespace Units.Behaviour
+namespace Units.Views
 {
     public class UnitWorldView : MonoBehaviour, IUnitWorldView
     {

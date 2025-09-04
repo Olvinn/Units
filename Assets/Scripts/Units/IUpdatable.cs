@@ -1,4 +1,4 @@
-namespace Units.Interfaces
+namespace Units
 {
     public interface IUpdatable
     {

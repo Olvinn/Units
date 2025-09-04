@@ -1,7 +1,6 @@
 using System;
-using Units.Interfaces;
 
-namespace Units.Behaviour.StateMachine
+namespace Units.Controllers.ControllerStates
 {
     public abstract class UnitControllerState
     {

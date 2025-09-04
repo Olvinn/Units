@@ -1,10 +1,11 @@
 using System;
-using Units.Behaviour.StateMachine;
+using Units.Controllers.ControllerStates;
 using Units.Health;
-using Units.Interfaces;
+using Units.Models;
+using Units.Views;
 using UnityEngine;
 
-namespace Units.Behaviour
+namespace Units.Controllers
 {
     public class UnitController : IUnitController
     {

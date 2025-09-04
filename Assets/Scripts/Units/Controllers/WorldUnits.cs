@@ -1,8 +1,8 @@
 using System.Collections.Generic;
+using Units.Behaviours;
 using Units.Health;
-using Units.Interfaces;
 
-namespace Units.Behaviour
+namespace Units.Controllers
 {
     public static class WorldUnits
     {

@@ -2,24 +2,24 @@ using Units.Health;
 using Units.Stats;
 using UnityEngine;
 
-namespace Units.Behaviour
+namespace Units.Models
 {
     public static class UnitFactory
     {
-        public static CharacterModel CreateRandomUnit(int lvl, string name = "Dummy")
+        public static UnitModel CreateRandomUnit(int lvl, string name = "Dummy")
         {
             int freeAttributesPoints = GetFreeAttributesPoints(lvl);
             UnitAttributes attributes = CreateRandomAttributes(freeAttributesPoints);
             Limb[] limbs = CreateHumanoidLimbs(attributes.Toughness);
-            return new CharacterModel(name, attributes, limbs);
+            return new UnitModel(name, attributes, limbs);
         }
 
-        public static CharacterModel CreateUniformUnit(int lvl, string name = "Dummy")
+        public static UnitModel CreateUniformUnit(int lvl, string name = "Dummy")
         {
             int freeAttributesPoints = GetFreeAttributesPoints(lvl);
             UnitAttributes attributes = CreateRandomAttributes(freeAttributesPoints);
             Limb[] limbs = CreateHumanoidLimbs(attributes.Toughness);
-            return new CharacterModel(name, attributes, limbs);
+            return new UnitModel(name, attributes, limbs);
         }
 
         public static Limb[] CreateHumanoidLimbs(int toughness)

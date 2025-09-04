@@ -1,8 +1,8 @@
 using Base;
 using TMPro;
-using Units.Behaviour;
+using Units.Controllers;
 using Units.Health;
-using Units.Interfaces;
+using Units.Views;
 using UnityEngine;
 
 namespace FreeSpace

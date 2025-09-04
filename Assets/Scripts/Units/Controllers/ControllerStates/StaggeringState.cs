@@ -1,7 +1,6 @@
 using Units.Health;
-using Units.Interfaces;
 
-namespace Units.Behaviour.StateMachine
+namespace Units.Controllers.ControllerStates
 {
     public class StaggeringState : UnitControllerState
     {

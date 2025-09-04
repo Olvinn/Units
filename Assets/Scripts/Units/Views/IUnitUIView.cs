@@ -1,7 +1,7 @@
-using Units.Behaviour;
+using Units.Controllers;
 using UnityEngine;
 
-namespace Units.Interfaces
+namespace Units.Views
 {
     public interface IUnitUIView : IUnitView
     {
