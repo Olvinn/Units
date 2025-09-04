@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Units.Behaviour;
 using Units.Health;
 using Units.Interfaces;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
-namespace Demos.FreeSpace.Scripts
+namespace Units.Behaviour
 {
-    public class BotBehaviour : IDisposable, IUnitBehaviour
+    public class UnitBehaviour : IDisposable, IUnitBehaviour
     {
         private IUnitController _controller;
         

@@ -5,7 +5,7 @@ using Units.Health;
 using Units.Interfaces;
 using UnityEngine;
 
-namespace FreeSpace.Scripts
+namespace FreeSpace
 {
     public class UnitViewPanel : MonoBehaviour, IUnitUIView
     {

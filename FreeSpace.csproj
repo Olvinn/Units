@@ -46,12 +46,11 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\FreeSpace\Scripts\DamagingDemo.cs" />
-    <Compile Include="Assets\FreeSpace\Scripts\Localization.cs" />
-    <Compile Include="Assets\FreeSpace\Scripts\UnitViewPanel.cs" />
-    <Compile Include="Assets\FreeSpace\Scripts\LimbsUIRepresentation.cs" />
-    <Compile Include="Assets\FreeSpace\Scripts\BotBehaviour.cs" />
-    <None Include="Assets\FreeSpace\FreeSpace.asmdef" />
+    <Compile Include="Assets\Scripts\FreeSpace\LimbsUIRepresentation.cs" />
+    <Compile Include="Assets\Scripts\FreeSpace\DamagingDemo.cs" />
+    <Compile Include="Assets\Scripts\FreeSpace\UnitViewPanel.cs" />
+    <Compile Include="Assets\Scripts\FreeSpace\Localization.cs" />
+    <None Include="Assets\Scripts\FreeSpace\FreeSpace.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>

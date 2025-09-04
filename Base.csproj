@@ -46,15 +46,15 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Base\ISingleton.cs" />
-    <Compile Include="Assets\Scripts\Base\ImageBar.cs" />
+    <Compile Include="Assets\Scripts\Base\UI\ImageBar.cs" />
+    <Compile Include="Assets\Scripts\Base\Defaults\IPoolable.cs" />
+    <Compile Include="Assets\Scripts\Base\Defaults\ISingleton.cs" />
+    <Compile Include="Assets\Scripts\Base\UI\UIPopups.cs" />
     <Compile Include="Assets\Scripts\Base\AddressablesNames.cs" />
     <Compile Include="Assets\Scripts\Base\AnimatorNames.cs" />
-    <Compile Include="Assets\Scripts\Base\UIPopups.cs" />
-    <Compile Include="Assets\Scripts\Base\Widget.cs" />
+    <Compile Include="Assets\Scripts\Base\UI\Widget.cs" />
+    <Compile Include="Assets\Scripts\Base\UI\UIPopup.cs" />
     <Compile Include="Assets\Scripts\Base\Singleton.cs" />
-    <Compile Include="Assets\Scripts\Base\IPoolable.cs" />
-    <Compile Include="Assets\Scripts\Base\UIPopup.cs" />
     <None Include="Assets\Scripts\Base\Base.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
