@@ -45,9 +45,9 @@ namespace Units.Views
             _animator.Play(AnimatorNames.Attack);
         }
 
-        public Vector3 GetPosition()
+        public Transform GetTransform()
         {
-            return transform.position;
+            return transform;
         }
 
         public void PlayTakeDamage(AttackOutcome outcome)

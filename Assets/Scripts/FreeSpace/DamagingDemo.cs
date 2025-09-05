@@ -23,8 +23,8 @@ namespace FreeSpace
             _redModel = UnitFactory.CreateRandomUnit(10, "Red");
             _blueModel = UnitFactory.CreateRandomUnit(10, "Blue");
 
-            var redMovement = new UnitMovement(5, redWorldView.transform, .25f);
-            var blueMovement = new UnitMovement(5, blueWorldView.transform, .25f);
+            var redMovement = new UnitMovement(_redModel.GetStats().Speed, redWorldView.transform);
+            var blueMovement = new UnitMovement(_blueModel.GetStats().Speed, blueWorldView.transform);
 
             _redController = new UnitController(_redModel, redMovement, null, redWorldView, new []{ _redView as IUnitUIView }); 
             _blueController = new UnitController(_blueModel, blueMovement, null, blueWorldView, new []{ _blueView as IUnitUIView });

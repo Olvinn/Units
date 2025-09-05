@@ -50,8 +50,7 @@ namespace Units.Controllers
         
         public IUnitWorldView GetWorldView() => _worldView;
         public IUnitMovement GetMovement() => _movement;
-
-        public Vector3 GetPosition() => _worldView.GetPosition();
+        public Transform GetTransform() => _worldView.GetTransform();
         
         private bool CanAttack()
         {
@@ -116,7 +115,8 @@ namespace Units.Controllers
             foreach (var uiView in _uiViews)
             {
                 uiView.PlayTakeDamage(result);
-                uiView.ShowNotification($"{result.ResultType} : {result.HpChange:F1}", _worldView.GetPosition() + Vector3.up * 2.5f);
+                uiView.ShowNotification($"{result.ResultType} : {result.HpChange:F1}", 
+                    _worldView.GetTransform().position + Vector3.up * 2.5f);
             }
             
             return result;
@@ -124,12 +124,12 @@ namespace Units.Controllers
 
         public void Move(IUnitController destination)
         {
-            _movement.Move(destination.GetPosition());
+            _movement.Move(destination.GetTransform().position, 1);
         }
 
         public void Move(Vector3 destination)
         {
-            _movement.Move(destination);
+            _movement.Move(destination, 1);
         }
 
         private void ChangeState(UnitControllerState newState)

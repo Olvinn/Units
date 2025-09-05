@@ -12,6 +12,8 @@ namespace Units.Stats
         public float SwingTime; //Time before swing actually do damage
         public float BlockTime; //Time before actually block damage
         public float StaggerDefence;
+        public float AttackDistance;
+        public float Speed;
 
         public UnitStats(UnitAttributes attributes)
         {
@@ -19,9 +21,11 @@ namespace Units.Stats
             MeleeAttack = attributes.Agility + attributes.Perception + attributes.Strength * 2;
             MeleeDefence = attributes.Agility * 2 + attributes.Perception + attributes.Toughness;
             MeleeEvade = attributes.Perception + attributes.Agility * 2;
-            SwingTime = Mathf.Log(attributes.Agility);
-            BlockTime = Mathf.Log(attributes.Perception + attributes.Agility);
+            SwingTime = 1 / Mathf.Log(attributes.Agility);
+            BlockTime = 1 / Mathf.Log(attributes.Perception + attributes.Agility);
             StaggerDefence = attributes.Toughness + attributes.Will;
+            AttackDistance = 1.5f;
+            Speed = attributes.Strength * .5f + attributes.Agility;
         }
 
         public override string ToString()

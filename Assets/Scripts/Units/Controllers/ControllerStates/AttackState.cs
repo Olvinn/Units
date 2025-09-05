@@ -27,28 +27,13 @@ namespace Units.Controllers.ControllerStates
                 Finish();
                 return;
             }
-            
+            executor.GetMovement().Move(_target.GetTransform(), executor.GetModel().GetStats().AttackDistance);
+            _attackWasInitialized = false;
         }
 
         public override void Update(float dt)
         {
-            if (Vector3.Distance(executor.GetPosition(), _target.GetPosition()) > .5f)
-            {
-                executor.GetMovement().Move(_target.GetPosition());
-                _attackWasInitialized = false;
-                return;
-            }
-            else if (!_attackWasInitialized)
-            {
-                executor.GetMovement().Stop();
-                _swingTimer = executor.GetModel().GetSwingTime();
-                _finishTimer = _swingTimer * 2;
-                executor.GetWorldView().PlayAttackPrep(1 / _swingTimer);
-                _attackData = executor.GetModel().GetAttack();
-                _target.NotifyOfIncomingAttack(_attackData);
-                _attackWasInitialized = true;
-            }
-            
+            if (!_attackWasInitialized) return;
             if (!isActive) return;
             _swingTimer -= dt;
             _finishTimer -= dt;
@@ -65,7 +50,13 @@ namespace Units.Controllers.ControllerStates
 
         private void OnReachTarget()
         {
-            
+            executor.GetMovement().Stop();
+            _swingTimer = executor.GetModel().GetSwingTime();
+            _finishTimer = _swingTimer * 2;
+            executor.GetWorldView().PlayAttackPrep(1 / _swingTimer);
+            _attackData = executor.GetModel().GetAttack();
+            _target.NotifyOfIncomingAttack(_attackData);
+            _attackWasInitialized = true;
         }
 
         public override void Finish()

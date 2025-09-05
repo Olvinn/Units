@@ -14,7 +14,7 @@ namespace Units.Controllers
         IUnitModel GetModel();
         IUnitWorldView GetWorldView();
         IUnitMovement GetMovement();
-        Vector3 GetPosition();
+        Transform GetTransform();
         void Attack(IUnitController target);
         void Block(AttackData attackData);
         void Evade(AttackData attackData);

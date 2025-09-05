@@ -9,6 +9,6 @@ namespace Units.Views
         void PlayBlocked();
         void PlayEvasion();
         void PlayAttack();
-        Vector3 GetPosition();
+        Transform GetTransform();
     }
 }
