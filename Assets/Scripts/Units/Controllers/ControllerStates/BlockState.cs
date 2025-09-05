@@ -48,5 +48,11 @@ namespace Units.Controllers.ControllerStates
             if (_endTimer > 0) return;
             Finish();
         }
+
+        public override void Finish()
+        {
+            base.Finish();
+            base.executor.onTakeDamage -= OnTakeDamage; 
+        }
     }
 }

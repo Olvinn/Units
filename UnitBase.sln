@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base", "Base.csproj", "{f1003058-2fec-dd5e-bf5c-92a55a35451d}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Units", "Units.csproj", "{0d1f6189-87c4-3e05-7334-1afaba4171f5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base", "Base.csproj", "{f1003058-2fec-dd5e-bf5c-92a55a35451d}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreeSpace", "FreeSpace.csproj", "{6f651824-7334-ad88-391f-f818ad28e259}"
 EndProject
@@ -14,10 +14,10 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{f1003058-2fec-dd5e-bf5c-92a55a35451d}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{f1003058-2fec-dd5e-bf5c-92a55a35451d}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0d1f6189-87c4-3e05-7334-1afaba4171f5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0d1f6189-87c4-3e05-7334-1afaba4171f5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{f1003058-2fec-dd5e-bf5c-92a55a35451d}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{f1003058-2fec-dd5e-bf5c-92a55a35451d}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6f651824-7334-ad88-391f-f818ad28e259}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6f651824-7334-ad88-391f-f818ad28e259}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3b56e18e-4826-a493-e020-297cafcf377c}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

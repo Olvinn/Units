@@ -4,6 +4,7 @@ using System.Text;
 using Units.Controllers;
 using Units.Health;
 using Units.Stats;
+using Units.Views;
 using UnityEngine;
 
 namespace Units.Models

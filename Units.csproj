@@ -53,11 +53,11 @@
     <Compile Include="Assets\Scripts\Units\Views\IUnitMovement.cs" />
     <Compile Include="Assets\Scripts\Units\Health\AttackType.cs" />
     <Compile Include="Assets\Scripts\Units\Controllers\UnitController.cs" />
-    <Compile Include="Assets\Scripts\Units\Controllers\UnitStateContainer.cs" />
     <Compile Include="Assets\Scripts\Units\Health\IDamageable.cs" />
     <Compile Include="Assets\Scripts\Units\Health\LimbType.cs" />
     <Compile Include="Assets\Scripts\Units\Health\DamageType.cs" />
     <Compile Include="Assets\Scripts\Units\Views\IUnitWorldView.cs" />
+    <Compile Include="Assets\Scripts\Units\Views\UnitMovement.cs" />
     <Compile Include="Assets\Scripts\Units\Health\AttackData.cs" />
     <Compile Include="Assets\Scripts\Units\IUpdatable.cs" />
     <Compile Include="Assets\Scripts\Units\Models\UnitModel.cs" />
@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\Units\Controllers\UnitStateEnum.cs" />
     <Compile Include="Assets\Scripts\Units\Controllers\WorldUnits.cs" />
     <Compile Include="Assets\Scripts\Units\Views\IUnitUIView.cs" />
+    <Compile Include="Assets\Scripts\Units\Views\UnitStateContainer.cs" />
     <Compile Include="Assets\Scripts\Units\Models\IUnitModel.cs" />
     <Compile Include="Assets\Scripts\Units\Health\Health.cs" />
     <Compile Include="Assets\Scripts\Units\Models\UnitFactory.cs" />
@@ -78,11 +79,11 @@
     <Compile Include="Assets\Scripts\Units\Health\DamageData.cs" />
     <Compile Include="Assets\Scripts\Units\Health\AttackResultType.cs" />
     <Compile Include="Assets\Scripts\Units\Controllers\ControllerStates\UnitControllerState.cs" />
-    <Compile Include="Assets\Scripts\Units\Behaviours\UnitBehaviour.cs" />
     <Compile Include="Assets\Scripts\Units\Controllers\ControllerStates\StaggeringState.cs" />
     <Compile Include="Assets\Scripts\Units\Controllers\IUnitSense.cs" />
     <Compile Include="Assets\Scripts\Units\Health\IAttack.cs" />
     <Compile Include="Assets\Scripts\Units\Behaviours\IUnitBehaciour.cs" />
+    <Compile Include="Assets\Scripts\Units\Behaviours\BotBehaviour.cs" />
     <None Include="Assets\Scripts\Units\Units.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

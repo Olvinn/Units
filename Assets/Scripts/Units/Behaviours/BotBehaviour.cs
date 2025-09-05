@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Units.Behaviours
 {
-    public class UnitBehaviour : IDisposable, IUnitBehaviour
+    public class BotBehaviour : IDisposable, IUnitBehaviour
     {
         private IUnitController _controller;
         

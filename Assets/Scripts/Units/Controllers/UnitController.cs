@@ -49,6 +49,7 @@ namespace Units.Controllers
         public IUnitModel GetModel() => _model;
         
         public IUnitWorldView GetWorldView() => _worldView;
+        public IUnitMovement GetMovement() => _movement;
 
         public Vector3 GetPosition() => _worldView.GetPosition();
         

@@ -1,6 +1,7 @@
 using Units.Controllers;
 using Units.Health;
 using Units.Stats;
+using Units.Views;
 
 namespace Units.Models
 {

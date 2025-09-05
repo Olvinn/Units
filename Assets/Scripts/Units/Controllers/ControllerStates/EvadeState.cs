@@ -43,5 +43,11 @@ namespace Units.Controllers.ControllerStates
             executor.GetWorldView().PlayEvasion();
             Finish();
         }
+
+        public override void Finish()
+        {
+            base.Finish();
+            base.executor.onTakeDamage -= OnTakeDamage; 
+        }
     }
 }
