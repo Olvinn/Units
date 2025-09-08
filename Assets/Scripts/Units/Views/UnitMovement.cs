@@ -35,6 +35,9 @@ namespace Units.Views
                     var dir = Vector3.Normalize(dest - _transform.position);
                     _transform.position += dir * (_speed * dt);
                 }
+                var lookAt = dest;
+                lookAt.y = _transform.position.y;
+                _transform.LookAt(lookAt);
             }
         }
 
@@ -42,7 +45,6 @@ namespace Units.Views
         {
             _destination = destination;
             _stopDistance = stopDistance;
-            IsMoving = true;
         }
 
         public void Move(Transform target, float stopDistance)

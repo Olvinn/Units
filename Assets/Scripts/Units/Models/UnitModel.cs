@@ -47,18 +47,19 @@ namespace Units.Models
 
         public AttackData GetAttack()
         {
+            var meleeAttack = Random.Range(_stats.MeleeAttack * .5f, _stats.MeleeAttack);
             return new AttackData(null, 
-                Random.value * _stats.MeleeAttack, 
+                meleeAttack, 
                 new[] 
                 { 
                     new DamageData() 
                     { 
-                        Amount = Random.Range(_stats.MeleeDmgMod * .5f, _stats.MeleeDmgMod * 1.1f),
+                        Amount = Random.Range(_stats.MeleeDmgMod * .75f, _stats.MeleeDmgMod),
                         Type = DamageType.Blunt 
                     } 
                 },
                 AttackType.Melee, 
-                Random.Range(0, _stats.MeleeAttack) >= _stats.MeleeAttack * .85f,
+                meleeAttack > _stats.MeleeAttack * .9f,
                 false, 
                 null, 
                 Time.time + GetSwingTime()
@@ -113,11 +114,10 @@ namespace Units.Models
             {
                 AttackOutcome outcome = new AttackOutcome()
                 {
-                    ResultType = AttackResultType.Full,
+                    ResultType = AttackResultType.Blocked,
                     HpChange = 0,
                     TargetLimb = attackData.TargetLimb
                 };
-                outcome.ResultType = AttackResultType.Blocked;
                 return outcome;
             }
             
@@ -130,11 +130,10 @@ namespace Units.Models
             {
                 AttackOutcome outcome = new AttackOutcome()
                 {
-                    ResultType = AttackResultType.Full,
+                    ResultType = AttackResultType.Evaded,
                     HpChange = 0,
                     TargetLimb = attackData.TargetLimb
                 };
-                outcome.ResultType = AttackResultType.Evaded;
                 return outcome;
             }
 
@@ -154,7 +153,7 @@ namespace Units.Models
             if (attackData.TargetLimb.HasValue)
                 targetLimb = attackData.TargetLimb.Value;
             else
-                targetLimb = (LimbType)Random.Range(0, 9);
+                targetLimb = (LimbType)Random.Range(0, LimbsStaticData.LimbsCount());
 
             foreach (var damage in attackData.Damage)
             {

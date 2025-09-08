@@ -16,6 +16,7 @@ namespace Units.Controllers.ControllerStates
 
         public virtual void Finish()
         {
+            if (!isActive) return;
             isActive = false;
             onDone?.Invoke();
         }

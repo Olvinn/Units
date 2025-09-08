@@ -12,4 +12,9 @@ namespace Units.Health
         LeftLeg,
         RightLeg
     }
+
+    public static class LimbsStaticData
+    {
+        public static int LimbsCount() => 9;
+    }
 }

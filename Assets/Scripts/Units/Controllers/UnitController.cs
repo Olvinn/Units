@@ -89,7 +89,7 @@ namespace Units.Controllers
 
         public void NotifyOfIncomingAttack(AttackData attackData) => onGetAttacked?.Invoke(attackData);
 
-        public virtual AttackOutcome TakeDamage(AttackData attackData)
+        public AttackOutcome TakeDamage(AttackData attackData)
         {
             AttackOutcome result;
             switch (state)
@@ -132,13 +132,24 @@ namespace Units.Controllers
             _movement.Move(destination, 1);
         }
 
+        public void Do(UnitControllerState job)
+        {
+            ChangeState(job);
+        }
+
         private void ChangeState(UnitControllerState newState)
         {
+            if (newState.stateEnum == _currentJob.stateEnum)
+            {
+                _currentJob.Do();
+                return;
+            }
+            
             _currentJob.Finish();
             _currentJob = newState;
             _currentJob.onDone += () =>
             {
-                _currentJob = new IdleState();
+                ChangeState(new IdleState());
             };
             _currentJob.Do();
         }

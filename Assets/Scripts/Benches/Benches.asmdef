@@ -1,9 +1,8 @@
 {
-    "name": "Units",
+    "name": "Benches",
     "rootNamespace": "",
     "references": [
-        "GUID:66c10dcfdf6739f449cf3879dd5244b8",
-        "GUID:7cc7270eb86147043961de2322239a87"
+        "GUID:66c10dcfdf6739f449cf3879dd5244b8"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

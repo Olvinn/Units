@@ -1,4 +1,5 @@
 using System;
+using Units.Controllers.ControllerStates;
 using Units.Health;
 using Units.Models;
 using Units.Views;
@@ -22,5 +23,6 @@ namespace Units.Controllers
         AttackOutcome TakeDamage(AttackData attackData);
         void Move(IUnitController destination);
         void Move(Vector3 destination);
+        void Do(UnitControllerState job);
     }
 }
