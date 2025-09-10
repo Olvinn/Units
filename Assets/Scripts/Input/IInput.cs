@@ -5,7 +5,7 @@ namespace Input
 {
     public interface IInput
     {
-        Vector3 mousePosition { get; }
+        Vector2 mousePosition { get; }
         event Action onLeftClick;
         event Action onRightClick;
     }
