@@ -4,19 +4,21 @@ using Units.Controllers;
 using Units.Health;
 using UnityEngine;
 
-namespace Units.Behaviours
+namespace UnitBehaviours
 {
     public class BotBehaviour : IDisposable, IUnitBehaviour
     {
         private IUnitController _controller;
+        private IUnitSense _sense;
         
         private LinkedList<AttackData> _incomingAttacks;
         private IEnumerable<IUnitController> _attackers;
         private IUnitBehaviour _target;
         
-        public void Initialize(IUnitController controller)
+        public BotBehaviour(IUnitController controller, IUnitSense sense)
         {
             _controller = controller;
+            _sense = sense;
             _incomingAttacks = new LinkedList<AttackData>();
 
             _controller.onTakeDamage += ReactOnTakeDamage;
@@ -27,23 +29,32 @@ namespace Units.Behaviours
 
         public void Update(float dt)
         {
-            _controller.Update(dt);
+            _controller?.Update(dt);
+            _sense?.Update(dt);
             
-            if (_controller.state != UnitStateEnum.Idle)
+            if (_controller == null || _controller.state != UnitStateEnum.Idle)
                 return;
             
             ReactOnAttackUpdate();
-
             CheckSurroundings();
         }
 
         public IUnitController GetController() => _controller;
+        
+        public void Attack(IUnitBehaviour unit)
+        {
+            _controller.Attack(_target.GetController());
+        }
+
+        public void MoveTo(Vector3 position)
+        {
+            _controller.Move(position);
+        }
 
         private void CheckSurroundings()
         {
             _target = WorldUnits.GetPotentialTarget(this);
-            if (_controller.state == UnitStateEnum.Idle)
-                _controller.Attack(_target.GetController());
+            _controller.Attack(_target.GetController());
         }
 
         private void ReactOnTakeDamage(AttackOutcome attack)

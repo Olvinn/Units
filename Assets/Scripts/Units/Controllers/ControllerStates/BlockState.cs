@@ -44,7 +44,7 @@ namespace Units.Controllers.ControllerStates
             _swingTimer -= dt;
             _endTimer -= dt;
             if (_swingTimer > 0) return;
-            stateEnum = UnitStateEnum.Block;
+            stateEnum = UnitStateEnum.Blocking;
             if (_endTimer > 0) return;
             Finish();
         }

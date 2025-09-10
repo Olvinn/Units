@@ -6,7 +6,7 @@ using Units.Health;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 
-namespace FreeSpace
+namespace World.UI
 {
     public class LimbsUIRepresentation : MonoBehaviour
     {

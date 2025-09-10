@@ -16,17 +16,15 @@ namespace Units.Controllers
         
         private IUnitModel _model;
         private IUnitMovement _movement;
-        private IUnitSense _sense;
         private IUnitWorldView _worldView;
         private IUnitUIView[] _uiViews;
 
         private UnitControllerState _currentJob;
     
-        public UnitController(IUnitModel model, IUnitMovement movement, IUnitSense sense, IUnitWorldView worldView, IUnitUIView[] uiViews)
+        public UnitController(IUnitModel model, IUnitMovement movement, IUnitWorldView worldView, IUnitUIView[] uiViews)
         {
             _model = model;
             _movement = movement;
-            _sense = sense;
             _worldView = worldView;
             _uiViews = uiViews;
             _currentJob = new IdleState();
@@ -36,7 +34,6 @@ namespace Units.Controllers
         public void Update(float dt)
         {
             _movement?.Update(dt);
-            _sense?.Update(dt);
             _currentJob?.Update(dt);
 
             var data = _model.GetStateContainer();
@@ -64,6 +61,11 @@ namespace Units.Controllers
         private bool CanEvade()
         {
             return (state == UnitStateEnum.Idle || state == UnitStateEnum.BlockPrep);
+        }
+
+        private bool CanMove()
+        {
+            return (state != UnitStateEnum.Staggering && state != UnitStateEnum.Evading && state != UnitStateEnum.Blocking);
         }
 
         public void Attack(IUnitController target)
@@ -124,11 +126,13 @@ namespace Units.Controllers
 
         public void Move(IUnitController destination)
         {
+            if (!CanMove()) return;
             _movement.Move(destination.GetTransform().position, 1);
         }
 
         public void Move(Vector3 destination)
         {
+            if (!CanMove()) return;
             _movement.Move(destination, 1);
         }
 

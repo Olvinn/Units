@@ -1,8 +1,9 @@
 {
-    "name": "Units",
+    "name": "Interactables",
     "rootNamespace": "",
     "references": [
-        "GUID:66c10dcfdf6739f449cf3879dd5244b8"
+        "GUID:66c10dcfdf6739f449cf3879dd5244b8",
+        "GUID:f5924767f9251d64eb9bc271a6d46970"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

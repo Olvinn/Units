@@ -5,7 +5,7 @@ namespace Units.Controllers
         Idle,
         Attack,
         BlockPrep,
-        Block,
+        Blocking,
         Evading,
         Staggering
     }

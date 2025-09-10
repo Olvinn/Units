@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Units.Health;
 
-namespace FreeSpace
+namespace World
 {
     public static class Localization
     {

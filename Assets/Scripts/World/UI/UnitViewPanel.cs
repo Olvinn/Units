@@ -1,11 +1,10 @@
 using Base;
 using TMPro;
-using Units.Controllers;
 using Units.Health;
 using Units.Views;
 using UnityEngine;
 
-namespace FreeSpace
+namespace World.UI
 {
     public class UnitViewPanel : MonoBehaviour, IUnitUIView
     {

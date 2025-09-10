@@ -1,10 +1,11 @@
-using Units.Behaviours;
+using UnitBehaviours;
 using Units.Controllers;
 using Units.Models;
 using Units.Views;
 using UnityEngine;
+using World.UI;
 
-namespace FreeSpace
+namespace World
 {
     public class DamagingDemo : MonoBehaviour
     {
@@ -26,14 +27,11 @@ namespace FreeSpace
             var redMovement = new UnitMovement(_redModel.GetStats().Speed, redWorldView.transform);
             var blueMovement = new UnitMovement(_blueModel.GetStats().Speed, blueWorldView.transform);
 
-            _redController = new UnitController(_redModel, redMovement, null, redWorldView, new []{ _redView as IUnitUIView }); 
-            _blueController = new UnitController(_blueModel, blueMovement, null, blueWorldView, new []{ _blueView as IUnitUIView });
+            _redController = new UnitController(_redModel, redMovement, redWorldView, new []{ _redView as IUnitUIView }); 
+            _blueController = new UnitController(_blueModel, blueMovement, blueWorldView, new []{ _blueView as IUnitUIView });
 
-            _redBot = new BotBehaviour();
-            _redBot.Initialize(_redController);
-
-            _blueBot = new BotBehaviour();
-            _blueBot.Initialize(_blueController);
+            _redBot = new BotBehaviour(_redController, null);
+            _blueBot = new BotBehaviour(_blueController, null);
         }
 
         private void FixedUpdate()
