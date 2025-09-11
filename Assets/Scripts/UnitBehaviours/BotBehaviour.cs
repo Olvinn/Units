@@ -14,7 +14,7 @@ namespace UnitBehaviours
         
         private LinkedList<AttackData> _incomingAttacks;
         private IEnumerable<IUnitController> _attackers;
-        private IUnitBehaviour _target;
+        private IUnitController _target;
         private bool _isControlledByPlayer;
         
         public BotBehaviour(IUnitController controller)
@@ -30,31 +30,30 @@ namespace UnitBehaviours
         {
             _controller?.Update(dt);
             
-            if (_isControlledByPlayer) return;
-            
             ReactOnAttackUpdate();
             CheckSurroundings();
             
             if (_controller == null || _controller.state != UnitStateEnum.Idle || _target == null)
                 return;
             
-            _controller.Attack(_target.GetController());
+            _controller.Attack(_target);
         }
         public void SetKnownEnemies(List<IUnitBehaviour> enemies)
         {
-            if (_isControlledByPlayer) return;
-            _target = enemies[0];
+            //Something something
         }
 
         public IUnitController GetController() => _controller;
         
         public void Attack(IUnitBehaviour unit)
         {
-            _controller.Attack(_target.GetController());
+            _target = unit.GetController();
+            _controller.Attack(unit.GetController());
         }
 
         public void MoveTo(Vector3 position)
         {
+            _target = null;
             _controller.Move(position);
         }
 
@@ -96,29 +95,25 @@ namespace UnitBehaviours
             }
 
             var attack = _incomingAttacks.First.Value;
+
+            if (_target == null)
+                _target = attack.Source;
+            
             var timeBeforeAttack = _incomingAttacks.First.Value.ApproxHitTime - Time.time;
 
             if (timeBeforeAttack > _controller.GetModel().GetSwingTime())
-            {
                 _controller.Attack(attack.Source);
-            }
             else if (timeBeforeAttack > _controller.GetModel().GetTimeToBlock())
-            {
                 _controller.Block(attack);
-            }
             else
-            {
                 _controller.Evade(attack);
-            }
         }
 
         private LinkedListNode<AttackData> GetIncomingAttackNodeRightBefore(AttackData attackData)
         {
             LinkedListNode<AttackData> node = _incomingAttacks.First;
             while (node.Value.ApproxHitTime < attackData.ApproxHitTime && node != _incomingAttacks.Last)
-            {
                 node = node.Next ?? _incomingAttacks.Last;
-            }
             return node;
         }
 

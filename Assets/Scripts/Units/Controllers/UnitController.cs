@@ -133,6 +133,7 @@ namespace Units.Controllers
         public void Move(Vector3 destination)
         {
             if (!CanMove()) return;
+            ChangeState(new IdleState());
             _movement.Move(destination, 1);
         }
 

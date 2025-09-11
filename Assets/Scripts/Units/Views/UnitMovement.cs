@@ -45,6 +45,7 @@ namespace Units.Views
         {
             _destination = destination;
             _stopDistance = stopDistance;
+            IsMoving = true;
         }
 
         public void Move(Transform target, float stopDistance)

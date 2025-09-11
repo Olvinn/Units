@@ -62,6 +62,7 @@ namespace Units.Controllers.ControllerStates
             _finishTimer = 1.5f;
             executor.GetWorldView().PlayAttackPrep(1 / _swingTimer);
             _attackData = executor.GetModel().GetAttack();
+            _attackData.Source = executor;
             _target.NotifyOfIncomingAttack(_attackData);
             _phase = Phase.Swing;
         }
