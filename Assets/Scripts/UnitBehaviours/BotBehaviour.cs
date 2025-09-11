@@ -8,35 +8,42 @@ namespace UnitBehaviours
 {
     public class BotBehaviour : IDisposable, IUnitBehaviour
     {
+        public event Action onCheckSurroundings;
+        
         private IUnitController _controller;
-        private IUnitSense _sense;
         
         private LinkedList<AttackData> _incomingAttacks;
         private IEnumerable<IUnitController> _attackers;
         private IUnitBehaviour _target;
+        private bool _isControlledByPlayer;
         
-        public BotBehaviour(IUnitController controller, IUnitSense sense)
+        public BotBehaviour(IUnitController controller)
         {
             _controller = controller;
-            _sense = sense;
             _incomingAttacks = new LinkedList<AttackData>();
 
             _controller.onTakeDamage += ReactOnTakeDamage;
             _controller.onGetAttacked += ReactOnGetAttacked;
-            
-            WorldUnits.RegisterUnit(this);
         }
 
         public void Update(float dt)
         {
             _controller?.Update(dt);
-            _sense?.Update(dt);
             
-            if (_controller == null || _controller.state != UnitStateEnum.Idle)
-                return;
+            if (_isControlledByPlayer) return;
             
             ReactOnAttackUpdate();
             CheckSurroundings();
+            
+            if (_controller == null || _controller.state != UnitStateEnum.Idle || _target == null)
+                return;
+            
+            _controller.Attack(_target.GetController());
+        }
+        public void SetKnownEnemies(List<IUnitBehaviour> enemies)
+        {
+            if (_isControlledByPlayer) return;
+            _target = enemies[0];
         }
 
         public IUnitController GetController() => _controller;
@@ -51,10 +58,14 @@ namespace UnitBehaviours
             _controller.Move(position);
         }
 
+        public void SetManualControl(bool value)
+        {
+            _isControlledByPlayer = value;
+        }
+
         private void CheckSurroundings()
         {
-            _target = WorldUnits.GetPotentialTarget(this);
-            _controller.Attack(_target.GetController());
+            onCheckSurroundings?.Invoke();
         }
 
         private void ReactOnTakeDamage(AttackOutcome attack)
@@ -115,6 +126,7 @@ namespace UnitBehaviours
         {
             _controller.onTakeDamage -= ReactOnTakeDamage;
             _controller.onGetAttacked -= ReactOnGetAttacked;
+            onCheckSurroundings = null;
         }
     }
 }

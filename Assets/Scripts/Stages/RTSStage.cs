@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Stages
 {
-    public abstract class RTSStage : BaseStage
+    public class RTSStage : BaseStage
     {
         private IInput _input; 
         private Camera _camera;

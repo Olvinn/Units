@@ -47,8 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\UnitBehaviours\IUnitBehaviour.cs" />
-    <Compile Include="Assets\Scripts\UnitBehaviours\IUnitSense.cs" />
-    <Compile Include="Assets\Scripts\UnitBehaviours\WorldUnits.cs" />
+    <Compile Include="Assets\Scripts\UnitBehaviours\ManualBehaviour.cs" />
     <Compile Include="Assets\Scripts\UnitBehaviours\BotBehaviour.cs" />
     <None Include="Assets\Scripts\UnitBehaviours\UnitBehaviour.asmdef" />
     <Reference Include="UnityEngine">
@@ -815,6 +814,10 @@
     <ProjectReference Include="Units.csproj">
       <Project>{0d1f6189-87c4-3e05-7334-1afaba4171f5}</Project>
       <Name>Units</Name>
+    </ProjectReference>
+    <ProjectReference Include="Input.csproj">
+      <Project>{9afb71fe-9f2f-6de7-cafa-8e10644599bc}</Project>
+      <Name>Input</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

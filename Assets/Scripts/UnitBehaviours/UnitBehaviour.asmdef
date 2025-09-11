@@ -2,7 +2,8 @@
     "name": "UnitBehaviour",
     "rootNamespace": "",
     "references": [
-        "GUID:29bfe20580d4b304d9bbe35b7567bad9"
+        "GUID:29bfe20580d4b304d9bbe35b7567bad9",
+        "GUID:1961d1c0db36dcc449970e9e02f0cdc8"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

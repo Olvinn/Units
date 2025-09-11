@@ -4,7 +4,7 @@ using Units.Health;
 using Units.Views;
 using UnityEngine;
 
-namespace World.UI
+namespace Game.UI
 {
     public class UnitViewPanel : MonoBehaviour, IUnitUIView
     {

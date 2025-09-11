@@ -1,5 +1,5 @@
 {
-    "name": "World",
+    "name": "Game",
     "rootNamespace": "",
     "references": [
         "GUID:29bfe20580d4b304d9bbe35b7567bad9",
@@ -8,7 +8,10 @@
         "GUID:9e24947de15b9834991c9d8411ea37cf",
         "GUID:84651a3751eca9349aac36a66bba901b",
         "GUID:f5924767f9251d64eb9bc271a6d46970",
-        "GUID:7cc7270eb86147043961de2322239a87"
+        "GUID:7cc7270eb86147043961de2322239a87",
+        "GUID:1961d1c0db36dcc449970e9e02f0cdc8",
+        "GUID:5b131d8fad8b0c945afc6d66c6cd81f3",
+        "GUID:b85b821c3f8852b4dbc0a2dc9c0830c8"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Units.Health;
 
-namespace World
+namespace Game
 {
     public static class Localization
     {
