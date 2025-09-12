@@ -19,6 +19,7 @@ namespace Units.Controllers.ControllerStates
 
         private void OnTakeDamage(AttackOutcome result)
         {
+            base.executor.onTakeDamage -= OnTakeDamage; 
             if (result.ResultType != AttackResultType.Blocked)
                 executor.GetWorldView().PlayTakeDamage(result);
             else
@@ -50,7 +51,13 @@ namespace Units.Controllers.ControllerStates
             Finish();
         }
 
-        public override void Dispose()
+        public override void Finish()
+        {
+            base.Dispose();
+            base.executor.onTakeDamage -= OnTakeDamage; 
+        }
+
+        public override void FinishSilent()
         {
             base.Dispose();
             base.executor.onTakeDamage -= OnTakeDamage; 

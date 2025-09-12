@@ -48,6 +48,7 @@ namespace Units.Controllers.ControllerStates
 
         public override void Finish()
         {
+            executor.GetMovement().onReachDestination -= OnReachTarget;
             if (executor != null && isActive)
                 executor.GetMovement().Stop();
             base.Finish();
@@ -55,15 +56,10 @@ namespace Units.Controllers.ControllerStates
 
         public override void FinishSilent()
         {
+            executor.GetMovement().onReachDestination -= OnReachTarget;
             if (executor != null && isActive)
                 executor.GetMovement().Stop();
             base.FinishSilent();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            executor.GetMovement().onReachDestination -= OnReachTarget;
         }
     }
 }

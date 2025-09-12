@@ -19,6 +19,7 @@ namespace Units.Controllers.ControllerStates
 
         private void OnTakeDamage(AttackOutcome result)
         {
+            base.executor.onTakeDamage -= OnTakeDamage; 
             if (result.ResultType != AttackResultType.Evaded)
                 executor.GetWorldView().PlayTakeDamage(result);
             Finish();
@@ -46,10 +47,16 @@ namespace Units.Controllers.ControllerStates
             Finish();
         }
 
-        public override void Dispose()
+        public override void FinishSilent()
         {
-            base.Dispose();
             base.executor.onTakeDamage -= OnTakeDamage; 
+            base.FinishSilent();
+        }
+
+        public override void Finish()
+        {
+            base.executor.onTakeDamage -= OnTakeDamage; 
+            base.Finish();
         }
     }
 }

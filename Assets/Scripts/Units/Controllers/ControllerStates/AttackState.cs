@@ -68,10 +68,16 @@ namespace Units.Controllers.ControllerStates
             _phase = Phase.Swing;
         }
 
-        public override void Dispose()
+        public override void Finish()
         {
-            base.Dispose();
             executor.GetMovement().onReachDestination -= OnReachTarget; 
+            base.Finish();
+        }
+
+        public override void FinishSilent()
+        {
+            executor.GetMovement().onReachDestination -= OnReachTarget; 
+            base.Dispose();
         }
     }
 }
