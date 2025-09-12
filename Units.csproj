@@ -54,6 +54,7 @@
     <Compile Include="Assets\Scripts\Units\Views\IUnitMovement.cs" />
     <Compile Include="Assets\Scripts\Units\Health\AttackType.cs" />
     <Compile Include="Assets\Scripts\Units\Controllers\UnitController.cs" />
+    <Compile Include="Assets\Scripts\Units\Views\Cue.cs" />
     <Compile Include="Assets\Scripts\Units\Health\IDamageable.cs" />
     <Compile Include="Assets\Scripts\Units\Health\LimbType.cs" />
     <Compile Include="Assets\Scripts\Units\Health\DamageType.cs" />

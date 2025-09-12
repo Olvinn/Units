@@ -4,11 +4,8 @@ namespace Units.Views
 {
     public interface IUnitWorldView : IUnitView
     {
-        void PlayAttackPrep(float speed);
-        void PlayBlockPrep(float speed);
-        void PlayBlocked();
-        void PlayEvasion();
-        void PlayAttack();
+        void Play(Cue cue);
+        void Play(Cue cue, float speed);
         Transform GetTransform();
     }
 }

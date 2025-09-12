@@ -1,4 +1,5 @@
 using Units.Health;
+using Units.Views;
 using UnityEngine;
 
 namespace Units.Controllers.ControllerStates
@@ -41,7 +42,7 @@ namespace Units.Controllers.ControllerStates
             _swingTimer -= dt;
             if (_swingTimer > 0) return;
             executor.GetMovement().Stop();
-            executor.GetWorldView().PlayEvasion();
+            executor.GetWorldView().Play(Cue.Evade);
             Finish();
         }
 

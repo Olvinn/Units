@@ -58,6 +58,7 @@ namespace Units.Views
 
         public void Stop()
         {
+            onReachDestination = null;
             IsMoving = false;
         }
     }

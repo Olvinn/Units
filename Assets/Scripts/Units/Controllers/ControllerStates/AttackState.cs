@@ -1,4 +1,5 @@
 using Units.Health;
+using Units.Views;
 
 namespace Units.Controllers.ControllerStates
 {
@@ -44,7 +45,7 @@ namespace Units.Controllers.ControllerStates
                     break;
                 case Phase.Attack:
                     _target.TakeDamage(_attackData);
-                    executor.GetWorldView().PlayAttack();
+                    executor.GetWorldView().Play(Cue.Attack);
                     _phase = Phase.Rest;
                     break;
                 case Phase.Rest:
@@ -60,7 +61,7 @@ namespace Units.Controllers.ControllerStates
             executor.GetMovement().Stop();
             _swingTimer = executor.GetModel().GetSwingTime();
             _finishTimer = 1.5f;
-            executor.GetWorldView().PlayAttackPrep(1 / _swingTimer);
+            executor.GetWorldView().Play(Cue.AttackPreparation, 1 / _swingTimer);
             _attackData = executor.GetModel().GetAttack();
             _attackData.Source = executor;
             _target.NotifyOfIncomingAttack(_attackData);

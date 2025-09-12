@@ -1,4 +1,5 @@
 
+using Units.Views;
 using UnityEngine;
 
 namespace Units.Controllers.ControllerStates
@@ -36,6 +37,7 @@ namespace Units.Controllers.ControllerStates
                 executor.GetMovement().Move(_target.GetTransform(), stopDist); 
             else 
                 executor.GetMovement().Move(_destination, stopDist);
+            executor.GetWorldView().Play(Cue.Idle);
             executor.GetMovement().onReachDestination += OnReachTarget; 
         }
 

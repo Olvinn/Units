@@ -1,4 +1,5 @@
 using Units.Health;
+using Units.Views;
 using UnityEngine;
 
 namespace Units.Controllers.ControllerStates
@@ -21,7 +22,7 @@ namespace Units.Controllers.ControllerStates
             if (result.ResultType != AttackResultType.Blocked)
                 executor.GetWorldView().PlayTakeDamage(result);
             else
-                executor.GetWorldView().PlayBlocked();
+                executor.GetWorldView().Play(Cue.Block);
             Finish();
         }
 
@@ -35,7 +36,7 @@ namespace Units.Controllers.ControllerStates
             }
             _swingTimer = _attackData.ApproxHitTime - Time.time;
             _endTimer = _swingTimer * 2;
-            executor.GetWorldView().PlayBlockPrep(1 / _swingTimer);
+            executor.GetWorldView().Play(Cue.BlockPreparation, 1 / _swingTimer);
         }
 
         public override void Update(float dt)

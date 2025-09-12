@@ -18,31 +18,36 @@ namespace Units.Views
             _unitColor = _renderer.material.color;
         }
 
-        public void PlayAttackPrep(float speed)
+        public void Play(Cue cue)
         {
+            switch (cue)
+            {
+                case Cue.Idle:
+                    _animator.Play(AnimatorNames.Idle);
+                    break;
+                case Cue.AttackPreparation:
+                    _animator.Play(AnimatorNames.AttackPreparation);
+                    break;
+                case Cue.BlockPreparation:
+                    _animator.Play(AnimatorNames.BlockPreparation);
+                    break;
+                case Cue.Block:
+                    _animator.Play(AnimatorNames.Block);
+                    break;
+                case  Cue.Evade:
+                    _animator.Play(AnimatorNames.Evade);
+                    break;
+                case Cue.Attack:
+                    _animator.Play(AnimatorNames.Attack);
+                    break;
+            }
+            _animator.SetFloat(AnimatorNames.Speed, 1);
+        }
+
+        public void Play(Cue cue, float speed)
+        {
+            Play(cue);
             _animator.SetFloat(AnimatorNames.Speed, speed);
-            _animator.Play(AnimatorNames.AttackPreparation);
-        }
-
-        public void PlayBlockPrep(float speed)
-        {
-            _animator.SetFloat(AnimatorNames.Speed, speed);
-            _animator.Play(AnimatorNames.BlockPreparation);
-        }
-
-        public void PlayBlocked()
-        {
-            _animator.Play(AnimatorNames.Block, 0, .01f);
-        }
-
-        public void PlayEvasion()
-        {
-            _animator.Play(AnimatorNames.Evade, 0, .01f);
-        }
-
-        public void PlayAttack()
-        {
-            _animator.Play(AnimatorNames.Attack);
         }
 
         public Transform GetTransform()
