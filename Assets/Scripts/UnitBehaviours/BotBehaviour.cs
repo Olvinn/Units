@@ -15,7 +15,6 @@ namespace UnitBehaviours
         private LinkedList<AttackData> _incomingAttacks;
         private IEnumerable<IUnitController> _attackers;
         private IUnitController _target;
-        private bool _isControlledByPlayer;
         
         public BotBehaviour(IUnitController controller)
         {
@@ -38,6 +37,7 @@ namespace UnitBehaviours
             
             _controller.Attack(_target);
         }
+        
         public void SetKnownEnemies(List<IUnitBehaviour> enemies)
         {
             //Something something
@@ -55,11 +55,6 @@ namespace UnitBehaviours
         {
             _target = null;
             _controller.Move(position);
-        }
-
-        public void SetManualControl(bool value)
-        {
-            _isControlledByPlayer = value;
         }
 
         private void CheckSurroundings()

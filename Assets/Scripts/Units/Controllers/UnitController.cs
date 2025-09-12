@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Units.Controllers.ControllerStates;
 using Units.Health;
 using Units.Models;
@@ -12,7 +13,18 @@ namespace Units.Controllers
         public event Action<AttackData> onGetAttacked;
         public event Action<AttackOutcome> onTakeDamage;
 
-        public UnitStateEnum state => _currentJob.stateEnum;
+        public UnitStateEnum state
+        {
+            get
+            {
+                if (_isStateOverwritten)
+                    return _overwrittenState;
+                return _currentJob.stateEnum;
+            }
+        }
+
+        private bool _isStateOverwritten;
+        private UnitStateEnum _overwrittenState;
         
         private IUnitModel _model;
         private IUnitMovement _movement;
@@ -34,7 +46,7 @@ namespace Units.Controllers
         public void Update(float dt)
         {
             _movement?.Update(dt);
-            _currentJob?.Update(dt);
+            _currentJob.Update(dt);
 
             var data = _model.GetStateContainer();
             data.Status = state.ToString();
@@ -44,49 +56,60 @@ namespace Units.Controllers
         }
         
         public IUnitModel GetModel() => _model;
-        
         public IUnitWorldView GetWorldView() => _worldView;
         public IUnitMovement GetMovement() => _movement;
         public Transform GetTransform() => _worldView.GetTransform();
         
         private bool CanAttack()
         {
-            return (state == UnitStateEnum.Idle || state == UnitStateEnum.BlockPrep) 
+            return state is UnitStateEnum.Idle or UnitStateEnum.BlockPrep or UnitStateEnum.Moving 
                    && _model.CanAttack();
         }
+        
         private bool CanBlock()
         {
-            return (state == UnitStateEnum.Idle);
+            return state is UnitStateEnum.Idle or UnitStateEnum.Moving;
         }
+        
         private bool CanEvade()
         {
-            return (state == UnitStateEnum.Idle || state == UnitStateEnum.BlockPrep);
+            return state is UnitStateEnum.Idle or UnitStateEnum.BlockPrep or UnitStateEnum.Moving;
         }
 
         private bool CanMove()
         {
-            return (state != UnitStateEnum.Staggering && state != UnitStateEnum.Evading && state != UnitStateEnum.Blocking);
+            return state is not UnitStateEnum.Staggering;
         }
 
         public void Attack(IUnitController target)
         {
+            if (target == null) return;
             if (!CanAttack()) return;
-
             ChangeState(new AttackState(this, target));
         }
 
         public void Block(AttackData attackData)
         {
             if (!CanBlock()) return;
-            
             ChangeState(new BlockState(this, attackData));
         }
 
         public void Evade(AttackData attackData)
         {
             if (!CanEvade()) return;
-            
             ChangeState(new EvadeState(this, attackData));
+        }
+
+        public void Move(IUnitController target)
+        {
+            if (!CanMove()) return;
+                ChangeState(new MovingState(this, target));
+        }
+
+        public void Move(Vector3 destination)
+        {
+            if (!CanMove()) return;
+                ChangeState(new MovingState(this, destination));
         }
 
         public void NotifyOfIncomingAttack(AttackData attackData) => onGetAttacked?.Invoke(attackData);
@@ -124,19 +147,6 @@ namespace Units.Controllers
             return result;
         }
 
-        public void Move(IUnitController destination)
-        {
-            if (!CanMove()) return;
-            _movement.Move(destination.GetTransform().position, 1);
-        }
-
-        public void Move(Vector3 destination)
-        {
-            if (!CanMove()) return;
-            ChangeState(new IdleState());
-            _movement.Move(destination, 1);
-        }
-
         public void Do(UnitControllerState job)
         {
             ChangeState(job);
@@ -144,19 +154,21 @@ namespace Units.Controllers
 
         private void ChangeState(UnitControllerState newState)
         {
-            if (newState.stateEnum == _currentJob.stateEnum)
-            {
-                _currentJob.Do();
-                return;
-            }
-            
-            _currentJob.Finish();
+            _currentJob.FinishSilent();
+            _currentJob.Dispose();
+            _currentJob.onDone -= Finishing;
             _currentJob = newState;
-            _currentJob.onDone += () =>
-            {
-                ChangeState(new IdleState());
-            };
+            _currentJob.onDone += Finishing;
             _currentJob.Do();
+            _isStateOverwritten = false;
+        }
+
+        private void Finishing()
+        {
+            _currentJob.FinishSilent();
+            _currentJob = new IdleState();
+            _currentJob.Do();
+            _isStateOverwritten = false;
         }
     }
 }

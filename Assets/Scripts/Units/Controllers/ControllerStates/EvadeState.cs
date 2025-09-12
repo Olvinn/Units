@@ -40,13 +40,14 @@ namespace Units.Controllers.ControllerStates
             if (!isActive) return;
             _swingTimer -= dt;
             if (_swingTimer > 0) return;
+            executor.GetMovement().Stop();
             executor.GetWorldView().PlayEvasion();
             Finish();
         }
 
-        public override void Finish()
+        public override void Dispose()
         {
-            base.Finish();
+            base.Dispose();
             base.executor.onTakeDamage -= OnTakeDamage; 
         }
     }

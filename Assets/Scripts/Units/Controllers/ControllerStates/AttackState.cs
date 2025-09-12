@@ -50,7 +50,7 @@ namespace Units.Controllers.ControllerStates
                 case Phase.Rest:
                     _finishTimer -= dt;
                     if (_finishTimer > 0) break;
-                    Finish(); 
+                    Finish();
                     break;
             }
         }
@@ -67,9 +67,9 @@ namespace Units.Controllers.ControllerStates
             _phase = Phase.Swing;
         }
 
-        public override void Finish()
+        public override void Dispose()
         {
-            base.Finish();
+            base.Dispose();
             executor.GetMovement().onReachDestination -= OnReachTarget; 
         }
     }

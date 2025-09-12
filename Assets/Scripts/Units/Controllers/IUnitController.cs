@@ -21,7 +21,7 @@ namespace Units.Controllers
         void Evade(AttackData attackData);
         void NotifyOfIncomingAttack(AttackData attackData);
         AttackOutcome TakeDamage(AttackData attackData);
-        void Move(IUnitController destination);
+        void Move(IUnitController target);
         void Move(Vector3 destination);
         void Do(UnitControllerState job);
     }

@@ -22,7 +22,6 @@ namespace Game
         private RTSStage _stage;
         private IUnitModel _redModel, _blueModel;
         private IUnitController _redController, _blueController;
-        private BotBehaviour _redBot, _blueBot;
         
         void Start()
         {
@@ -48,26 +47,14 @@ namespace Game
             _redController = new UnitController(_redModel, redMovement, redWorldView, new []{ _redView as IUnitUIView }); 
             _blueController = new UnitController(_blueModel, blueMovement, blueWorldView, new []{ _blueView as IUnitUIView });
 
-            _redBot = new BotBehaviour(_redController);
-            _blueBot = new BotBehaviour(_blueController);
-
-            WorldData.Units.RegisterUnit(_redBot);
-            WorldData.Units.RegisterUnit(_blueBot);
+            WorldData.Units.instance.RegisterUnit(new BotBehaviour(_redController));
+            WorldData.Units.instance.RegisterUnit(new BotBehaviour(_blueController));
         }
 
         private void DebugUpdate(float dt)
         {
             _stage.Update(dt);
-            if (Random.value > .5f)
-            {
-                _redBot.Update(dt);
-                _blueBot.Update(dt); 
-            }
-            else
-            {
-                _blueBot.Update(dt);
-                _redBot.Update(dt);
-            }
+            WorldData.Units.instance.Update(dt);
         }
     }
 }

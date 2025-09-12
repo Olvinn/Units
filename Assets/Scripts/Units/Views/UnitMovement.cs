@@ -43,6 +43,7 @@ namespace Units.Views
 
         public void Move(Vector3 destination, float stopDistance)
         {
+            _target = null;
             _destination = destination;
             _stopDistance = stopDistance;
             IsMoving = true;

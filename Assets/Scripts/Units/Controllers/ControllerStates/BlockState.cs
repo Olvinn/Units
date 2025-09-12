@@ -49,9 +49,9 @@ namespace Units.Controllers.ControllerStates
             Finish();
         }
 
-        public override void Finish()
+        public override void Dispose()
         {
-            base.Finish();
+            base.Dispose();
             base.executor.onTakeDamage -= OnTakeDamage; 
         }
     }

@@ -2,7 +2,7 @@ using System;
 
 namespace Units.Controllers.ControllerStates
 {
-    public abstract class UnitControllerState
+    public abstract class UnitControllerState : IDisposable
     {
         public UnitStateEnum stateEnum { get; protected set; }
         
@@ -21,6 +21,17 @@ namespace Units.Controllers.ControllerStates
             onDone?.Invoke();
         }
 
+        public virtual void FinishSilent()
+        {
+            if (!isActive) return;
+            isActive = false;
+        }
+
         public virtual void Update(float dt) { }
+
+        public virtual void Dispose()
+        {
+            onDone = null;
+        }
     }
 }

@@ -50,6 +50,7 @@
     <Compile Include="Assets\Scripts\Units\Controllers\IUnitController.cs" />
     <Compile Include="Assets\Scripts\Units\Views\IUnitView.cs" />
     <Compile Include="Assets\Scripts\Units\Controllers\ControllerStates\IdleState.cs" />
+    <Compile Include="Assets\Scripts\Units\Controllers\ControllerStates\MovingState.cs" />
     <Compile Include="Assets\Scripts\Units\Views\IUnitMovement.cs" />
     <Compile Include="Assets\Scripts\Units\Health\AttackType.cs" />
     <Compile Include="Assets\Scripts\Units\Controllers\UnitController.cs" />

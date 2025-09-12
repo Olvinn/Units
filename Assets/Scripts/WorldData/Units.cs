@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnitBehaviours;
 using Units.Controllers;
@@ -6,20 +5,38 @@ using Units.Views;
 
 namespace WorldData
 {
-    public static class Units
+    public class Units
     {
-        private static Dictionary<IUnitWorldView, IUnitBehaviour> _worldViews;
-        private static List<IUnitBehaviour> _allUnits;
-        private static List<IUnitBehaviour> _manualUnits;
+        private static Units _instance;
+        public static Units instance
+        {
+            get
+            {
+                if (_instance == null)
+                    _instance = new Units();
+                return _instance;
+            }
+            private set => _instance = value;
+        }
 
-        static Units()
+        private Dictionary<IUnitWorldView, IUnitBehaviour> _worldViews;
+        private List<IUnitBehaviour> _allUnits;
+        private List<IUnitBehaviour> _manualUnits;
+
+        private Units()
         {
             _worldViews = new Dictionary<IUnitWorldView, IUnitBehaviour>();
             _allUnits = new List<IUnitBehaviour>();
             _manualUnits = new List<IUnitBehaviour>();
         }
+
+        public void Update(float dt)
+        {
+            foreach (var unit in _allUnits)
+                unit.Update(dt);
+        }
         
-        public static void RegisterUnit(IUnitBehaviour unit)
+        public void RegisterUnit(IUnitBehaviour unit)
         {
             if (unit == null) return;
             _allUnits.Add(unit);
@@ -30,7 +47,7 @@ namespace WorldData
             if (view != null) _worldViews.Add(view, unit);
         }
 
-        private static void GiveDebugEnemies(IUnitBehaviour current)
+        private void GiveDebugEnemies(IUnitBehaviour current)
         {
             foreach (var unit in _allUnits)
             {
@@ -39,21 +56,41 @@ namespace WorldData
             }
         }
 
-        public static void ResetManualUnits()
+        public void ResetManualUnits()
         {
             foreach (var unit in _manualUnits)
-                unit.SetManualControl(false);
+            {
+                var view = unit.GetController().GetWorldView();
+                
+                _worldViews.Remove(view);
+                _allUnits.Remove(unit);
+
+                BotBehaviour bot = new BotBehaviour(unit.GetController());
+            
+                _worldViews.Add(view, bot);
+                _allUnits.Add(bot);
+            }
             _manualUnits.Clear();
         }
 
-        public static void SwitchToManual(IUnitWorldView unit)
+        public void SwitchToManual(IUnitWorldView unit)
         {
-            var selected = _worldViews[unit];
-            selected.SetManualControl(true);
-            _manualUnits.Add(selected);
+            if (!_worldViews.TryGetValue(unit, out var selected))
+                return;
+            
+            var view = selected.GetController().GetWorldView();
+
+            _worldViews.Remove(view);
+            _allUnits.Remove(selected);
+
+            ManualBehaviour manual = new ManualBehaviour(selected.GetController());
+            
+            _worldViews.Add(view, manual);
+            _allUnits.Add(manual);
+            _manualUnits.Add(manual);
         }
 
-        public static List<IUnitBehaviour> GetManualUnits()
+        public List<IUnitBehaviour> GetManualUnits()
         {
             List<IUnitBehaviour> result = new List<IUnitBehaviour>();
             foreach (var manualUnit in _manualUnits)
@@ -61,9 +98,9 @@ namespace WorldData
             return result;
         }
 
-        public static IUnitBehaviour GetBehaviour(IUnitWorldView unit)
+        public IUnitBehaviour GetBehaviour(IUnitWorldView unit)
         {
-            return  _worldViews[unit];
+            return _worldViews.GetValueOrDefault(unit);
         }
     }
 }
