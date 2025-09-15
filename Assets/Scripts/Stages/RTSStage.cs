@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Input;
+using Interactables;
 using UnitBehaviours;
+using Units.Controllers.ControllerStates;
 using Units.Views;
 using UnityEngine;
 
@@ -70,10 +72,18 @@ namespace Stages
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
                 IUnitWorldView unit = hit.collider.GetComponent<IUnitWorldView>();
+                IInteractable interactible = hit.collider.GetComponent<IInteractable>();
                 if (unit != null)
                 {
                     foreach (var controllableUnit in units)
                         controllableUnit.Attack(WorldData.Units.instance.GetBehaviour(unit));
+                }
+                else if (interactible != null)
+                {
+                    foreach (var controllableUnit in units)
+                    {
+                        interactible.Interact(controllableUnit);
+                    }
                 }
                 else
                 {

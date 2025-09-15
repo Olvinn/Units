@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Interactables\Interfaces.cs" />
+    <Compile Include="Assets\Scripts\Interactables\Bench.cs" />
     <None Include="Assets\Scripts\Interactables\Interactables.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\6000.1.11f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
@@ -816,6 +817,10 @@
     <ProjectReference Include="UnitBehaviour.csproj">
       <Project>{398a3d96-a23c-df04-df09-6c2a872a515b}</Project>
       <Name>UnitBehaviour</Name>
+    </ProjectReference>
+    <ProjectReference Include="Units.csproj">
+      <Project>{0d1f6189-87c4-3e05-7334-1afaba4171f5}</Project>
+      <Name>Units</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

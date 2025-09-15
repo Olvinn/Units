@@ -827,6 +827,10 @@
       <Project>{df3e9ac7-5c89-c5d3-2917-5ad5b9cd70bc}</Project>
       <Name>WorldData</Name>
     </ProjectReference>
+    <ProjectReference Include="Interactables.csproj">
+      <Project>{f1769cd2-95f0-24de-66d2-7f41e48ae187}</Project>
+      <Name>Interactables</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
