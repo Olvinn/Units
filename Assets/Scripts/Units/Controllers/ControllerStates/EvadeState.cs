@@ -9,20 +9,11 @@ namespace Units.Controllers.ControllerStates
         private float _swingTimer;
         private AttackData _attackData;
         
-        public EvadeState(IUnitController executor, AttackData attackData)
+        public EvadeState(IUnitStateMachine executor, AttackData attackData)
         {
             base.executor = executor;
-            base.executor.onTakeDamage += OnTakeDamage; 
             _attackData = attackData;
             stateEnum = UnitStateEnum.Evading;
-        }
-
-        private void OnTakeDamage(AttackOutcome result)
-        {
-            base.executor.onTakeDamage -= OnTakeDamage; 
-            if (result.ResultType != AttackResultType.Evaded)
-                executor.GetWorldView().PlayTakeDamage(result);
-            Finish();
         }
 
         public override void Do()
@@ -46,17 +37,15 @@ namespace Units.Controllers.ControllerStates
             executor.GetWorldView().Play(Cue.Evade);
             Finish();
         }
-
-        public override void FinishSilent()
+        
+        public override AttackOutcome TakeDamage(AttackData attack)
         {
-            base.executor.onTakeDamage -= OnTakeDamage; 
-            base.FinishSilent();
-        }
-
-        public override void Finish()
-        {
-            base.executor.onTakeDamage -= OnTakeDamage; 
-            base.Finish();
+            var result = executor.GetModel().TryEvadeDamage(attack);
+            if (result.ResultType != AttackResultType.Evaded)
+                executor.GetWorldView().PlayTakeDamage(result);
+            else
+                executor.GetWorldView().Play(Cue.Block);
+            return result;
         }
     }
 }

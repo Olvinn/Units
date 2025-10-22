@@ -1,4 +1,5 @@
 using System;
+using Units.Health;
 
 namespace Units.Controllers.ControllerStates
 {
@@ -8,7 +9,7 @@ namespace Units.Controllers.ControllerStates
         
         public event Action onDone;
         
-        protected IUnitController executor { get; set; }
+        protected IUnitStateMachine executor { get; set; }
         
         protected bool isActive { get; private set; }
 
@@ -28,6 +29,12 @@ namespace Units.Controllers.ControllerStates
         }
 
         public virtual void Update(float dt) { }
+
+        public virtual bool CanAttack() => false;
+        public virtual bool CanBlock() => false;
+        public virtual bool CanEvade() => false;
+        public virtual bool CanMove() => false;
+        public virtual AttackOutcome TakeDamage(AttackData attack) => new AttackOutcome();
 
         public virtual void Dispose()
         {

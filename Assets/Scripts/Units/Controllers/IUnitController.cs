@@ -14,7 +14,6 @@ namespace Units.Controllers
         UnitStateEnum state { get; }
         IUnitModel GetModel();
         IUnitWorldView GetWorldView();
-        IUnitMovement GetMovement();
         Transform GetTransform();
         void Attack(IUnitController target);
         void Block(AttackData attackData);

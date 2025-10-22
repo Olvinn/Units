@@ -42,7 +42,8 @@ namespace UnitBehaviours
             //Something something
         }
 
-        public IUnitController GetController() => _controller;
+        public IUnitController GetController() => _controller as  IUnitController;
+        public IUnitStateMachine GetStateMachine() => _controller as  IUnitStateMachine;
 
         public void Attack(IUnitBehaviour unit)
         {

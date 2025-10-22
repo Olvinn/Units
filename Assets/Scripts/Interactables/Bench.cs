@@ -10,7 +10,7 @@ namespace Interactables
         
         public void Interact(IUnitBehaviour unit)
         {
-            MovingState job = new MovingState(unit.GetController(), transform.position);
+            MovingState job = new MovingState(unit.GetStateMachine(), transform.position);
             unit.GetController().Do(job);
         }
     }

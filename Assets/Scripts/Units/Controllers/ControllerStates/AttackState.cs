@@ -12,9 +12,9 @@ namespace Units.Controllers.ControllerStates
         private AttackData _attackData;
         private Phase _phase;
         
-        public AttackState(IUnitController attacker, IUnitController target)
+        public AttackState(IUnitStateMachine executor, IUnitController target)
         {
-            executor = attacker;
+            base.executor = executor;
             _target = target;
             stateEnum = UnitStateEnum.Attack;
         }
@@ -62,8 +62,7 @@ namespace Units.Controllers.ControllerStates
             _swingTimer = executor.GetModel().GetSwingTime();
             _finishTimer = 1.5f;
             executor.GetWorldView().Play(Cue.AttackPreparation, 1 / _swingTimer);
-            _attackData = executor.GetModel().GetAttack();
-            _attackData.Source = executor;
+            _attackData = executor.GetAttack();
             _target.NotifyOfIncomingAttack(_attackData);
             _phase = Phase.Swing;
         }
@@ -78,6 +77,16 @@ namespace Units.Controllers.ControllerStates
         {
             executor.GetMovement().onReachDestination -= OnReachTarget; 
             base.Dispose();
+        }
+
+        public override bool CanBlock() => true;
+        public override bool CanEvade() => true;
+        
+        public override AttackOutcome TakeDamage(AttackData attack)
+        {
+            var result = executor.GetModel().GetDamage(attack);
+            executor.GetWorldView().PlayTakeDamage(result);
+            return result;
         }
     }
 }

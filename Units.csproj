@@ -71,6 +71,7 @@
     <Compile Include="Assets\Scripts\Units\Views\IUnitUIView.cs" />
     <Compile Include="Assets\Scripts\Units\Views\UnitStateContainer.cs" />
     <Compile Include="Assets\Scripts\Units\Models\IUnitModel.cs" />
+    <Compile Include="Assets\Scripts\Units\Controllers\IUnitStateMachine.cs" />
     <Compile Include="Assets\Scripts\Units\Health\Health.cs" />
     <Compile Include="Assets\Scripts\Units\Models\UnitFactory.cs" />
     <Compile Include="Assets\Scripts\Units\Controllers\ControllerStates\BlockState.cs" />

@@ -6,25 +6,18 @@ namespace Units.Controllers.ControllerStates
 {
     public class BlockState : UnitControllerState
     {
-        private float _swingTimer, _endTimer;
-        private AttackData _attackData;
+        private enum Phase { Preparing, Blocking }
         
-        public BlockState(IUnitController executor, AttackData attackData)
+        private float _prepareTimer;
+        private AttackData _attackData;
+        private Phase _phase;
+        private bool _attackBlocked;
+        
+        public BlockState(IUnitStateMachine executor, AttackData attackData)
         {
             base.executor = executor;
-            base.executor.onTakeDamage += OnTakeDamage; 
             _attackData = attackData;
             stateEnum = UnitStateEnum.BlockPrep;
-        }
-
-        private void OnTakeDamage(AttackOutcome result)
-        {
-            base.executor.onTakeDamage -= OnTakeDamage; 
-            if (result.ResultType != AttackResultType.Blocked)
-                executor.GetWorldView().PlayTakeDamage(result);
-            else
-                executor.GetWorldView().Play(Cue.Block);
-            Finish();
         }
 
         public override void Do()
@@ -35,32 +28,49 @@ namespace Units.Controllers.ControllerStates
                 Finish();
                 return;
             }
-            _swingTimer = _attackData.ApproxHitTime - Time.time;
-            _endTimer = _swingTimer * 2;
-            executor.GetWorldView().Play(Cue.BlockPreparation, 1 / _swingTimer);
+            _prepareTimer = executor.GetModel().GetTimeToBlock();
+            executor.GetWorldView().Play(Cue.BlockPreparation, 1 / _prepareTimer);
+            _phase = Phase.Preparing;
         }
 
         public override void Update(float dt)
         {
             if (!isActive) return;
-            _swingTimer -= dt;
-            _endTimer -= dt;
-            if (_swingTimer > 0) return;
-            stateEnum = UnitStateEnum.Blocking;
-            if (_endTimer > 0) return;
-            Finish();
+            switch (_phase)
+            {
+                case Phase.Preparing:
+                    _prepareTimer -= dt;
+                    if (_prepareTimer < 0)
+                        _phase = Phase.Blocking;
+                    break;
+                case Phase.Blocking:
+                    if (_attackBlocked)
+                        Finish();
+                    break;
+            }
         }
 
         public override void Finish()
         {
             base.Dispose();
-            base.executor.onTakeDamage -= OnTakeDamage; 
         }
 
-        public override void FinishSilent()
+        public override void FinishSilent() => Finish();
+
+        public override bool CanAttack() => true;
+        public override bool CanEvade() => true;
+        public override bool CanMove() => true;
+        
+        public override AttackOutcome TakeDamage(AttackData attack)
         {
-            base.Dispose();
-            base.executor.onTakeDamage -= OnTakeDamage; 
+            _attackBlocked = true;
+            var result = _phase == Phase.Blocking ? executor.GetModel().TryBlockDamage(attack) :
+                executor.GetModel().GetDamage(attack);
+            if (result.ResultType != AttackResultType.Blocked)
+                executor.GetWorldView().PlayTakeDamage(result);
+            else
+                executor.GetWorldView().Play(Cue.Block);
+            return result;
         }
     }
 }

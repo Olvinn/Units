@@ -43,8 +43,9 @@ namespace UnitBehaviours
             //Something something
         }
 
-        public IUnitController GetController() => _controller;
-        
+        public IUnitController GetController() => _controller as IUnitController;
+        public IUnitStateMachine GetStateMachine() => _controller as  IUnitStateMachine;
+
         public void Attack(IUnitBehaviour unit)
         {
             _target = unit.GetController();
@@ -96,12 +97,14 @@ namespace UnitBehaviours
             
             var timeBeforeAttack = _incomingAttacks.First.Value.ApproxHitTime - Time.time;
 
-            if (timeBeforeAttack > _controller.GetModel().GetSwingTime())
+            if (timeBeforeAttack * .9f > _controller.GetModel().GetSwingTime())
                 _controller.Attack(attack.Source);
-            else if (timeBeforeAttack > _controller.GetModel().GetTimeToBlock())
+            else if (timeBeforeAttack * .75f > _controller.GetModel().GetTimeToBlock())
                 _controller.Block(attack);
             else
                 _controller.Evade(attack);
+            
+            _incomingAttacks.RemoveFirst();
         }
 
         private LinkedListNode<AttackData> GetIncomingAttackNodeRightBefore(AttackData attackData)

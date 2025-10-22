@@ -7,7 +7,7 @@ namespace Units.Controllers.ControllerStates
         private float _staggeringTimer;
         private AttackOutcome _attackResult;
         
-        public StaggeringState(IUnitController executor, AttackOutcome attackResult)
+        public StaggeringState(IUnitStateMachine executor, AttackOutcome attackResult)
         {
             base.executor = executor;
             _attackResult = attackResult;
@@ -32,6 +32,13 @@ namespace Units.Controllers.ControllerStates
             _staggeringTimer -= dt;
             if (_staggeringTimer > 0) return;
             Finish();
+        }
+
+        public override AttackOutcome TakeDamage(AttackData attack)
+        {
+            var result = executor.GetModel().GetDamage(attack);
+            executor.GetWorldView().PlayTakeDamage(result);
+            return result;
         }
     }
 }

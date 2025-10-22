@@ -19,8 +19,8 @@ namespace Units.Stats
         {
             MeleeDmgMod = attributes.Strength * 2 + attributes.Toughness;
             MeleeAttack = attributes.Agility + attributes.Perception + attributes.Strength * 2;
-            MeleeDefence = attributes.Agility * 2 + attributes.Perception + attributes.Toughness;
-            MeleeEvade = attributes.Perception + attributes.Agility * 2;
+            MeleeDefence = attributes.Strength * 3 + attributes.Perception + attributes.Toughness * 2;
+            MeleeEvade = attributes.Perception + attributes.Agility * 5;
             SwingTime = 1 / Mathf.Log(attributes.Agility);
             BlockTime = 1 / Mathf.Log(attributes.Perception + attributes.Agility);
             StaggerDefence = attributes.Toughness + attributes.Will;

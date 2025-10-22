@@ -17,6 +17,9 @@ namespace Units.Models
         private UnitStats _stats;
         private bool _isDead = false, _isUnconscious = false;
 
+        private bool _isDirty = true;
+        private UnitStateContainer _stateContainer;
+
         public UnitModel(string name, UnitAttributes attributes, IEnumerable<Limb> limbs)
         {
             this.name = name;
@@ -27,39 +30,23 @@ namespace Units.Models
                 _limbs.Add(limb.type, limb);
         }
 
-        public float GetFullHPPercent()
-        {
-            float full = 0, current = 0;
-            foreach (var limb in _limbs.Values)
-            {
-                full += limb.health.GetMaxHP();
-                current += limb.health.GetHP();
-            }
-            return current / full;
-        }
-
         public UnitStats GetStats() => _stats;
-
-        public bool CanAttack()
-        {
-            return _limbs[LimbType.RightArm].health.GetHP() > 0 && !_isDead && !_isUnconscious;
-        }
 
         public AttackData GetAttack()
         {
-            var meleeAttack = Random.Range(_stats.MeleeAttack * .5f, _stats.MeleeAttack);
+            var meleeAttack = _stats.MeleeAttack;
             return new AttackData(null, 
                 meleeAttack, 
                 new[] 
                 { 
                     new DamageData() 
                     { 
-                        Amount = Random.Range(_stats.MeleeDmgMod * .75f, _stats.MeleeDmgMod),
+                        Amount = Random.Range(0.75f, 1.25f) * _stats.MeleeDmgMod,
                         Type = DamageType.Blunt 
                     } 
                 },
                 AttackType.Melee, 
-                meleeAttack > _stats.MeleeAttack * .9f,
+                meleeAttack > Random.Range(0.75f, 1.05f) * _stats.MeleeAttack,
                 false, 
                 null, 
                 Time.time + GetSwingTime()
@@ -94,18 +81,24 @@ namespace Units.Models
 
         public UnitStateContainer GetStateContainer()
         {
-            Dictionary<LimbType, float> limbState = new Dictionary<LimbType, float>();
-            foreach (var limbType in _limbs.Keys)
+            if (_isDirty)
             {
-                limbState.Add(limbType, _limbs[limbType].health.GetPercentage());
+                Dictionary<LimbType, float> limbState = new Dictionary<LimbType, float>();
+                foreach (var limbType in _limbs.Keys)
+                {
+                    limbState.Add(limbType, _limbs[limbType].health.GetPercentage());
+                }
+
+                _stateContainer = new UnitStateContainer()
+                {
+                    LimbState = limbState,
+                    UnitName = name,
+                    Attributes = _attributes.ToString(),
+                    Stats = _stats.ToString()
+                };
             }
-            return new UnitStateContainer()
-            {
-                LimbState = limbState,
-                UnitName = name,
-                Attributes = _attributes.ToString(),
-                Stats = _stats.ToString()
-            };
+
+            return _stateContainer;
         }
 
         public AttackOutcome TryBlockDamage(AttackData attackData)
@@ -170,6 +163,8 @@ namespace Units.Models
                 }
             }
 
+            _isDirty = true;
+
             return outcome;
         }
 
@@ -178,8 +173,8 @@ namespace Units.Models
             if (attackData.IsSneak)
                 return false;
             if (attackData.IsCritical)
-                return attackData.AttackMod <= Random.value * _stats.MeleeDefence * .5f;
-            return attackData.AttackMod <= Random.value * _stats.MeleeDefence;
+                return attackData.AttackMod <= Random.Range(0.75f, 1.1f) * _stats.MeleeDefence * .5f;
+            return attackData.AttackMod <= Random.Range(0.75f, 1.1f) * _stats.MeleeDefence;
         }
 
         private bool CanEvadeAttack(AttackData attackData)
@@ -187,24 +182,8 @@ namespace Units.Models
             if (attackData.IsSneak)
                 return false;
             if (attackData.IsCritical)
-                return attackData.AttackMod <= Random.value * _stats.MeleeEvade * .5f;
-            return attackData.AttackMod <= Random.value * _stats.MeleeEvade;
-        }
-
-        public override string ToString()
-        {
-            StringBuilder sb = new();
-            sb.AppendLine();
-            sb.AppendLine($"- {name} -");
-            sb.AppendLine("- Attributes -");
-            sb.AppendLine(_attributes.ToString());
-            sb.AppendLine("--- Stats ----");
-            sb.AppendLine(_stats.ToString());
-            sb.AppendLine("---- Limbs ---");
-            foreach (var limb in _limbs.Values)
-                sb.AppendLine($"{limb.type} : {limb.health.GetHP()}/{limb.health.GetMaxHP():F1}");
-            sb.Append("--------------");
-            return sb.ToString();
+                return attackData.AttackMod <= Random.Range(0.75f, 1.1f) * _stats.MeleeEvade * .5f;
+            return attackData.AttackMod <= Random.Range(0.75f, 1.1f) * _stats.MeleeEvade;
         }
     }
 }

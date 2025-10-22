@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Units.Controllers.ControllerStates;
 using Units.Health;
 using Units.Models;
@@ -8,7 +7,7 @@ using UnityEngine;
 
 namespace Units.Controllers
 {
-    public class UnitController : IUnitController
+    public class UnitController : IUnitController, IUnitStateMachine
     {
         public event Action<AttackData> onGetAttacked;
         public event Action<AttackOutcome> onTakeDamage;
@@ -54,32 +53,23 @@ namespace Units.Controllers
             foreach (var uiView in _uiViews)
                 uiView.UpdateView(data);
         }
-        
+
+        public AttackData GetAttack()
+        {
+            var attack = _model.GetAttack();
+            attack.Source = this;
+            return attack;
+        }
+
         public IUnitModel GetModel() => _model;
         public IUnitWorldView GetWorldView() => _worldView;
         public IUnitMovement GetMovement() => _movement;
         public Transform GetTransform() => _worldView.GetTransform();
         
-        private bool CanAttack()
-        {
-            return state is UnitStateEnum.Idle or UnitStateEnum.BlockPrep or UnitStateEnum.Moving 
-                   && _model.CanAttack();
-        }
-        
-        private bool CanBlock()
-        {
-            return state is UnitStateEnum.Idle or UnitStateEnum.Moving;
-        }
-        
-        private bool CanEvade()
-        {
-            return state is UnitStateEnum.Idle or UnitStateEnum.BlockPrep or UnitStateEnum.Moving;
-        }
-
-        private bool CanMove()
-        {
-            return state is not UnitStateEnum.Staggering;
-        }
+        private bool CanAttack() => _currentJob.CanAttack();
+        private bool CanBlock() => _currentJob.CanBlock();
+        private bool CanEvade() => _currentJob.CanEvade();
+        private bool CanMove() => _currentJob.CanMove();
 
         public void Attack(IUnitController target)
         {
@@ -116,26 +106,10 @@ namespace Units.Controllers
 
         public AttackOutcome TakeDamage(AttackData attackData)
         {
-            AttackOutcome result;
-            switch (state)
-            {
-                case UnitStateEnum.BlockPrep:
-                    result = _model.TryBlockDamage(attackData);
-                    break;
-                case UnitStateEnum.Evading:
-                    result = _model.TryEvadeDamage(attackData);
-                    break;
-                default:
-                    result = _model.GetDamage(attackData);
-                    break;
-            }
-            
-            onTakeDamage?.Invoke(result);
+            var result =  _currentJob.TakeDamage(attackData);
             
             if (result.ResultType == AttackResultType.Full)
                 ChangeState(new StaggeringState(this, result));
-            else if (result.ResultType == AttackResultType.Partial)
-                _worldView.PlayTakeDamage(result);
             
             foreach (var uiView in _uiViews)
             {
@@ -144,6 +118,7 @@ namespace Units.Controllers
                     _worldView.GetTransform().position + Vector3.up * 2.5f);
             }
             
+            onTakeDamage?.Invoke(result);
             return result;
         }
 
