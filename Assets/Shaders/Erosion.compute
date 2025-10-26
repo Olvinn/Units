@@ -1,0 +1,15 @@
+#pragma kernel CSMain
+
+RWTexture2D<float> Result;
+float addValue;
+int width;
+int height;
+
+[numthreads(8, 8, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    if (id.x >= width || id.y >= height) return;
+
+    float current = Result[int2(id.x, id.y)];
+    Result[int2(id.x, id.y)] = current + addValue;
+}

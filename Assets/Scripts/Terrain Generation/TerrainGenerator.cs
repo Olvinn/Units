@@ -5,15 +5,15 @@ namespace Terrain_Generation
 {
     public static class TerrainGenerator
     {
-        public static Texture2D GenerateNoise(int width = 1025, int height = 1025, int octaves = 8)
+        public static Texture2D GenerateNoise(Shader shader, int width = 1025, int height = 1025, int octaves = 8, float seed = 43758.5453f)
         {
-#if UNITY_EDITOR
             RenderTexture rt = new RenderTexture(width, height, 0, RenderTextureFormat.ARGBFloat);
             rt.enableRandomWrite = false;
             rt.Create();
 
-            Material mat = new Material(Shader.Find("Hidden/Utils/PerlinNoise"));
+            Material mat = new Material(shader);
             mat.SetInt("_Octaves", octaves);
+            mat.SetFloat("_Seed", seed);
 
             Graphics.Blit(null, rt, mat);
 
@@ -27,6 +27,12 @@ namespace Terrain_Generation
             Object.DestroyImmediate(mat);
 
             return tex;
+        }
+        
+        public static Texture2D GenerateNoise(int width = 1025, int height = 1025, int octaves = 8, float seed = 43758.5453f)
+        {
+#if UNITY_EDITOR
+            return GenerateNoise(Shader.Find("Utils/PerlinNoise"), width, height, octaves, seed);
 #else
             Debug.LogWarning("GenerateNoise works only in Editor mode.");
             return null;

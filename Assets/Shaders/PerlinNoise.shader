@@ -1,12 +1,12 @@
-Shader "Hidden/Utils/PerlinNoise"
+Shader "Utils/PerlinNoise"
 {
     Properties
     {
         _Scale ("Scale", Float) = 4.0
         _Octaves ("Octaves", Int) = 4
-        _Lacunarity ("Lacunarity", Float) = 2.0
         _Persistence ("Persistence", Float) = 0.5
         _Offset ("Offset", Vector) = (0,0,0,0)
+        _Seed ("Seed", Float) = 43758.5453
     }
     SubShader
     {
@@ -25,8 +25,8 @@ Shader "Hidden/Utils/PerlinNoise"
 
             float _Scale;
             int _Octaves;
-            float _Lacunarity;
             float _Persistence;
+            float _Seed;
             float4 _Offset;
 
             static float fade(float t)
@@ -36,7 +36,7 @@ Shader "Hidden/Utils/PerlinNoise"
 
             static float hash(float2 p)
             {
-                return frac(sin(dot(p, float2(127.1, 311.7))) * 43758.5453);
+                return frac(sin(dot(p, float2(127.1, 311.7))) * _Seed);
             }
 
             static float2 gradient(float2 ip)
@@ -107,7 +107,7 @@ Shader "Hidden/Utils/PerlinNoise"
 
                 float2 p = (uv * _Scale);
 
-                float n = fbm(p, max(1, _Octaves), _Lacunarity, _Persistence);
+                float n = fbm(p, max(1, _Octaves), 2, _Persistence);
 
                 float v = n * 0.5 + 0.5;
 

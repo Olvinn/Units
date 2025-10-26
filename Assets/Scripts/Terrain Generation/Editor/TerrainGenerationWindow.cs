@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -6,7 +7,17 @@ namespace Terrain_Generation.Editor
 {
     public class TerrainGenerationWindow : EditorWindow
     {
-        [MenuItem("Tools/Terrain Generator")]
+        private TerrainGenerationData _data;
+
+        private ObjectField _dataField;
+        private Button _applyButton;
+        private IntegerField _octaves;
+        private FloatField _seed;
+        private Image _preview;
+        
+        private Texture2D _heightmap;
+        
+        [MenuItem("Generation/Terrain Generator")]
         public static void ShowExample()
         {
             var wnd = GetWindow<TerrainGenerationWindow>();
@@ -16,12 +27,20 @@ namespace Terrain_Generation.Editor
         private void CreateGUI()
         {
             var root = rootVisualElement;
+            
+            _dataField = new ObjectField("Terrain Generation Data");
+            _dataField.objectType = typeof(TerrainGenerationData);
+            root.Add(_dataField);
 
-            Texture2D texture = TerrainGenerator.GenerateNoise();
+            var assets = AssetDatabase.FindAssets("t: TerrainGenerationData");
+            _data = AssetDatabase.LoadAssetAtPath<TerrainGenerationData>(AssetDatabase.GUIDToAssetPath(assets[0]));
+            _dataField.value = _data;
 
-            var image = new Image
+            _heightmap = TerrainGenerator.GenerateNoise();
+
+            _preview = new Image
             {
-                image = texture,
+                image = _heightmap,
                 scaleMode = ScaleMode.ScaleToFit,
                 style =
                 {
@@ -33,40 +52,47 @@ namespace Terrain_Generation.Editor
             {
                 value = 1f
             };
-            image.style.flexGrow = flex;
-            root.Add(image);
+            _preview.style.flexGrow = flex;
+            root.Add(_preview);
 
-            var octaves = new IntegerField("Octaves");
-            octaves.value = 4;
-            root.Add(octaves);
+            _seed = new FloatField("Seed");
+            _seed.value = _data.Seed;
+            root.Add(_seed);
 
-            var generateButton = new Button(() =>
+            _octaves = new IntegerField("Octaves");
+            _octaves.value = _data.Octaves;
+            root.Add(_octaves);
+            
+            _applyButton = new Button(ApplyHeightmapToTerrain)
             {
-                image.image = TerrainGenerator.GenerateNoise(octaves : octaves.value);
-            })
-            {
-                text = "Generate"
+                text = "Apply on Selection"
             };
-            root.Add(generateButton);
-
-            if (UnityEditor.Selection.activeObject is GameObject gameObject)
-            {
-                Terrain terrain = gameObject.GetComponent<Terrain>();
-                if (terrain == null) return;
-                
-                var applyButton = new Button(() =>
-                {
-                    var tex = TerrainGenerator.GenerateNoise(octaves: octaves.value);
-                    ApplyHeightsToTerrain(terrain, TextureToHeights(tex));
-                })
-                {
-                    text = "Apply on Selection"
-                };
-                root.Add(applyButton);
-            }
+            
+            root.Add(_applyButton);
         }
-        
-        float[,] TextureToHeights(Texture2D tex)
+
+        private void Update()
+        {
+            var go = Selection.activeObject as GameObject;
+            Terrain terrain = go?.GetComponent<Terrain>();
+            _applyButton.SetEnabled(terrain != null);
+            GenerateHeightmap();
+        }
+
+        private void GenerateHeightmap()
+        {
+            _heightmap = TerrainGenerator.GenerateNoise(octaves: _octaves.value, seed: _seed.value);
+            _preview.image = _heightmap;
+        }
+
+        private void ApplyHeightmapToTerrain()
+        {
+            var go = UnityEditor.Selection.activeObject as GameObject;
+            Terrain terrain = go?.GetComponent<Terrain>();
+            ApplyHeightsToTerrain(terrain, TextureToHeights(_heightmap));
+        }
+
+        private float[,] TextureToHeights(Texture2D tex)
         {
             int width = tex.width;
             int height = tex.height;
@@ -85,7 +111,7 @@ namespace Terrain_Generation.Editor
             return heights;
         }
         
-        void ApplyHeightsToTerrain(Terrain terrain, float[,] heights)
+        private void ApplyHeightsToTerrain(Terrain terrain, float[,] heights)
         {
             TerrainData data = terrain.terrainData;
 
