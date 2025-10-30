@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f169f718acf9d804aac8ac8c601b03ea, type: 3}
   m_Name: TerrainGenerationData
   m_EditorClassIdentifier: TerrainGeneration::Terrain_Generation.TerrainGenerationData
-  Seed: 0
-  Octaves: 0
+  WaterErosion: {fileID: 7200000, guid: 146cd3ef73a42b94d914bd80d3a6caea, type: 3}
+  NoiseShader: {fileID: 4800000, guid: 9f8f5a91d53e7594ea674957ee3e7f00, type: 3}
+  Seed: 46329
+  Octaves: 12

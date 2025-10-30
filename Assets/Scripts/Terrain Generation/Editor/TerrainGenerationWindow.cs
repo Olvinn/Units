@@ -10,7 +10,7 @@ namespace Terrain_Generation.Editor
         private TerrainGenerationData _data;
 
         private ObjectField _dataField;
-        private Button _applyButton;
+        private Button _generateButton, _applyButton, _erosionButton;
         private IntegerField _octaves;
         private FloatField _seed;
         private Image _preview;
@@ -27,14 +27,16 @@ namespace Terrain_Generation.Editor
         private void CreateGUI()
         {
             var root = rootVisualElement;
-            
-            _dataField = new ObjectField("Terrain Generation Data");
-            _dataField.objectType = typeof(TerrainGenerationData);
-            root.Add(_dataField);
 
             var assets = AssetDatabase.FindAssets("t: TerrainGenerationData");
             _data = AssetDatabase.LoadAssetAtPath<TerrainGenerationData>(AssetDatabase.GUIDToAssetPath(assets[0]));
-            _dataField.value = _data;
+            
+            _dataField = new ObjectField("Terrain Generation Data")
+            {
+                objectType = typeof(TerrainGenerationData),
+                value = _data
+            };
+            root.Add(_dataField);
 
             _heightmap = TerrainGenerator.GenerateNoise();
 
@@ -55,19 +57,34 @@ namespace Terrain_Generation.Editor
             _preview.style.flexGrow = flex;
             root.Add(_preview);
 
-            _seed = new FloatField("Seed");
-            _seed.value = _data.Seed;
+            _seed = new FloatField("Seed")
+            {
+                value = _data.Seed
+            };
             root.Add(_seed);
 
-            _octaves = new IntegerField("Octaves");
-            _octaves.value = _data.Octaves;
+            _octaves = new IntegerField("Octaves")
+            {
+                value = _data.Octaves
+            };
             root.Add(_octaves);
+            
+            _generateButton = new Button(GenerateHeightmap)
+            {
+                text = "Generate"
+            };
+            root.Add(_generateButton);
+            
+            _erosionButton = new Button(ApplyErosion)
+            {
+                text = "Apply Erosion"
+            };
+            root.Add(_erosionButton);
             
             _applyButton = new Button(ApplyHeightmapToTerrain)
             {
                 text = "Apply on Selection"
             };
-            
             root.Add(_applyButton);
         }
 
@@ -76,12 +93,25 @@ namespace Terrain_Generation.Editor
             var go = Selection.activeObject as GameObject;
             Terrain terrain = go?.GetComponent<Terrain>();
             _applyButton.SetEnabled(terrain != null);
-            GenerateHeightmap();
+            //GenerateHeightmap();
+            ApplyInputToData();
+        }
+
+        private void ApplyErosion()
+        {
+            _heightmap = TerrainGenerator.ApplyWaterErosion(_heightmap, _data.WaterErosion);
+            _preview.image = _heightmap;
+        }
+
+        private void ApplyInputToData()
+        {
+            _data.Seed = _seed.value;
+            _data.Octaves = _octaves.value;
         }
 
         private void GenerateHeightmap()
         {
-            _heightmap = TerrainGenerator.GenerateNoise(octaves: _octaves.value, seed: _seed.value);
+            _heightmap = TerrainGenerator.GenerateNoise(octaves: _octaves.value, seed: _seed.value, shader: _data.NoiseShader);
             _preview.image = _heightmap;
         }
 

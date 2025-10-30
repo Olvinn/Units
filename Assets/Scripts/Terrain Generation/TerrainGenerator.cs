@@ -17,7 +17,7 @@ namespace Terrain_Generation
 
             Graphics.Blit(null, rt, mat);
 
-            Texture2D tex = new Texture2D(width, height, GraphicsFormat.R32G32B32A32_SFloat, TextureCreationFlags.None);
+            Texture2D tex = new Texture2D(width, height, GraphicsFormat.R32_SFloat, TextureCreationFlags.None);
             RenderTexture.active = rt;
             tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             tex.Apply();
@@ -37,6 +37,55 @@ namespace Terrain_Generation
             Debug.LogWarning("GenerateNoise works only in Editor mode.");
             return null;
 #endif
+        }
+
+        public static Texture2D ApplyWaterErosion(Texture2D heightmap, ComputeShader cs)
+        {
+            int kernel = cs.FindKernel("ErodeDroplets");
+
+            int width = heightmap.width;
+            int height = heightmap.height;
+            
+            RenderTexture rt = new RenderTexture(width, height, 0, RenderTextureFormat.ARGBFloat);
+            rt.enableRandomWrite = true;
+            rt.format = RenderTextureFormat.RFloat;
+            rt.Create();
+            
+            Graphics.Blit(heightmap, rt);
+        
+            int numDrops = 65536;
+            int stepsPerDrop = 50;
+            int searchRadius = 2;
+            uint seed = 12345;
+            float initialWater = 3f;
+            float erosionFactor = 0.01f;
+            float depositionFactor = 0.15f;
+            float evaporation = 0.03f;
+            float capacityFactor = 4f;
+            
+            cs.SetInt("width", width);
+            cs.SetInt("height", height);
+            cs.SetInt("numStepsPerDrop", stepsPerDrop);
+            cs.SetInt("searchRadius", searchRadius);
+            cs.SetFloat("initialWater", initialWater);
+            cs.SetFloat("erosionFactor", erosionFactor);
+            cs.SetFloat("depositionFactor", depositionFactor);
+            cs.SetFloat("evaporation", evaporation);
+            cs.SetFloat("capacityFactor", capacityFactor);
+            cs.SetTexture(kernel, "Result", rt);
+            cs.SetInt("seed", (int)seed);
+
+            int groupsX = Mathf.CeilToInt(width / 8.0f);
+            int groupsY = Mathf.CeilToInt(height / 8.0f);
+            cs.Dispatch(kernel, groupsX, groupsY, 1);
+            
+            Texture2D tex = new Texture2D(width, height, GraphicsFormat.R32_SFloat, TextureCreationFlags.None);
+            RenderTexture.active = rt;
+            tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+            tex.Apply();
+            RenderTexture.active = null;
+
+            return tex;
         }
     }
 }

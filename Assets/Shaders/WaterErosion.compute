@@ -1,0 +1,118 @@
+#pragma kernel ErodeDroplets
+
+RWTexture2D<float> Result;
+
+int width;
+int height;
+uint seed;
+int numStepsPerDrop;
+int searchRadius;
+float initialWater;
+float erosionFactor;
+float depositionFactor;
+float evaporation;
+float capacityFactor;
+
+float Rand01(inout uint state)
+{
+    state = state * 1664525u + 1013904223u;
+    return (state & 0x00FFFFFF) / 16777216.0;
+}
+
+bool InBounds(int2 p)
+{
+    return (p.x >= 0 && p.y >= 0 && p.x < width && p.y < height);
+}
+
+[numthreads(64,1,1)]
+void ErodeDroplets(uint3 dispatchThreadID : SV_DispatchThreadID)
+{
+    uint tid = dispatchThreadID.x;
+
+    // RNG
+    uint state = seed + tid * 747796405u;
+    state ^= (state >> 15);
+    state *= 0x27d4eb2du;
+    state ^= (state >> 16);
+
+    float2 posf = float2(Rand01(state) * (width-1), Rand01(state) * (height-1));
+    int2 ipos = int2((int)round(posf.x), (int)round(posf.y));
+
+    ipos.x = clamp(ipos.x, 0, width-1);
+    ipos.y = clamp(ipos.y, 0, height-1);
+
+    float water = initialWater;
+    float sediment = 0.0;
+
+    for (int step = 0; step < numStepsPerDrop; ++step)
+    {
+        float currentH = Result[ipos];
+
+        int2 best = ipos;
+        float bestH = currentH;
+
+        for (int oy = -searchRadius; oy <= searchRadius; ++oy)
+        {
+            int ny = ipos.y + oy;
+            if (ny < 0 || ny >= height) continue;
+
+            for (int ox = -searchRadius; ox <= searchRadius; ++ox)
+            {
+                int nx = ipos.x + ox;
+                if (nx < 0 || nx >= width) continue;
+
+                float h = Result[int2(nx, ny)];
+                if (h < bestH)
+                {
+                    bestH = h;
+                    best = int2(nx, ny);
+                }
+            }
+        }
+
+        // Fixed: compare using 'all()' to reduce vector to scalar
+        if (all(best == ipos))
+        {
+            if (Rand01(state) < 0.1)
+            {
+                int2 rnd = ipos + int2((int)floor(Rand01(state)*3.0)-1, (int)floor(Rand01(state)*3.0)-1);
+                rnd.x = clamp(rnd.x, 0, width-1);
+                rnd.y = clamp(rnd.y, 0, height-1);
+                best = rnd;
+                bestH = Result[best];
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        float slope = currentH - bestH;
+        float capacity = max(slope * water * capacityFactor, 0.0001);
+
+        if (slope > 0.0 && sediment < capacity)
+        {
+            float erodeAmount = slope * erosionFactor;
+            erodeAmount = min(erodeAmount, Result[ipos]);
+            Result[ipos] = Result[ipos] - erodeAmount;
+            sediment += erodeAmount;
+        }
+
+        ipos = best;
+
+        float deposit = sediment * depositionFactor;
+        if (deposit > 0.0)
+        {
+            Result[ipos] = Result[ipos] + deposit;
+            sediment -= deposit;
+        }
+
+        water *= (1.0 - evaporation);
+        if (water <= 0.0001) break;
+    }
+
+    if (sediment > 0.0)
+    {
+        Result[ipos] = Result[ipos] + sediment;
+    }
+}
