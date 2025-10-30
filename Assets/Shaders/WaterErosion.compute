@@ -1,5 +1,5 @@
 // =====================================================================
-// DropletErosionAdvanced - D3D11-compatible fixed-point atomic version
+// DropletErosionImproved - D3D11-compatible fixed-point atomic version
 // =====================================================================
 
 #pragma kernel ErodeDroplets
@@ -15,25 +15,30 @@ int numDrops;
 uint seed;
 
 int numStepsPerDrop;
-int searchRadius;
-int depositRadius;
-int erodeRadius;
-
+int erodeRadius;      // radius (in texels) where erosion is distributed
+float depositRadius;  // not used here, could be used for smoother deposition
 float initialWater;
 float initialSpeed;
 float inertia;
-float erosionFactor;
-float depositionFactor;
+float erosionFactor;      // scalar multiplier for erode amount
+float depositionFactor;   // how quickly sediment is deposited each step
 float evaporation;
-float capacityFactor;
+float capacityFactor;     // higher -> droplet carries more sediment
 float minCapacity;
-float stepScale;
+float stepScale;          // movement multiplier per step
 float randJitter;
 
 // ---------------- Fixed-point scaling ----------------
-static const float SCALE = 100000.0; // 5 decimal places
-int FloatToInt(float v) { return (int)(v * SCALE); }
-float IntToFloat(int v) { return v / SCALE; }
+// Lowered scale to reduce overflow risk with 32-bit ints
+static const float SCALE = 100000.0; // 4 decimal places
+
+int FloatToInt(float v)
+{
+    // clamp before converting to avoid overflow on extreme values
+    float clamped = clamp(v, -2e6, 2e6); // keep within reasonable int range
+    return (int)round(clamped * SCALE);
+}
+float IntToFloat(int v) { return (v / SCALE); }
 
 // ---------------- RNG ----------------
 float Rand01(inout uint state)
@@ -50,30 +55,27 @@ int2 ClampInt2(int2 p)
     return p;
 }
 
-float ReadPixel(int2 p)
+float ReadPixelIntAware(int2 p)
 {
-    return Height[p] + IntToFloat(HeightDelta[p]);
+    // Use current Height plus any accumulated integer delta (converted)
+    // This makes droplet simulation see updates done by other threads (more consistent)
+    return Height[ClampInt2(p)] + IntToFloat(HeightDelta[ClampInt2(p)]);
 }
 
 float ReadHeightBilinear(float2 pos)
 {
-    float2 f = frac(pos);
+    // pos is in texel space (0..width-1, 0..height-1)
     int2 i00 = ClampInt2(int2(floor(pos.x), floor(pos.y)));
     int2 i10 = ClampInt2(i00 + int2(1, 0));
     int2 i01 = ClampInt2(i00 + int2(0, 1));
     int2 i11 = ClampInt2(i00 + int2(1, 1));
 
-    float h00 = ReadPixel(i00);
-    float h10 = h00;
-    float h01 = h00;
-    float h11 = h00;
+    float2 f = frac(pos);
 
-    if (i00.x < width - 2 && i00.y < height - 2)
-    {
-        h01 = ReadPixel(i01);
-        h10 = ReadPixel(i10);
-        h11 = ReadPixel(i11);
-    }
+    float h00 = ReadPixelIntAware(i00);
+    float h10 = ReadPixelIntAware(i10);
+    float h01 = ReadPixelIntAware(i01);
+    float h11 = ReadPixelIntAware(i11);
 
     float hx0 = lerp(h00, h10, f.x);
     float hx1 = lerp(h01, h11, f.x);
@@ -83,54 +85,75 @@ float ReadHeightBilinear(float2 pos)
 // ---------------- Gradient ----------------
 float2 ComputeGradient(float2 pos)
 {
-    float hl = ReadHeightBilinear(pos + float2(-1, 0));
-    float hr = ReadHeightBilinear(pos + float2(1, 0));
-    float hd = ReadHeightBilinear(pos + float2(0, -1));
-    float hu = ReadHeightBilinear(pos + float2(0, 1));
+    // central differences using small offsets of 1 texel
+    float2 leftPos  = pos + float2(-1, 0);
+    float2 rightPos = pos + float2( 1, 0);
+    float2 downPos  = pos + float2(0, -1);
+    float2 upPos    = pos + float2(0,  1);
+
+    float hl = ReadHeightBilinear(leftPos);
+    float hr = ReadHeightBilinear(rightPos);
+    float hd = ReadHeightBilinear(downPos);
+    float hu = ReadHeightBilinear(upPos);
+
+    // derivative in texel space; multiply by any world-scale if needed outside
     return float2((hr - hl) * 0.5, (hu - hd) * 0.5);
 }
 
-float2 FindMoveDirection(float2 pos)
-{
-    float2 grad = ComputeGradient(pos);
-    float len2 = dot(grad, grad);
-
-    if (len2 < 1e-6)
-    {
-        return float2(0, 0);
-    }
-
-    float2 dir = -grad;
-    return normalize(dir);
-}
-
-// ---------------- Atomic Modification ----------------
+// ---------------- Atomic Modification (bilinear distribute) ----------------
 void AtomicAddHeight(float2 pos, float amount)
 {
+    // Distribute amount into four neighbors according to bilinear weights
     int2 center = ClampInt2(int2(floor(pos.x), floor(pos.y)));
     float2 rest = float2(frac(pos.x), frac(pos.y));
-    
-    InterlockedAdd(HeightDelta[center], FloatToInt(amount * (1 - rest.x) * (1 - rest.y)));
-    if (center.x < width - 2 && center.y < height - 2)
-    {
-        InterlockedAdd(HeightDelta[center + int2(1, 0)], FloatToInt(amount * rest.x * (1 - rest.y)));
-        InterlockedAdd(HeightDelta[center + int2(0, 1)], FloatToInt(amount * (1 - rest.x) * rest.y));
-        InterlockedAdd(HeightDelta[center + int2(1, 1)], FloatToInt(amount * rest.x * rest.y));
-    }
+
+    int v00 = FloatToInt(amount * (1 - rest.x) * (1 - rest.y));
+    int v10 = FloatToInt(amount * rest.x * (1 - rest.y));
+    int v01 = FloatToInt(amount * (1 - rest.x) * rest.y);
+    int v11 = FloatToInt(amount * rest.x * rest.y);
+
+    InterlockedAdd(HeightDelta[center], v00);
+    InterlockedAdd(HeightDelta[center + int2(1, 0)], v10);
+    InterlockedAdd(HeightDelta[center + int2(0, 1)], v01);
+    InterlockedAdd(HeightDelta[center + int2(1, 1)], v11);
 }
 
-// ---------------- Erosion ----------------
-void Erode(float2 pos, float desired)
-{    
-    int2 center = ClampInt2(int2(floor(pos.x), floor(pos.y)));
-    float2 rest = float2(frac(pos.x), frac(pos.y));
+// ---------------- Erode distributed over circular brush ----------------
+void ErodeDistributed(float2 pos, float desired)
+{
+    // Distribute a positive 'desired' erosion amount over a circular kernel.
+    // This is heavier at the center and falls off linearly to the radius.
+    int r = max(1, erodeRadius);
+    float totalWeight = 0.0;
 
-    InterlockedAdd(HeightDelta[center], FloatToInt(-desired * (1 - rest.x) * (1 - rest.y)));
-    if (center.x < width - 2 && center.y < height - 2)
+    // First compute total weight (could also be precomputed on CPU)
+    for(int ky = -r; ky <= r; ++ky)
     {
-        InterlockedAdd(HeightDelta[center + int2(1, 0)], FloatToInt(-desired * rest.x * (1 - rest.y)));
-        InterlockedAdd(HeightDelta[center + int2(0, 1)], FloatToInt(-desired * (1 - rest.x) * rest.y));
-        InterlockedAdd(HeightDelta[center + int2(1, 1)], FloatToInt(-desired * rest.x * rest.y));
+        for(int kx = -r; kx <= r; ++kx)
+        {
+            float dist = sqrt((float)(kx*kx + ky*ky));
+            if (dist <= r)
+                totalWeight += (1.0 - (dist / (r + 0.0001)));
+        }
+    }
+
+    if (totalWeight <= 0.0) return;
+
+    // Now apply weighted erosion using atomic adds (negative -> remove height)
+    for(int ky = -r; ky <= r; ++ky)
+    {
+        for(int kx = -r; kx <= r; ++kx)
+        {
+            float dist = sqrt((float)(kx*kx + ky*ky));
+            if (dist <= r)
+            {
+                float w = (1.0 - (dist / (r + 0.0001)));
+                float local = -desired * (w / totalWeight);
+                // Add negative local to HeightDelta (erosion)
+                int2 sample = ClampInt2(int2(int(floor(pos.x)) + kx, int(floor(pos.y)) + ky));
+                InterlockedAdd(HeightDelta[sample], FloatToInt(local));
+            }
+        }
     }
 }
 
@@ -147,38 +170,62 @@ void ErodeDroplets(uint3 id:SV_DispatchThreadID)
 
     float water = initialWater;
     float sediment = 0;
+    float speed = initialSpeed;
+    float2 velocity = float2(0,0);
 
     for(int s=0; s<numStepsPerDrop; s++)
     {
         pos = clamp(pos, float2(0,0), float2(width-1,height-1));
 
         float heightNow = ReadHeightBilinear(pos);
-        float2 dir = FindMoveDirection(pos);
+        float2 grad = ComputeGradient(pos);
+        float2 dir = -normalize(grad + 1e-8); // downhill direction
 
-        pos += dir * stepScale;
+        // velocity with inertia
+        velocity = velocity * inertia + dir * (1.0 - inertia);
+        // update speed influenced a little by slope
+        float newSpeed = speed + (heightNow - ReadHeightBilinear(pos + velocity * stepScale)) * 0.5;
+        speed = max(0.0, newSpeed);
+
+        pos += velocity * speed * stepScale;
         pos = clamp(pos, float2(0,0), float2(width-1,height-1));
 
         float newH = ReadHeightBilinear(pos);
         float slope = heightNow - newH;
 
-        //Erode(pos, slope * erosionFactor);
-        sediment += slope * erosionFactor;
-        sediment = min(sediment, water);
+        // compute capacity (how much sediment droplet can carry)
+        float capacity = max(minCapacity, speed * water * abs(slope) * capacityFactor);
 
-        // Deposit proportional to sediment
-        float dep = sediment * depositionFactor;
-        if (dep > 0)
+        // *** Erosion dominates unless clearly over cap ***
+        float diff = capacity - sediment;
+
+        // Deposit when over-cap
+        if (diff < 0)
         {
-            AtomicAddHeight(pos, dep);
-            sediment -= dep;
+            float depositAmount = -diff * depositionFactor;
+            AtomicAddHeight(pos, depositAmount);
+            sediment -= depositAmount;
+        }
+        else
+        {
+            // Erode *by slope*
+            float erodeAmount = min(diff * erosionFactor, max(0, slope) * erosionFactor * 5.0);
+            if (erodeAmount > 0.000001)
+            {
+                ErodeDistributed(pos, erodeAmount);
+                sediment += erodeAmount;
+            }
         }
 
-        water *= (1-evaporation);
-        if (water <= 0.0001) break;
+        water *= (1.0 - evaporation);
+        if (water <= 1e-5 || speed <= 1e-5) break;
     }
 
-    if (sediment > 0)
+    // final deposit of remaining sediment
+    if (sediment > 0.0)
+    {
         AtomicAddHeight(pos, sediment);
+    }
 }
 
 // ---------------- Apply Accumulated Delta ----------------
@@ -192,6 +239,7 @@ void ApplyDeltas(uint3 id : SV_DispatchThreadID)
     {
         float delta = IntToFloat(deltaInt);
         Height[p] += delta;
+        // reset for next frame
         HeightDelta[p] = 0;
     }
 }
