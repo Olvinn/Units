@@ -13,7 +13,7 @@ namespace Terrain_Generation.Editor
         private Button _generateButton, _applyButton, _erosionButton;
         private IntegerField _octaves;
         private FloatField _seed;
-        private Image _preview;
+        private Image _preview, _erosion;
         
         private Texture2D _heightmap;
         
@@ -99,8 +99,11 @@ namespace Terrain_Generation.Editor
 
         private void ApplyErosion()
         {
-            _heightmap = TerrainGenerator.ApplyWaterErosion(_heightmap, _data.WaterErosion);
-            _preview.image = _heightmap;
+            for(int i = 0; i < 20; i++)
+            {
+                _heightmap = TerrainGenerator.ApplyWaterErosion(_heightmap, _data.WaterErosion);
+                _preview.image = _heightmap;
+            }
         }
 
         private void ApplyInputToData()

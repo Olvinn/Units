@@ -70,19 +70,19 @@ namespace Terrain_Generation
 
             cs.SetInt("searchRadius", 3);     
             cs.SetInt("depositRadius", 3);   
-            cs.SetInt("erodeRadius", 2);   
+            cs.SetInt("erodeRadius", 3);   
 
             cs.SetFloat("initialWater", 1.0f);
-            cs.SetFloat("initialSpeed", 1.0f);
-            cs.SetFloat("inertia", 0.2f);   
+            cs.SetFloat("initialSpeed", .5f);
+            cs.SetFloat("inertia", 0.15f);   
 
             cs.SetFloat("erosionFactor", .01f);     
-            cs.SetFloat("depositionFactor", 0.01f);  
+            cs.SetFloat("depositionFactor", 0.001f);  
             cs.SetFloat("evaporation", 0.002f);      
 
             cs.SetFloat("capacityFactor", 2f);     
             cs.SetFloat("minCapacity", 0.0002f);
-            cs.SetFloat("stepScale", .25f);
+            cs.SetFloat("stepScale", 1f);
             cs.SetFloat("randJitter", Random.value * 5); 
 
             cs.SetInt("seed", UnityEngine.Random.Range(1, 999999));
