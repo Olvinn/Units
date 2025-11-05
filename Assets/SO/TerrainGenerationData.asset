@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: TerrainGeneration::Terrain_Generation.TerrainGenerationData
   WaterErosion: {fileID: 7200000, guid: 146cd3ef73a42b94d914bd80d3a6caea, type: 3}
   NoiseShader: {fileID: 4800000, guid: 9f8f5a91d53e7594ea674957ee3e7f00, type: 3}
-  Seed: 46329
-  Octaves: 12
+  Seed: 47091
+  Octaves: 16
+  HeightmapResolution: {x: 4087, y: 4087}

@@ -46,9 +46,16 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.2.8f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Terrain Generation\Editor\TerrainGenerationWindow.cs" />
-    <Compile Include="Assets\Scripts\Terrain Generation\TerrainGenerationData.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\Windows\BaseWindow\BaseWindowController.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\Windows\ChangeWindow\ChangeWindowController.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\Windows\CreateWindow\CreateWindowView.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\Windows\ChangeWindow\ChangeWindowView.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\TerrainGenerationModel.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\Windows\CreateWindow\CreateWindowController.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\Windows\BaseWindow\BaseWindowVew.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\Editor\TerrainGenerationCoordinator.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\TerrainGenerator.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\Windows\CreateWindow\CreationData.cs" />
     <None Include="Assets\Scripts\Terrain Generation\TerrainGeneration.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\6000.2.8f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
@@ -428,6 +435,9 @@
     <Reference Include="Unity.VisualScripting.YamlDotNet">
       <HintPath>C:\Users\parad\Desktop\Workplace\UnitBase\Library\PackageCache\com.unity.visualscripting@6279e2b7c485\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Collections.LowLevel.ILSupport">
+      <HintPath>C:\Users\parad\Desktop\Workplace\UnitBase\Library\PackageCache\com.unity.collections@d49facba0036\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>C:\Users\parad\Desktop\Workplace\UnitBase\Library\PackageCache\com.unity.ext.nunit@031a54704bff\net40\unity-custom\nunit.framework.dll</HintPath>
     </Reference>
@@ -449,6 +459,9 @@
     <Reference Include="unityplastic">
       <HintPath>C:\Users\parad\Desktop\Workplace\UnitBase\Library\PackageCache\com.unity.collab-proxy@ab839cc7d2ad\Lib\Editor\unityplastic.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Hashing">
+      <HintPath>C:\Users\parad\Desktop\Workplace\UnitBase\Library\PackageCache\com.unity.collections@d49facba0036\Unity.Collections.Tests\System.IO.Hashing\System.IO.Hashing.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>C:\Users\parad\Desktop\Workplace\UnitBase\Library\PackageCache\com.unity.visualscripting@6279e2b7c485\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
     </Reference>
@@ -457,12 +470,6 @@
     </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>C:\Users\parad\Desktop\Workplace\UnitBase\Library\PackageCache\com.unity.nuget.mono-cecil@d78732e851eb\Mono.Cecil.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Collections.LowLevel.ILSupport">
-      <HintPath>C:\Users\parad\Desktop\Workplace\UnitBase\Library\PackageCache\com.unity.collections@d49facba0036\Unity.Collections.LowLevel.ILSupport\Unity.Collections.LowLevel.ILSupport.dll</HintPath>
-    </Reference>
-    <Reference Include="System.IO.Hashing">
-      <HintPath>C:\Users\parad\Desktop\Workplace\UnitBase\Library\PackageCache\com.unity.collections@d49facba0036\Unity.Collections.Tests\System.IO.Hashing\System.IO.Hashing.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
       <HintPath>C:\Users\parad\Desktop\Workplace\UnitBase\Library\PackageCache\com.unity.collections@d49facba0036\Unity.Collections.Tests\System.Runtime.CompilerServices.Unsafe\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
