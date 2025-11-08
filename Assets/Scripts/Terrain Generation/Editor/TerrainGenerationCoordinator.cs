@@ -88,6 +88,30 @@ namespace Terrain_Generation.Editor
 
         private void OpenReadWindow()
         {
+            var go = Selection.activeObject as GameObject;
+            Terrain terrain = go?.GetComponent<Terrain>();
+            if (terrain)
+                LoadHeightsFromTerrain(terrain);
+            OpenChangeWindow();
+        }
+        
+        private void LoadHeightsFromTerrain(Terrain terrain)
+        {
+            TerrainData data = terrain.terrainData;
+
+            var heights = data.GetHeights(0,0, data.heightmapResolution, data.heightmapResolution);
+            
+            _heightmap = TerrainGenerator.CreateBlankTexture(data.heightmapResolution, data.heightmapResolution);
+
+            for (int y = 0; y < data.heightmapResolution; y++)
+            {
+                for (int x = 0; x < data.heightmapResolution; x++)
+                {
+                    _heightmap.SetPixel(x, y, new Color(heights[y,x], 0, 0));
+                }
+            }
+            
+            _heightmap.Apply();
         }
 
         private void OpenLoadWindow()

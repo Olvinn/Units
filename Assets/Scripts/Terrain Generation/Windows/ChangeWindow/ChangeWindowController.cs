@@ -40,7 +40,7 @@ namespace Terrain_Generation.Windows.ChangeWindow
 
         private void ApplyHeightmapToTerrain()
         {
-            var go = UnityEditor.Selection.activeObject as GameObject;
+            var go = Selection.activeObject as GameObject;
             Terrain terrain = go?.GetComponent<Terrain>();
             if (terrain)
                 ApplyHeightsToTerrain(terrain, TextureToHeights(_heightmap));
