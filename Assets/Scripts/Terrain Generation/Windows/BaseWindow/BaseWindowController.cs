@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 namespace Terrain_Generation.Windows.BaseWindow
 {
-    public class BaseWindowController : IDisposable
+    public class BaseWindowController : IWindow
     {
         public event Action onOpenCreateWindow, onOpenLoadWindow, onOpenReadWindow;
         

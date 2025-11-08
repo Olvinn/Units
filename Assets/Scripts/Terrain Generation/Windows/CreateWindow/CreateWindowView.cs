@@ -1,5 +1,4 @@
 using System;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -8,21 +7,17 @@ namespace Terrain_Generation.Windows.CreateWindow
     public class CreateWindowView
     {
         public event Action<CreationData> onCreate;
-        public event Action<CreationData, TerrainGenerationModel> onSaveSettings;
+        public event Action<CreationData> onSaveSettings;
         
         private VisualElement _root;
-        private ObjectField _dataField;
         private Vector2IntField _resolution;
         private IntegerField _octaves;
         private FloatField _seed;
-
-        private TerrainGenerationModel _model;
         private CreationData _data;
         
         public CreateWindowView(VisualElement root, TerrainGenerationModel model)
         {
-            _model =  model;
-            InitializeCreationData();
+            InitializeCreationData(model);
             
             _root = root;
             _root.contentContainer.Clear();
@@ -56,13 +51,6 @@ namespace Terrain_Generation.Windows.CreateWindow
 
             Label settingsLabel = new Label("Settings");
             settingsBox.Add(settingsLabel);
-            
-            _dataField = new ObjectField("Model")
-            {
-                objectType = typeof(TerrainGenerationModel),
-                value = model
-            };
-            settingsBox.Add(_dataField);
 
             VisualElement resolutionRow = new VisualElement()
             {
@@ -143,9 +131,9 @@ namespace Terrain_Generation.Windows.CreateWindow
             };
             settingsBox.Add(buttonsRow);
 
-            Button loadButton = new Button(UpdateView)
+            Button loadButton = new Button(() => UpdateView(model))
             {
-                text = "Load Settings",
+                text = "Reset Settings",
                 style =
                 {
                     flexGrow = 1
@@ -173,25 +161,25 @@ namespace Terrain_Generation.Windows.CreateWindow
         private void OnSaveSettings()
         {
             LoadDataFromFields();
-            onSaveSettings?.Invoke(_data, _model);
+            onSaveSettings?.Invoke(_data);
         }
 
-        private void UpdateView()
+        private void UpdateView(TerrainGenerationModel model)
         {
-            InitializeCreationData();
+            InitializeCreationData(model);
             _resolution.value = _data.Resolution;
             _octaves.value = _data.PerlinOctaves;
             _seed.value = _data.Seed;
         }
 
-        private void InitializeCreationData()
+        private void InitializeCreationData(TerrainGenerationModel model)
         {
             _data = new CreationData();
-            if (_model)
+            if (model)
             {
-                _data.Seed = _model.Seed;
-                _data.PerlinOctaves =  _model.Octaves;
-                _data.Resolution = _model.HeightmapResolution;
+                _data.Seed = model.Seed;
+                _data.PerlinOctaves =  model.Octaves;
+                _data.Resolution = model.HeightmapResolution;
             }
             else
             {

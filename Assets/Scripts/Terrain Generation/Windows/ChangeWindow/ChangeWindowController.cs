@@ -1,9 +1,11 @@
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace Terrain_Generation.Windows.ChangeWindow
 {
-    public class ChangeWindowController
+    public class ChangeWindowController : IWindow
     {
         private ChangeWindowView _view;
         
@@ -19,6 +21,21 @@ namespace Terrain_Generation.Windows.ChangeWindow
 
             _view.onErode += ErodeTexture;
             _view.onApply += ApplyHeightmapToTerrain;
+            _view.onSave += SaveHeightmapToPng;
+        }
+
+        private void SaveHeightmapToPng()
+        {
+            string path = EditorUtility.SaveFilePanel("Select Path", Application.dataPath, "Heightmap", "png");
+            
+            if (path.Length != 0)
+            {
+                byte[] bytes = _heightmap.EncodeToPNG();
+
+                File.WriteAllBytes(path, bytes);
+                
+                AssetDatabase.Refresh();
+            }
         }
 
         private void ApplyHeightmapToTerrain()
@@ -70,6 +87,11 @@ namespace Terrain_Generation.Windows.ChangeWindow
             }
 
             data.SetHeights(0, 0, heights);
+        }
+
+        public void Dispose()
+        {
+            
         }
     }
 }

@@ -46,6 +46,7 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.2.8f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Terrain Generation\Windows\Window.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\BaseWindow\BaseWindowController.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\ChangeWindow\ChangeWindowController.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\CreateWindow\CreateWindowView.cs" />

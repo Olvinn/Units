@@ -6,7 +6,7 @@ namespace Terrain_Generation.Windows.ChangeWindow
 {
     public class ChangeWindowView
     {
-        public event Action onErode, onApply;
+        public event Action onErode, onApply, onSave;
         
         private VisualElement _root;
         
@@ -70,6 +70,17 @@ namespace Terrain_Generation.Windows.ChangeWindow
                 text = "Apply To Terrain"
             };
             root.Add(applyButton);
+            
+            Button saveButton = new Button(OnSave)
+            {
+                text = "Save Heightmap"
+            };
+            root.Add(saveButton);
+        }
+
+        private void OnSave()
+        {
+            onSave?.Invoke();
         }
 
         private void OnApply()

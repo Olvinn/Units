@@ -1,8 +1,10 @@
+using System.IO;
+using Terrain_Generation.Windows;
 using Terrain_Generation.Windows.BaseWindow;
 using Terrain_Generation.Windows.ChangeWindow;
 using Terrain_Generation.Windows.CreateWindow;
 using UnityEditor;
-using UnityEditor.UIElements;
+using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -11,14 +13,12 @@ namespace Terrain_Generation.Editor
     public class TerrainGenerationCoordinator : EditorWindow
     {
         private TerrainGenerationModel _model;
-
-        private ObjectField _dataField;
-        private Button _generateButton, _applyButton, _erosionButton;
-        private IntegerField _octaves;
-        private FloatField _seed;
-        private Image _preview, _erosion;
-        
         private Texture2D _heightmap;
+        private IWindow _currentWindow;
+        
+        private VisualElement _windowsRoot;
+        private Button _backButton;
+        private ObjectField _dataField;
         
         [MenuItem("Generation/Terrain Generator")]
         public static void ShowExample()
@@ -29,185 +29,100 @@ namespace Terrain_Generation.Editor
         
         private void CreateGUI()
         {
-            var root = rootVisualElement;
+            var assets = AssetDatabase.FindAssets("t: TerrainGenerationModel");
+            _model = AssetDatabase.LoadAssetAtPath<TerrainGenerationModel>(AssetDatabase.GUIDToAssetPath(assets[0]));
+            
+            _windowsRoot = new VisualElement()
+            {
+                style =
+                {
+                    borderBottomColor = Color.black,
+                    borderLeftColor = Color.black,
+                    borderRightColor = Color.black,
+                    borderTopColor = Color.black,
 
-            OpenBaseWindow();
+                    borderBottomWidth = 1,
+                    borderLeftWidth = 1,
+                    borderRightWidth = 1,
+                    borderTopWidth = 1,
+                    
+                    marginBottom = 5,
+                    marginLeft = 5,
+                    marginRight = 5,
+                    marginTop = 5,
+                    
+                    paddingLeft = 5,
+                    paddingRight = 5,
+                    paddingTop = 5,
+                    paddingBottom = 5,
+                }
+            };
             
-            return;
-            
-            _dataField = new ObjectField("Terrain Generation Data")
+            _dataField = new ObjectField("Model")
             {
                 objectType = typeof(TerrainGenerationModel),
                 value = _model
             };
-            root.Add(_dataField);
+            rootVisualElement.Add(_dataField);
 
-            _heightmap = TerrainGenerator.GenerateNoise();
-
-            _preview = new Image
+            _backButton = new Button(OpenBaseWindow)
             {
-                image = _heightmap,
-                scaleMode = ScaleMode.ScaleToFit,
-                style =
-                {
-                    borderBottomWidth = 2,
-                    marginTop = 10
-                }
+                text = "Back",
             };
-            var flex = new StyleFloat
-            {
-                value = 1f
-            };
-            _preview.style.flexGrow = flex;
-            root.Add(_preview);
-
-            _seed = new FloatField("Seed")
-            {
-                value = _model.Seed
-            };
-            root.Add(_seed);
-
-            _octaves = new IntegerField("Octaves")
-            {
-                value = _model.Octaves
-            };
-            root.Add(_octaves);
+            rootVisualElement.Add(_backButton);
             
-            _generateButton = new Button(GenerateHeightmap)
-            {
-                text = "Generate"
-            };
-            root.Add(_generateButton);
+            rootVisualElement.Add(_windowsRoot);
             
-            _erosionButton = new Button(ApplyErosion)
-            {
-                text = "Apply Erosion"
-            };
-            root.Add(_erosionButton);
-            
-            _applyButton = new Button(ApplyHeightmapToTerrain)
-            {
-                text = "Apply on Selection"
-            };
-            root.Add(_applyButton);
+            OpenBaseWindow();
         }
 
         private void OpenBaseWindow()
         {
-            BaseWindowController baseWindow = new BaseWindowController(rootVisualElement);
-            baseWindow.onOpenCreateWindow += () =>
-            {
-                OpenCreateWindow();
-                baseWindow.Dispose();
-            };
-            baseWindow.onOpenLoadWindow += () =>
-            {
-                OpwnLoadWindow();
-                baseWindow.Dispose();
-            };
-            baseWindow.onOpenReadWindow += () =>
-            {
-                OpenReadWindow();
-                baseWindow.Dispose();
-            };
+            BaseWindowController baseWindow = new BaseWindowController(_windowsRoot);
+            baseWindow.onOpenCreateWindow += OpenCreateWindow;
+            baseWindow.onOpenLoadWindow += OpwnLoadWindow;
+            baseWindow.onOpenReadWindow += OpenReadWindow;
+            _currentWindow = baseWindow;
+            _backButton.SetEnabled(false);
         }
 
         private void OpenReadWindow()
         {
-            throw new System.NotImplementedException();
         }
 
         private void OpwnLoadWindow()
         {
-            throw new System.NotImplementedException();
+            string path = EditorUtility.OpenFilePanel("Select Heightmap", Application.dataPath, "png");
+            if (path.Length != 0)
+            {
+                byte[] fileData = File.ReadAllBytes(path);
+
+                _heightmap = new Texture2D(2, 2);
+                _heightmap.LoadImage(fileData);
+                OpenChangeWindow();
+            }
         }
 
         private void OpenCreateWindow()
         {
-            CreateWindowController createWindow = new CreateWindowController(rootVisualElement);
-            createWindow.onCreateHeightmap += (tex, m) =>
-            {
-                OpenChangeWindow(tex, m);
-                createWindow.Dispose();
-            };
+            CreateWindowController createWindow = new CreateWindowController(_windowsRoot, _model);
+            createWindow.onCreateHeightmap += OnHeightmapCreated;
+            _currentWindow = createWindow;
+            _backButton.SetEnabled(true);
         }
 
-        private void OpenChangeWindow(Texture2D heightmap, TerrainGenerationModel model)
+        private void OpenChangeWindow()
         {
-            ChangeWindowController changeWindow = new ChangeWindowController(rootVisualElement, heightmap, model);
-        }
-
-        private void Update()
-        {
-            return;
-            var go = Selection.activeObject as GameObject;
-            Terrain terrain = go?.GetComponent<Terrain>();
-            _applyButton.SetEnabled(terrain != null);
-            //GenerateHeightmap();
-            ApplyInputToData();
-        }
-
-        private void ApplyErosion()
-        {
-            for(int i = 0; i < 20; i++)
-            {
-                _heightmap = TerrainGenerator.ApplyWaterErosion(_heightmap, _model.WaterErosion);
-                _preview.image = _heightmap;
-            }
-        }
-
-        private void ApplyInputToData()
-        {
-            _model.Seed = _seed.value;
-            _model.Octaves = _octaves.value;
-        }
-
-        private void GenerateHeightmap()
-        {
-            _heightmap = TerrainGenerator.GenerateNoise(width: _model.HeightmapResolution.x, height: _model.HeightmapResolution.y, 
-                octaves: _octaves.value, seed: _seed.value, shader: _model.NoiseShader);
-            _preview.image = _heightmap;
-        }
-
-        private void ApplyHeightmapToTerrain()
-        {
-            var go = UnityEditor.Selection.activeObject as GameObject;
-            Terrain terrain = go?.GetComponent<Terrain>();
-            ApplyHeightsToTerrain(terrain, TextureToHeights(_heightmap));
-        }
-
-        private float[,] TextureToHeights(Texture2D tex)
-        {
-            int width = tex.width;
-            int height = tex.height;
-            float[,] heights = new float[height, width];
-
-            Color[] pixels = tex.GetPixels();
-
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    float v = pixels[y * width + x].r;
-                    heights[y, x] = Mathf.Clamp01(v);
-                }
-            }
-            return heights;
+            if (_heightmap == null) return;
+            _currentWindow.Dispose();
+            _currentWindow = new ChangeWindowController(_windowsRoot, _heightmap, _model);
+            _backButton.SetEnabled(true);
         }
         
-        private void ApplyHeightsToTerrain(Terrain terrain, float[,] heights)
+        private void OnHeightmapCreated(Texture2D heightmap)
         {
-            TerrainData data = terrain.terrainData;
-
-            int w = heights.GetLength(1);
-            int h = heights.GetLength(0);
-            
-            if (w != data.heightmapResolution || h != data.heightmapResolution)
-            {
-                data.heightmapResolution = Mathf.Max(w, h);
-            }
-
-            data.SetHeights(0, 0, heights);
+            _heightmap = heightmap;
+            OpenChangeWindow();
         }
     }
 }
