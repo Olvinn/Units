@@ -80,7 +80,7 @@ namespace Terrain_Generation.Editor
         {
             BaseWindowController baseWindow = new BaseWindowController(_windowsRoot);
             baseWindow.onOpenCreateWindow += OpenCreateWindow;
-            baseWindow.onOpenLoadWindow += OpwnLoadWindow;
+            baseWindow.onOpenLoadWindow += OpenLoadWindow;
             baseWindow.onOpenReadWindow += OpenReadWindow;
             _currentWindow = baseWindow;
             _backButton.SetEnabled(false);
@@ -90,17 +90,19 @@ namespace Terrain_Generation.Editor
         {
         }
 
-        private void OpwnLoadWindow()
+        private void OpenLoadWindow()
         {
-            string path = EditorUtility.OpenFilePanel("Select Heightmap", Application.dataPath, "png");
-            if (path.Length != 0)
-            {
-                byte[] fileData = File.ReadAllBytes(path);
+            string path = EditorUtility.OpenFilePanel("Load Heightmap", "", "exr");
+            if (string.IsNullOrEmpty(path))
+                return;
 
-                _heightmap = new Texture2D(2, 2);
-                _heightmap.LoadImage(fileData);
-                OpenChangeWindow();
-            }
+            byte[] fileData = File.ReadAllBytes(path);
+
+            _heightmap = TerrainGenerator.CreateBlankTexture();
+            _heightmap.LoadImage(fileData); 
+
+            OpenChangeWindow(); 
+            Debug.Log($"Loaded heightmap from {path}");
         }
 
         private void OpenCreateWindow()

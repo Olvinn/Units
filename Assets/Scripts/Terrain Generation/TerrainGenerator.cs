@@ -5,6 +5,15 @@ namespace Terrain_Generation
 {
     public static class TerrainGenerator
     {
+        public static Texture2D CreateBlankTexture(int width = 1025, int height = 1025)
+        {
+            var result =  new Texture2D(width, height, GraphicsFormat.R16_SFloat, TextureCreationFlags.None)
+                {
+                    filterMode = FilterMode.Bilinear
+                };
+            return result;
+        }
+        
         public static Texture2D GenerateNoise(Shader shader, int width = 1025, int height = 1025, int octaves = 8, float seed = 43758.5453f)
         {
             RenderTexture rt = new RenderTexture(width, height, 0, RenderTextureFormat.ARGBFloat);
@@ -17,7 +26,7 @@ namespace Terrain_Generation
 
             Graphics.Blit(null, rt, mat);
 
-            Texture2D tex = new Texture2D(width, height, GraphicsFormat.R32_SFloat, TextureCreationFlags.None);
+            Texture2D tex = CreateBlankTexture(width, height);
             RenderTexture.active = rt;
             tex.ReadPixels(new Rect(0, 0, width, height), 0, 0);
             tex.Apply();
@@ -96,7 +105,7 @@ namespace Terrain_Generation
             cs.SetTexture(applyKernel, "HeightDelta", deltaTex);
             cs.Dispatch(applyKernel, width/8, height/8, 1);
 
-            Texture2D tex = new Texture2D(width, height, GraphicsFormat.R32_SFloat, TextureCreationFlags.None);
+            Texture2D tex = CreateBlankTexture(width, height);
             RenderTexture.active = rt;
             tex.ReadPixels(new Rect(0,0,width,height),0,0);
             tex.Apply();

@@ -21,21 +21,21 @@ namespace Terrain_Generation.Windows.ChangeWindow
 
             _view.onErode += ErodeTexture;
             _view.onApply += ApplyHeightmapToTerrain;
-            _view.onSave += SaveHeightmapToPng;
+            _view.onSave += SaveHeightmapToExr;
         }
 
-        private void SaveHeightmapToPng()
+        private void SaveHeightmapToExr()
         {
-            string path = EditorUtility.SaveFilePanel("Select Path", Application.dataPath, "Heightmap", "png");
-            
-            if (path.Length != 0)
-            {
-                byte[] bytes = _heightmap.EncodeToPNG();
+            string path = EditorUtility.SaveFilePanel("Save Heightmap", "", "Heightmap", "exr");
+            if (string.IsNullOrEmpty(path))
+                return;
 
-                File.WriteAllBytes(path, bytes);
-                
-                AssetDatabase.Refresh();
-            }
+            byte[] bytes = _heightmap.EncodeToEXR(Texture2D.EXRFlags.OutputAsFloat);
+
+            File.WriteAllBytes(path, bytes);
+            AssetDatabase.Refresh();
+
+            Debug.Log($"Saved heightmap to {path}");
         }
 
         private void ApplyHeightmapToTerrain()
