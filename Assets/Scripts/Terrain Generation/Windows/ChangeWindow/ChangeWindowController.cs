@@ -34,8 +34,6 @@ namespace Terrain_Generation.Windows.ChangeWindow
 
             File.WriteAllBytes(path, bytes);
             AssetDatabase.Refresh();
-
-            Debug.Log($"Saved heightmap to {path}");
         }
 
         private void ApplyHeightmapToTerrain()

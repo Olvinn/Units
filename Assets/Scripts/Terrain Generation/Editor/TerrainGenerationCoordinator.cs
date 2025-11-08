@@ -126,7 +126,6 @@ namespace Terrain_Generation.Editor
             _heightmap.LoadImage(fileData); 
 
             OpenChangeWindow(); 
-            Debug.Log($"Loaded heightmap from {path}");
         }
 
         private void OpenCreateWindow()
