@@ -68,11 +68,15 @@ namespace Terrain_Generation.Editor
                     flexDirection = FlexDirection.Row,
                 }
             };
+
+            _infoLabel = new Label()
+            {
+                style = { paddingLeft = 3, }
+            };
+            
+			rootVisualElement.Add(_infoLabel);
             rootVisualElement.Add(controlRow);
             rootVisualElement.Add(_windowsRoot);
-
-			_infoLabel = new Label();
-			rootVisualElement.Add(_infoLabel);
             
             _dataField = new ObjectField("Model")
             {
@@ -106,11 +110,11 @@ namespace Terrain_Generation.Editor
             {
                 _terrainData = null;
             }
-            
+
             if (_terrainData == null)
-                _infoLabel.text = "Warning: No selected Terrain Data";
+                _infoLabel.text = "Warning: No selected Terrain Data. Select Terrain or Terrain Data file";
             else
-                _infoLabel.text = "";
+                _infoLabel.text = $"Terrain Data: {_terrainData.name}";
             
             _currentTerrainGeneratorWindow.Update(_terrainData);
         }
