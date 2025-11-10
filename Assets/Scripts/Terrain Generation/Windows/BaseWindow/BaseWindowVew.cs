@@ -34,6 +34,11 @@ namespace Terrain_Generation.Windows.BaseWindow
             _root.Add(_readButton);
         }
 
+        public void SetWorkWithTerrainActive(bool active)
+        {
+            _readButton.SetEnabled(active);
+        }
+
         private void Read()
         {
             onRead?.Invoke();

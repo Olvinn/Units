@@ -5,14 +5,14 @@ using UnityEngine.UIElements;
 
 namespace Terrain_Generation.Windows.ChangeWindow
 {
-    public class ChangeWindowController : IWindow
+    public class ChangeTerrainGeneratorWindowController : ITerrainGeneratorWindow
     {
         private ChangeWindowView _view;
         
         private Texture2D _heightmap;
         private TerrainGenerationModel _model;
         
-        public ChangeWindowController(VisualElement root, Texture2D heightmap, TerrainGenerationModel model)
+        public ChangeTerrainGeneratorWindowController(VisualElement root, Texture2D heightmap, TerrainGenerationModel model)
         {
             _heightmap = heightmap;
             _model = model;
@@ -89,7 +89,14 @@ namespace Terrain_Generation.Windows.ChangeWindow
 
         public void Dispose()
         {
-            
+            _view.onErode -= ErodeTexture;
+            _view.onApply -= ApplyHeightmapToTerrain;
+            _view.onSave -= SaveHeightmapToExr;
+        }
+
+        public void Update(TerrainData terrainData)
+        {
+            _view.SetWorkWithTerrainActive(terrainData != null);
         }
     }
 }

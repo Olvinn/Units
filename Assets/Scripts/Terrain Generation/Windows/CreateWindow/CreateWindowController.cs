@@ -5,14 +5,14 @@ using UnityEngine.UIElements;
 
 namespace Terrain_Generation.Windows.CreateWindow
 {
-    public class CreateWindowController : IWindow
+    public class CreateTerrainGeneratorWindowController : ITerrainGeneratorWindow
     {
         public event Action<Texture2D> onCreateHeightmap; 
         
         private CreateWindowView _view;
         private TerrainGenerationModel _model;
         
-        public CreateWindowController(VisualElement root, TerrainGenerationModel model)
+        public CreateTerrainGeneratorWindowController(VisualElement root, TerrainGenerationModel model)
         {
             _model = model;
             _view = new CreateWindowView(root, _model);
@@ -40,6 +40,12 @@ namespace Terrain_Generation.Windows.CreateWindow
         public void Dispose()
         {
             _view.onCreate -= OnCreateHeightmap;
+            _view.onSaveSettings -= OnSaveSettings;
+        }
+
+        public void Update(TerrainData terrainData)
+        {
+            
         }
     }
 }

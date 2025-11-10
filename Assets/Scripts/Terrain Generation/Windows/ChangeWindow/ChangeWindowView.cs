@@ -11,6 +11,7 @@ namespace Terrain_Generation.Windows.ChangeWindow
         private VisualElement _root;
         
         private Image _preview;
+        private Button _applyButton;
         
         public ChangeWindowView(VisualElement root, Texture2D heightmap)
         {
@@ -65,17 +66,22 @@ namespace Terrain_Generation.Windows.ChangeWindow
             };
             root.Add(erosionButton);
             
-            Button applyButton = new Button(OnApply)
+            _applyButton = new Button(OnApply)
             {
                 text = "Apply To Terrain"
             };
-            root.Add(applyButton);
+            root.Add(_applyButton);
             
             Button saveButton = new Button(OnSave)
             {
-                text = "Save Heightmap"
+                text = "Save Heightmap To Image"
             };
             root.Add(saveButton);
+        }
+
+        public void SetWorkWithTerrainActive(bool active)
+        {
+            _applyButton.SetEnabled(active);
         }
 
         private void OnSave()

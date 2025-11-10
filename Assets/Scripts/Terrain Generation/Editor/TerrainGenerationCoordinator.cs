@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Terrain_Generation.Windows;
 using Terrain_Generation.Windows.BaseWindow;
@@ -14,11 +15,13 @@ namespace Terrain_Generation.Editor
     {
         private TerrainGenerationModel _model;
         private Texture2D _heightmap;
-        private IWindow _currentWindow;
+        private ITerrainGeneratorWindow _currentTerrainGeneratorWindow;
+        private TerrainData _terrainData;
         
         private VisualElement _windowsRoot;
         private Button _backButton;
         private ObjectField _dataField;
+		private Label _infoLabel;
         
         [MenuItem("Generation/Terrain Generator")]
         public static void ShowExample()
@@ -57,48 +60,79 @@ namespace Terrain_Generation.Editor
                     paddingBottom = 5,
                 }
             };
+
+            VisualElement controlRow = new VisualElement()
+            {
+                style =
+                {
+                    flexDirection = FlexDirection.Row,
+                }
+            };
+            rootVisualElement.Add(controlRow);
+            rootVisualElement.Add(_windowsRoot);
+
+			_infoLabel = new Label();
+			rootVisualElement.Add(_infoLabel);
             
             _dataField = new ObjectField("Model")
             {
                 objectType = typeof(TerrainGenerationModel),
                 value = _model
             };
-            rootVisualElement.Add(_dataField);
+            controlRow.Add(_dataField);
 
             _backButton = new Button(OpenBaseWindow)
             {
                 text = "Back",
             };
-            rootVisualElement.Add(_backButton);
-            
-            rootVisualElement.Add(_windowsRoot);
+            controlRow.Add(_backButton);
             
             OpenBaseWindow();
         }
 
+        private void Update()
+        {
+            var go = Selection.activeObject as GameObject;
+            Terrain terrain = go?.GetComponent<Terrain>();
+            if (terrain)
+            {
+                _terrainData = terrain.terrainData;
+            }
+            else if (Selection.activeObject is TerrainData terrainData)
+            {
+                _terrainData = terrainData;
+            }
+            else
+            {
+                _terrainData = null;
+            }
+            
+            if (_terrainData == null)
+                _infoLabel.text = "Warning: No selected Terrain Data";
+            else
+                _infoLabel.text = "";
+            
+            _currentTerrainGeneratorWindow.Update(_terrainData);
+        }
+
         private void OpenBaseWindow()
         {
-            BaseWindowController baseWindow = new BaseWindowController(_windowsRoot);
-            baseWindow.onOpenCreateWindow += OpenCreateWindow;
-            baseWindow.onOpenLoadWindow += OpenLoadWindow;
-            baseWindow.onOpenReadWindow += OpenReadWindow;
-            _currentWindow = baseWindow;
+            BaseTerrainGeneratorWindowController baseTerrainGeneratorWindow = new BaseTerrainGeneratorWindowController(_windowsRoot, _terrainData);
+            baseTerrainGeneratorWindow.onOpenCreateWindow += OpenCreateWindow;
+            baseTerrainGeneratorWindow.onOpenLoadWindow += OpenLoadWindow;
+            baseTerrainGeneratorWindow.onOpenReadWindow += OpenReadWindow;
+            _currentTerrainGeneratorWindow = baseTerrainGeneratorWindow;
             _backButton.SetEnabled(false);
         }
 
         private void OpenReadWindow()
         {
-            var go = Selection.activeObject as GameObject;
-            Terrain terrain = go?.GetComponent<Terrain>();
-            if (terrain)
-                LoadHeightsFromTerrain(terrain);
+            LoadHeightsFromTerrain(_terrainData);
             OpenChangeWindow();
         }
         
-        private void LoadHeightsFromTerrain(Terrain terrain)
+        private void LoadHeightsFromTerrain(TerrainData data)
         {
-            TerrainData data = terrain.terrainData;
-
             var heights = data.GetHeights(0,0, data.heightmapResolution, data.heightmapResolution);
             
             _heightmap = TerrainGenerator.CreateBlankTexture(data.heightmapResolution, data.heightmapResolution);
@@ -130,17 +164,17 @@ namespace Terrain_Generation.Editor
 
         private void OpenCreateWindow()
         {
-            CreateWindowController createWindow = new CreateWindowController(_windowsRoot, _model);
-            createWindow.onCreateHeightmap += OnHeightmapCreated;
-            _currentWindow = createWindow;
+            CreateTerrainGeneratorWindowController createTerrainGeneratorWindow = new CreateTerrainGeneratorWindowController(_windowsRoot, _model);
+            createTerrainGeneratorWindow.onCreateHeightmap += OnHeightmapCreated;
+            _currentTerrainGeneratorWindow = createTerrainGeneratorWindow;
             _backButton.SetEnabled(true);
         }
 
         private void OpenChangeWindow()
         {
             if (_heightmap == null) return;
-            _currentWindow.Dispose();
-            _currentWindow = new ChangeWindowController(_windowsRoot, _heightmap, _model);
+            _currentTerrainGeneratorWindow.Dispose();
+            _currentTerrainGeneratorWindow = new ChangeTerrainGeneratorWindowController(_windowsRoot, _heightmap, _model);
             _backButton.SetEnabled(true);
         }
         
