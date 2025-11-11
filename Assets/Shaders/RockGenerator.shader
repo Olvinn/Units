@@ -45,14 +45,13 @@ Shader "Custom/RockGenerator"
             }
 
             float4 frag (v2f i) : SV_Target
-            {                
-                float l = fbmPerlin3D(i.wpos * _PerlinScale, 12, 2, .5, 200) * .5 + .5;
-                float3 scaledPos = i.wpos * float3(_PerlinScale * .01, _PerlinScale, _PerlinScale * .01);
-                l = lerp(l, perlin3D(i.wpos * _PerlinScale, 123) * .5 + .5, _Stripes);
+            {
+                float l = fbmPerlin3D(i.wpos * _PerlinScale, 12, 2, .5, 200, 10) * .5 + .5;
+                l = lerp(l, perlin3D(i.wpos * _PerlinScale, 123, 10) * .5 + .5, _Stripes);
                 //l = saturate(l * .5);
-                l = saturate((fbmVoronoi3D(i.wpos * _VoronoiScale * (1+l), 1, 2, .5, 200) *.5 + .5));
+                l = saturate((voronoi3d(i.wpos * _VoronoiScale * (1+l), 200, 10) *.5 + .5));
                 //l *= .5;
-                //l = fade(l);
+                l = saturate(l);
                 return lerp(_MudColor, _CracksColor, l);
             }
             

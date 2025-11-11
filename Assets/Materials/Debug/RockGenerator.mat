@@ -20,7 +20,7 @@ Material:
   stringTagMap: {}
   disabledShaderPasses:
   - MOTIONVECTORS
-  m_LockedProperties: 
+  m_LockedProperties: _CracksColor
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -106,6 +106,7 @@ Material:
     - _OcclusionStrength: 1
     - _Octaves: 4
     - _Parallax: 0.005
+    - _PerlinScale: 0.25
     - _Persistence: 0.5
     - _QueueOffset: 0
     - _ReceiveShadows: 1
@@ -116,16 +117,18 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
+    - _Stripes: 0
     - _Surface: 0
+    - _VoronoiScale: 0.25
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _CracksColor: {r: 0, g: 0, b: 0, a: 1}
+    - _CracksColor: {r: 0.0754717, g: 0.029626437, b: 0.01744393, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _MudColor: {r: 1, g: 1, b: 1, a: 1}
+    - _MudColor: {r: 1, g: 0.5331187, b: 0.3915094, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
