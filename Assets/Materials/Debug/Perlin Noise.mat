@@ -75,7 +75,7 @@ Material:
     - _Octaves: 12
     - _Parallax: 0.02
     - _Persistence: 0.5
-    - _Scale: 4
+    - _Scale: 6.77
     - _Seed: 43825.31
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1

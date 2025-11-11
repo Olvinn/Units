@@ -3,9 +3,11 @@ Shader "Custom/RockGenerator"
     
     Properties
     {
-        _Scale ("Scale", Float) = 4.0
+        _PerlinScale ("Perlin Scale", Float) = 4.0
+        _VoronoiScale ("Voronoi Scale", Float) = 4.0
         [HDR] _MudColor ("Mud Color", Color) = (0.38, 0.26, 0.04, 1)
         [HDR] _CracksColor ("Cracks Color", Color) = (0.17, 0.11, 0.05, 1)
+        _Stripes ("Stripes", Range(0, 1)) = .5
     }
     SubShader
     {
@@ -17,14 +19,13 @@ Shader "Custom/RockGenerator"
         
         Tags { "RenderType"="Opaque" }
         LOD 100
-        ZWrite On Cull Off
         Pass
         {
             Name "RockGenerator"
 
             HLSLPROGRAM
 
-            float _Scale;
+            float _PerlinScale, _VoronoiScale, _Stripes;
             float4 _MudColor, _CracksColor;
             
             #pragma vertex vert
@@ -45,13 +46,18 @@ Shader "Custom/RockGenerator"
 
             float4 frag (v2f i) : SV_Target
             {                
-                float l = fbm3D(i.wpos * _Scale * 2, max(1, 8), 2, .5, 200) * .5 + .5;
-                l += voronoi3d(i.wpos * _Scale, 200) * .5;
-                l *= .75;
+                float l = fbmPerlin3D(i.wpos * _PerlinScale, 12, 2, .5, 200) * .5 + .5;
+                float3 scaledPos = i.wpos * float3(_PerlinScale * .01, _PerlinScale, _PerlinScale * .01);
+                l = lerp(l, perlin3D(i.wpos * _PerlinScale, 123) * .5 + .5, _Stripes);
+                //l = saturate(l * .5);
+                l = saturate((fbmVoronoi3D(i.wpos * _VoronoiScale * (1+l), 1, 2, .5, 200) *.5 + .5));
+                //l *= .5;
+                //l = fade(l);
                 return lerp(_MudColor, _CracksColor, l);
             }
             
             ENDHLSL
         }
     }
+    FallBack "Diffuse"
 }

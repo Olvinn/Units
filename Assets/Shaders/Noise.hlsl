@@ -6,8 +6,14 @@ static float hash2d1d(float2 p, float seed)
 float2 hash3d2d(float3 p, float seed)
 {
     float x = dot(p, float3(127.1, 311.7, 224.9));
-    float y = dot(p, float3(192.4, 187.3, -248.6));
+    float y = dot(p, float3(192.4, 187.3, 248.6));
     return frac(sin(float2(x, y)) * seed);
+}
+
+float hash3d1d(float3 p, float seed)
+{
+    float x = dot(p, float3(127.1, 311.7, 224.9));
+    return frac(sin(x) * seed);
 }
 
 float3 hash3d3d(float3 p, float seed)
@@ -120,7 +126,7 @@ static float fbm2D(float2 p, int octaves, float lacunarity, float persistence, f
     return sum / maxAmp;
 }
 
-static float fbm3D(float3 p, int octaves, float lacunarity, float persistence, float seed)
+static float fbmPerlin3D(float3 p, int octaves, float lacunarity, float persistence, float seed)
 {
     float amplitude = 1.0;
     float frequency = 1.0;
@@ -143,6 +149,7 @@ static float voronoi3d(float3 value, float seed)
     float3 baseCell = floor(value);
 
     float minDistToCell = 10;
+    float3 closestCell;
     [unroll]
     for(int x=-1; x<=1; x++)
     {
@@ -159,9 +166,28 @@ static float voronoi3d(float3 value, float seed)
                 if(distToCell < minDistToCell)
                 {
                     minDistToCell = distToCell;
+                    closestCell = cell;
                 }
             }
         }
     }
-    return fade(minDistToCell);
+    return hash3d1d(closestCell, seed);
+}
+
+static float fbmVoronoi3D(float3 p, int octaves, float lacunarity, float persistence, float seed)
+{
+    float amplitude = 1.0;
+    float frequency = 1.0;
+    float sum = 0.0;
+    float maxAmp = 0.0;
+
+    for (int i = 0; i < octaves; ++i)
+    {
+        sum += voronoi3d(p * frequency, seed) * amplitude;
+        maxAmp += amplitude;
+        amplitude *= persistence;
+        frequency *= lacunarity;
+    }
+
+    return sum / maxAmp;
 }
