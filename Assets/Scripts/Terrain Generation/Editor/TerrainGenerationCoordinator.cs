@@ -251,6 +251,8 @@ namespace Terrain_Generation.Editor
         
         private void ApplyHeightsToTerrain(float[,] heights)
         {
+            if (!_terrainData) return;
+            
             int w = heights.GetLength(1);
             int h = heights.GetLength(0);
             
