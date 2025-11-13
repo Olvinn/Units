@@ -11,9 +11,8 @@ namespace Terrain_Generation
         [SerializeField] private float _size;
         [SerializeField] private MeshFilter _meshFilter;
 
-        public void ApplyTerrainData(TerrainData terrainData)
+        public void Rebuild()
         {
-            this.terrainData = terrainData;
             CreateMesh();
         }
 
@@ -21,6 +20,7 @@ namespace Terrain_Generation
         {
             if (_meshFilter == null)
                 _meshFilter = GetComponent<MeshFilter>();
+            
             CreateMesh();
         }
 
@@ -33,7 +33,6 @@ namespace Terrain_Generation
             var vertices = new Vector3[d * d];
             var uv = new Vector2[d * d];
             float growth = _size / (_detalization - 1);
-            Vector3 offset = new Vector3(-_size * 0.5f, 0, -_size * 0.5f);
             
             for (int i = 0; i < d; i++)
             for (int j = 0; j < d; j++)

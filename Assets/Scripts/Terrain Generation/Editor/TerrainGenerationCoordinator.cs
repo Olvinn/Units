@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using Terrain_Generation.Windows;
 using Terrain_Generation.Windows.BaseWindow;
@@ -13,6 +12,8 @@ namespace Terrain_Generation.Editor
 {
     public class TerrainGenerationCoordinator : EditorWindow
     {
+        private bool _terrainDirty; 
+        
         private TerrainGenerationModel _model;
         private Texture2D _heightmap;
         private ITerrainGeneratorWindow _currentTerrainGeneratorWindow;
@@ -97,10 +98,17 @@ namespace Terrain_Generation.Editor
         private void Update()
         {
             var go = Selection.activeObject as GameObject;
-            UnityEngine.Terrain terrain = go?.GetComponent<UnityEngine.Terrain>();
+            Terrain terrain = go?.GetComponent<UnityEngine.Terrain>();
+            SimpleTerrain simpleTerrain = go?.GetComponent<SimpleTerrain>();
             if (terrain)
             {
                 _terrainData = terrain.terrainData;
+            }
+            else if (simpleTerrain)
+            {
+                _terrainData = simpleTerrain.terrainData;
+                if (_terrainDirty)
+                    simpleTerrain.Rebuild();
             }
             else if (Selection.activeObject is TerrainData terrainData)
             {
@@ -117,6 +125,7 @@ namespace Terrain_Generation.Editor
                 _infoLabel.text = $"Terrain Data: {_terrainData.name}";
             
             _currentTerrainGeneratorWindow.Update(_terrainData);
+            _terrainDirty = false;
         }
 
         private void OpenBaseWindow()
@@ -178,10 +187,17 @@ namespace Terrain_Generation.Editor
         {
             if (_heightmap == null) return;
             _currentTerrainGeneratorWindow.Dispose();
-            _currentTerrainGeneratorWindow = new ChangeTerrainGeneratorWindowController(_windowsRoot, _heightmap, _model);
+            var changeWindow = new ChangeTerrainGeneratorWindowController(_windowsRoot, _heightmap, _model);
+            changeWindow.onAppliedToTerrainData += SetTerrainDirty;
+            _currentTerrainGeneratorWindow = changeWindow;
             _backButton.SetEnabled(true);
         }
-        
+
+        private void SetTerrainDirty()
+        {
+            _terrainDirty = true;
+        }
+
         private void OnHeightmapCreated(Texture2D heightmap)
         {
             _heightmap = heightmap;

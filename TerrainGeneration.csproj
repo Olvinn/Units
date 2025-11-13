@@ -51,12 +51,12 @@
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\ChangeWindow\ChangeWindowController.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\CreateWindow\CreateWindowView.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\ChangeWindow\ChangeWindowView.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\SimpleTerrain.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\TerrainGenerationModel.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\CreateWindow\CreateWindowController.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\BaseWindow\BaseWindowVew.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Editor\TerrainGenerationCoordinator.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\TerrainGenerator.cs" />
-    <Compile Include="Assets\Scripts\Terrain Generation\Terrain.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\CreateWindow\CreationData.cs" />
     <None Include="Assets\Scripts\Terrain Generation\TerrainGeneration.asmdef" />
     <Reference Include="UnityEngine">

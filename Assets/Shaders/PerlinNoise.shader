@@ -44,7 +44,7 @@ Shader "Utils/PerlinNoise"
 
                 float2 p = (uv * _Scale);
 
-                float n = fbm2D(p, max(1, _Octaves), 2, _Persistence, _Seed);
+                float n = fbm2D(p, max(1, _Octaves), 2, _Persistence, _Seed, 10);
 
                 float v = n * 0.5 + 0.5;
 

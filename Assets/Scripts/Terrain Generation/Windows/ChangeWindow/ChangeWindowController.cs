@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -7,10 +8,13 @@ namespace Terrain_Generation.Windows.ChangeWindow
 {
     public class ChangeTerrainGeneratorWindowController : ITerrainGeneratorWindow
     {
+        public event Action onAppliedToTerrainData;
+        
         private ChangeWindowView _view;
         
         private Texture2D _heightmap;
         private TerrainGenerationModel _model;
+        private TerrainData _terrainData;
         
         public ChangeTerrainGeneratorWindowController(VisualElement root, Texture2D heightmap, TerrainGenerationModel model)
         {
@@ -38,10 +42,8 @@ namespace Terrain_Generation.Windows.ChangeWindow
 
         private void ApplyHeightmapToTerrain()
         {
-            var go = Selection.activeObject as GameObject;
-            UnityEngine.Terrain terrain = go?.GetComponent<UnityEngine.Terrain>();
-            if (terrain)
-                ApplyHeightsToTerrain(terrain, TextureToHeights(_heightmap));
+            ApplyHeightsToTerrain(TextureToHeights(_heightmap));
+            onAppliedToTerrainData?.Invoke();
         }
 
         private void ErodeTexture()
@@ -72,19 +74,17 @@ namespace Terrain_Generation.Windows.ChangeWindow
             return heights;
         }
         
-        private void ApplyHeightsToTerrain(UnityEngine.Terrain terrain, float[,] heights)
+        private void ApplyHeightsToTerrain(float[,] heights)
         {
-            TerrainData data = terrain.terrainData;
-
             int w = heights.GetLength(1);
             int h = heights.GetLength(0);
             
-            if (w != data.heightmapResolution || h != data.heightmapResolution)
+            if (w != _terrainData.heightmapResolution || h != _terrainData.heightmapResolution)
             {
-                data.heightmapResolution = Mathf.Max(w, h);
+                _terrainData.heightmapResolution = Mathf.Max(w, h);
             }
 
-            data.SetHeights(0, 0, heights);
+            _terrainData.SetHeights(0, 0, heights);
         }
 
         public void Dispose()
@@ -96,6 +96,7 @@ namespace Terrain_Generation.Windows.ChangeWindow
 
         public void Update(TerrainData terrainData)
         {
+            _terrainData = terrainData;
             _view.SetWorkWithTerrainActive(terrainData != null);
         }
     }
