@@ -43,6 +43,10 @@ namespace Terrain_Generation.Windows.BaseWindow
             _view.onCreate -= OpenCreateWindow;
             _view.onLoad -= OpenLoadWindow;
             _view.onRead -= OpenReadWindow;
+            
+            onOpenCreateWindow = null;
+            onOpenLoadWindow = null;
+            onOpenReadWindow = null;
         }
 
         public void Update(TerrainData terrainData)

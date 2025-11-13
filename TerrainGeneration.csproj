@@ -55,6 +55,8 @@
     <Compile Include="Assets\Scripts\Terrain Generation\TerrainGenerationModel.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\CreateWindow\CreateWindowController.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\BaseWindow\BaseWindowVew.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\Windows\ErosionWindow\ErosionWindowView.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\Windows\ErosionWindow\ErosionWindowController.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Editor\TerrainGenerationCoordinator.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\TerrainGenerator.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\CreateWindow\CreationData.cs" />

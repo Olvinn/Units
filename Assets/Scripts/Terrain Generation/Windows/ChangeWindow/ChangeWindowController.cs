@@ -8,7 +8,8 @@ namespace Terrain_Generation.Windows.ChangeWindow
 {
     public class ChangeTerrainGeneratorWindowController : ITerrainGeneratorWindow
     {
-        public event Action onAppliedToTerrainData;
+        public event Action<Texture2D> onAppliedToTerrainData;
+        public event Action onOpenErosion;
         
         private ChangeWindowView _view;
         
@@ -23,7 +24,7 @@ namespace Terrain_Generation.Windows.ChangeWindow
             
             _view = new ChangeWindowView(root, heightmap);
 
-            _view.onErode += ErodeTexture;
+            _view.onErode += OpenErosionWindow;
             _view.onApply += ApplyHeightmapToTerrain;
             _view.onSave += SaveHeightmapToExr;
         }
@@ -42,56 +43,21 @@ namespace Terrain_Generation.Windows.ChangeWindow
 
         private void ApplyHeightmapToTerrain()
         {
-            ApplyHeightsToTerrain(TextureToHeights(_heightmap));
-            onAppliedToTerrainData?.Invoke();
+            onAppliedToTerrainData?.Invoke(_heightmap);
         }
 
-        private void ErodeTexture()
+        private void OpenErosionWindow()
         {
-            for (int i = 0; i < 20; i++)
-            {
-                _heightmap = TerrainGenerator.ApplyWaterErosion(_heightmap, _model.WaterErosion);
-            }
-            _view.UpdatePreview(_heightmap);
-        }
-
-        private float[,] TextureToHeights(Texture2D tex)
-        {
-            int width = tex.width;
-            int height = tex.height;
-            float[,] heights = new float[height, width];
-
-            Color[] pixels = tex.GetPixels();
-
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    float v = pixels[y * width + x].r;
-                    heights[y, x] = Mathf.Clamp01(v);
-                }
-            }
-            return heights;
-        }
-        
-        private void ApplyHeightsToTerrain(float[,] heights)
-        {
-            int w = heights.GetLength(1);
-            int h = heights.GetLength(0);
-            
-            if (w != _terrainData.heightmapResolution || h != _terrainData.heightmapResolution)
-            {
-                _terrainData.heightmapResolution = Mathf.Max(w, h);
-            }
-
-            _terrainData.SetHeights(0, 0, heights);
+            onOpenErosion?.Invoke();
         }
 
         public void Dispose()
         {
-            _view.onErode -= ErodeTexture;
+            _view.onErode -= OpenErosionWindow;
             _view.onApply -= ApplyHeightmapToTerrain;
             _view.onSave -= SaveHeightmapToExr;
+            
+            onAppliedToTerrainData = null;
         }
 
         public void Update(TerrainData terrainData)

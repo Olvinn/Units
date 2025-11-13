@@ -3,6 +3,7 @@ using Terrain_Generation.Windows;
 using Terrain_Generation.Windows.BaseWindow;
 using Terrain_Generation.Windows.ChangeWindow;
 using Terrain_Generation.Windows.CreateWindow;
+using Terrain_Generation.Windows.ErosionWindow;
 using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
@@ -86,13 +87,25 @@ namespace Terrain_Generation.Editor
             };
             controlRow.Add(_dataField);
 
-            _backButton = new Button(OpenBaseWindow)
+            _backButton = new Button(Back)
             {
                 text = "Back",
             };
             controlRow.Add(_backButton);
             
             OpenBaseWindow();
+        }
+
+        private void Back()
+        {
+            if (_currentTerrainGeneratorWindow is ErosionWindowController)
+            {
+                OpenChangeWindow();
+            }
+            else
+            {
+                OpenBaseWindow();
+            }
         }
 
         private void Update()
@@ -188,13 +201,26 @@ namespace Terrain_Generation.Editor
             if (_heightmap == null) return;
             _currentTerrainGeneratorWindow.Dispose();
             var changeWindow = new ChangeTerrainGeneratorWindowController(_windowsRoot, _heightmap, _model);
-            changeWindow.onAppliedToTerrainData += SetTerrainDirty;
+            changeWindow.onAppliedToTerrainData += UpdateTerrainData;
+            changeWindow.onOpenErosion += OpenErosionWindow;
             _currentTerrainGeneratorWindow = changeWindow;
             _backButton.SetEnabled(true);
         }
 
-        private void SetTerrainDirty()
+        private void OpenErosionWindow()
         {
+            if (_heightmap == null) return;
+            _currentTerrainGeneratorWindow.Dispose();
+            var erosionWindow = new ErosionWindowController(_windowsRoot, _heightmap, _model);
+            erosionWindow.onChangeHeightmap += UpdateTerrainData;
+            _currentTerrainGeneratorWindow = erosionWindow;
+            _backButton.SetEnabled(true);
+        }
+
+        private void UpdateTerrainData(Texture2D heightmap)
+        {
+            _heightmap = heightmap;
+            ApplyHeightsToTerrain(TextureToHeights(_heightmap));
             _terrainDirty = true;
         }
 
@@ -202,6 +228,38 @@ namespace Terrain_Generation.Editor
         {
             _heightmap = heightmap;
             OpenChangeWindow();
+        }
+
+        private float[,] TextureToHeights(Texture2D tex)
+        {
+            int width = tex.width;
+            int height = tex.height;
+            float[,] heights = new float[height, width];
+
+            Color[] pixels = tex.GetPixels();
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    float v = pixels[y * width + x].r;
+                    heights[y, x] = Mathf.Clamp01(v);
+                }
+            }
+            return heights;
+        }
+        
+        private void ApplyHeightsToTerrain(float[,] heights)
+        {
+            int w = heights.GetLength(1);
+            int h = heights.GetLength(0);
+            
+            if (w != _terrainData.heightmapResolution || h != _terrainData.heightmapResolution)
+            {
+                _terrainData.heightmapResolution = Mathf.Max(w, h);
+            }
+
+            _terrainData.SetHeights(0, 0, heights);
         }
     }
 }

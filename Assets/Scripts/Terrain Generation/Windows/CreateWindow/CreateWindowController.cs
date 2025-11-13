@@ -1,5 +1,4 @@
 using System;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -41,6 +40,8 @@ namespace Terrain_Generation.Windows.CreateWindow
         {
             _view.onCreate -= OnCreateHeightmap;
             _view.onSaveSettings -= OnSaveSettings;
+            
+            onCreateHeightmap = null;
         }
 
         public void Update(TerrainData terrainData)
