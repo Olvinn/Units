@@ -39,7 +39,7 @@ namespace Terrain_Generation.Windows.ChangeWindow
         private void ApplyHeightmapToTerrain()
         {
             var go = Selection.activeObject as GameObject;
-            Terrain terrain = go?.GetComponent<Terrain>();
+            UnityEngine.Terrain terrain = go?.GetComponent<UnityEngine.Terrain>();
             if (terrain)
                 ApplyHeightsToTerrain(terrain, TextureToHeights(_heightmap));
         }
@@ -72,7 +72,7 @@ namespace Terrain_Generation.Windows.ChangeWindow
             return heights;
         }
         
-        private void ApplyHeightsToTerrain(Terrain terrain, float[,] heights)
+        private void ApplyHeightsToTerrain(UnityEngine.Terrain terrain, float[,] heights)
         {
             TerrainData data = terrain.terrainData;
 

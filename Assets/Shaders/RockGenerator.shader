@@ -5,9 +5,12 @@ Shader "Custom/RockGenerator"
     {
         _PerlinScale ("Perlin Scale", Float) = 4.0
         _VoronoiScale ("Voronoi Scale", Float) = 4.0
+        _Scale ("Full Scale", Float) = 1
         [HDR] _MudColor ("Mud Color", Color) = (0.38, 0.26, 0.04, 1)
         [HDR] _CracksColor ("Cracks Color", Color) = (0.17, 0.11, 0.05, 1)
-        _Stripes ("Stripes", Range(0, 1)) = .5
+        _Stripes ("Stripes", Float) = .5
+        _Noise ("Noisy pattern", Range(0, 1)) = .5
+        _Tiling ("Tiling", Float) = 10
     }
     SubShader
     {
@@ -25,7 +28,7 @@ Shader "Custom/RockGenerator"
 
             HLSLPROGRAM
 
-            float _PerlinScale, _VoronoiScale, _Stripes;
+            float _PerlinScale, _VoronoiScale, _Stripes, _Tiling, _Scale, _Noise;
             float4 _MudColor, _CracksColor;
             
             #pragma vertex vert
@@ -46,10 +49,13 @@ Shader "Custom/RockGenerator"
 
             float4 frag (v2f i) : SV_Target
             {
-                float l = fbmPerlin3D(i.wpos * _PerlinScale, 12, 2, .5, 200, 10) * .5 + .5;
-                l = lerp(l, perlin3D(i.wpos * _PerlinScale, 123, 10) * .5 + .5, _Stripes);
+                i.wpos *= _Scale;
+                float l = fbmPerlin3D(i.wpos * _PerlinScale, 12, 2, .5, 200, _Tiling) * .5 + .5;
+                float3 streched = i.wpos;
+                streched.y *= _Stripes;
+                l = lerp(l, perlin3D(i.wpos * _PerlinScale, 200, _Tiling) * .5 + .5, _Noise);
                 //l = saturate(l * .5);
-                l = saturate((voronoi3d(i.wpos * _VoronoiScale * (1+l), 200, 10) *.5 + .5));
+                l = saturate((voronoi3d(streched * _VoronoiScale * (1+l), 200, _Tiling) *.5 + .5));
                 //l *= .5;
                 l = saturate(l);
                 return lerp(_MudColor, _CracksColor, l);

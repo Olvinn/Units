@@ -97,7 +97,7 @@ namespace Terrain_Generation.Editor
         private void Update()
         {
             var go = Selection.activeObject as GameObject;
-            Terrain terrain = go?.GetComponent<Terrain>();
+            UnityEngine.Terrain terrain = go?.GetComponent<UnityEngine.Terrain>();
             if (terrain)
             {
                 _terrainData = terrain.terrainData;
