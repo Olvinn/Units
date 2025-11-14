@@ -32,6 +32,7 @@ namespace Terrain_Generation
 
             var vertices = new Vector3[d * d];
             var uv = new Vector2[d * d];
+            var normals = new Vector3[d * d];
             float growth = _size / (_detalization - 1);
             
             for (int i = 0; i < d; i++)
@@ -42,6 +43,7 @@ namespace Terrain_Generation
                 var height = terrainData?.GetHeight(dx, dy) ?? 0;
                 vertices[i * d + j] = new Vector3(i * growth, height, j * growth);
                 uv[i * d + j] = new Vector2((float)i / (d - 1), (float)j / (d - 1));
+                normals[i * d + j] = new Vector3(0, 1, 0);
             }
 
             var triangles = new List<int>();
@@ -61,6 +63,7 @@ namespace Terrain_Generation
             mesh.vertices = vertices;
             mesh.triangles = triangles.ToArray();
             mesh.uv = uv;
+            mesh.normals = normals;
         
             mesh.RecalculateNormals();
             mesh.RecalculateBounds();

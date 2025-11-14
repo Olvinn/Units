@@ -55,11 +55,13 @@
     <Compile Include="Assets\Scripts\Terrain Generation\TerrainGenerationModel.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\CreateWindow\CreateWindowController.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\BaseWindow\BaseWindowVew.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\Windows\TexturesWindow\TextureWindowView.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\ErosionWindow\ErosionWindowView.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\ErosionWindow\ErosionWindowController.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Editor\TerrainGenerationCoordinator.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\TerrainGenerator.cs" />
     <Compile Include="Assets\Scripts\Terrain Generation\Windows\CreateWindow\CreationData.cs" />
+    <Compile Include="Assets\Scripts\Terrain Generation\Windows\TexturesWindow\TexturesWindowController.cs" />
     <None Include="Assets\Scripts\Terrain Generation\TerrainGeneration.asmdef" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\6000.2.8f1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>

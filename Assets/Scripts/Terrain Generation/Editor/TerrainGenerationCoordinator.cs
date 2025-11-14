@@ -212,14 +212,19 @@ namespace Terrain_Generation.Editor
             if (_heightmap == null) return;
             _currentTerrainGeneratorWindow.Dispose();
             var erosionWindow = new ErosionWindowController(_windowsRoot, _heightmap, _model);
-            erosionWindow.onChangeHeightmap += UpdateTerrainData;
+            erosionWindow.onChangeHeightmap += UpdateHeightmap;
             _currentTerrainGeneratorWindow = erosionWindow;
             _backButton.SetEnabled(true);
         }
 
-        private void UpdateTerrainData(Texture2D heightmap)
+        private void UpdateHeightmap(Texture2D heightmap)
         {
             _heightmap = heightmap;
+        }
+
+        private void UpdateTerrainData(Texture2D heightmap)
+        {
+            UpdateHeightmap(heightmap);
             ApplyHeightsToTerrain(TextureToHeights(_heightmap));
             _terrainDirty = true;
         }

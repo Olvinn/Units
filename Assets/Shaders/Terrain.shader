@@ -1,4 +1,4 @@
-Shader "Unlit/Terrain"
+Shader "Custom/Terrain"
 {
     Properties
     {
@@ -9,90 +9,135 @@ Shader "Unlit/Terrain"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
-        LOD 100
+        Tags { "RenderPipeline"="UniversalRenderPipeline" "RenderType"="Opaque" }
 
         Pass
         {
-            CGPROGRAM
+            Name "DepthOnly"
+            Tags { "LightMode"="DepthOnly" }
+
+            HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
-            #pragma multi_compile_fog
 
-            #include "UnityCG.cginc"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-            float4 _PlanesColor, _SlopesColor;
-            float _Metallic, _Roughness;
-
-            struct appdata
-            {
-                float4 vertex : POSITION;
-                float3 normal : NORMAL;
+            struct attr {
+                float4 positionOS : POSITION;
             };
 
-            struct v2f
-            {
-                UNITY_FOG_COORDS(1)
-                float4 vertex : SV_POSITION;
-                float3 wpos : TEXCOORD0;
-                float3 normal : NORMAL;
+            struct v2f {
+                float4 positionHCS : SV_POSITION;
             };
 
-            v2f vert (appdata v)
-            {
+            v2f vert(attr i) {
                 v2f o;
-                o.vertex = UnityObjectToClipPos(v.vertex);
-                o.normal = UnityObjectToWorldNormal(v.normal);
-                o.wpos = mul(unity_ObjectToWorld, v.vertex);
-                UNITY_TRANSFER_FOG(o,o.vertex);
+                o.positionHCS = TransformObjectToHClip(i.positionOS.xyz);
                 return o;
             }
 
-            float3 MobileGGXPBR(
-                float3 N, float3 V, float3 L,
-                float3 albedo, float roughness, float metallic,
-                float3 lightColor)
+            float4 frag(v2f i) : SV_TARGET
             {
-                float3 H = normalize(V + L);
+                return 0;
+            }
+            ENDHLSL
+        }
 
-                float NdotL = saturate(dot(N, L));
-                float NdotV = saturate(dot(N, V));
-                float NdotH = saturate(dot(N, H));
-                float VdotH = saturate(dot(V, H));
+        Pass
+        {
+            Name "ShadowCaster"
+            Tags {"LightMode"="ShadowCaster"}
 
-                float r = roughness * roughness;
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
 
-                // GGX normal distribution, simplified
-                float a2 = r * r;
-                float denom = (NdotH * NdotH * (a2 - 1) + 1);
-                float D = a2 / max(UNITY_PI * denom * denom, 0.001);
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-                // Schlick Fresnel
-                float3 F0 = lerp(float3(0.04,0.04,0.04), albedo, metallic);
-                float3 F = F0 + (1 - F0) * pow(1 - VdotH, 5);
+            struct attr {
+                float4 positionOS : POSITION;
+            };
 
-                // Simplified Smith term
-                float k = (r + 1) * (r + 1) * 0.125;
-                float G = (NdotV / (NdotV * (1 - k) + k)) *
-                          (NdotL / (NdotL * (1 - k) + k));
+            struct v2f {
+                float4 positionHCS : SV_POSITION;
+            };
 
-                float3 spec = D * F * G;
-
-                float3 diffuse = albedo * (1 - metallic) / UNITY_PI;
-
-                return (diffuse + spec) * lightColor * NdotL;
+            v2f vert(attr i) {
+                v2f o;
+                o.positionHCS = TransformObjectToHClip(i.positionOS.xyz);
+                return o;
             }
 
-            float4 frag (v2f i) : SV_Target
+            float4 frag(v2f i) : SV_TARGET
             {
-                float4 col = lerp(_SlopesColor, _PlanesColor, pow(dot(float3(0,1,0), i.normal), 2));
-                float3 viewDir = _WorldSpaceCameraPos - i.wpos;
-                float3 lightDir = _WorldSpaceLightPos0;
-                col = float4(MobileGGXPBR(i.normal, viewDir, lightDir, col, _Roughness, _Metallic, float3(1,1,1)), col.a);
-                UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
+                return 0;
             }
-            ENDCG
+            ENDHLSL
+        }
+
+        Pass
+        {
+            Name "GBuffer"
+            Tags { "RenderPipeline" = "UniversalPipeline" "LightMode"="UniversalGBuffer" "UniversalMaterialType" = "Lit" }
+
+            HLSLPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #define _NORMALMAP 1
+
+            #include "UnityGBuffer.cginc"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceData.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GBufferOutput.hlsl"
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/GBufferInput.hlsl"
+
+            struct attr {
+                float4 positionOS : POSITION;
+                float3 normalOS   : NORMAL;
+                float2 uv         : TEXCOORD0;
+            };
+
+            struct v2f {
+                float4 positionHCS : SV_POSITION;
+                float3 normalWS    : TEXCOORD0;
+                float2 uv          : TEXCOORD1;
+                float4  shadows    : TEXCOORD2; // Shadow UVs
+            };
+            
+            v2f vert(attr i)
+            {
+                v2f o;
+                VertexPositionInputs pos = GetVertexPositionInputs(i.positionOS);
+                o.positionHCS = pos.positionCS;
+                o.normalWS = TransformObjectToWorldNormal(i.normalOS);
+                VertexPositionInputs vertexInput = GetVertexPositionInputs(i.positionOS.xyz);
+                o.shadows = GetShadowCoord(vertexInput);
+                o.uv = i.uv;
+                return o;
+            }
+            
+            GBufferFragOutput frag(v2f i)
+            {
+                half3 bakedGI = SAMPLE_GI(input.staticLightmapUV, i.positionHCS, i.normalWS);
+                half3 lighting = MainLightRealtimeShadow(i.shadows) + bakedGI;
+
+                half4 color = 1.0;
+                color.rgb = float3(0,0,0) * lighting;
+
+                SurfaceData surfaceData = (SurfaceData)0;
+                surfaceData.alpha = 1.0;
+                surfaceData.occlusion = 1.0;
+
+                InputData inputData = (InputData)0;
+                inputData.normalWS = PackGBufferNormal(i.normalWS);
+                inputData.positionCS = i.positionHCS;
+
+                return PackGBuffersSurfaceData(surfaceData, inputData, color.rgb);
+            }
+            
+            ENDHLSL
         }
     }
 }
